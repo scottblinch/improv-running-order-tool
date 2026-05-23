@@ -4,17 +4,17 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 
 ## Status
 
-| Step | Description | Status |
-|------|-------------|--------|
-| 1 | Vite + React + TypeScript scaffold | Done |
-| 2 | Tailwind + shadcn/ui | Not started |
-| 3 | Types + Zustand store | Not started |
-| 4 | Static two-column layout | Not started |
-| 5 | Roster + scenes (no drag) | Not started |
-| 6 | Desktop drag-and-drop | Not started |
-| 7 | Mobile assignment (dropdowns) | Not started |
-| 8 | Print styles | Not started |
-| 9 | Polish & edge cases | Not started |
+| Step | Description                        | Status      |
+| ---- | ---------------------------------- | ----------- |
+| 1    | Vite + React + TypeScript scaffold | Done        |
+| 2    | Tailwind + shadcn/ui               | Not started |
+| 3    | Types + Zustand store              | Not started |
+| 4    | Static two-column layout           | Not started |
+| 5    | Roster + scenes (no drag)          | Not started |
+| 6    | Desktop drag-and-drop              | Not started |
+| 7    | Mobile assignment (dropdowns)      | Not started |
+| 8    | Print styles                       | Not started |
+| 9    | Polish & edge cases                | Not started |
 
 ---
 
@@ -140,17 +140,17 @@ Wire UI to the store before adding `@dnd-kit`.
 
 ## Suggested PR / commit chunks
 
-1. Tailwind + shadcn + empty two-column shell  
-2. Store + types + persist  
-3. Roster + scene CRUD + warning slots + confirmations  
-4. Desktop DnD  
-5. Mobile selects  
-6. Print  
-7. Polish  
+1. Tailwind + shadcn + empty two-column shell
+2. Store + types + persist
+3. Roster + scene CRUD + warning slots + confirmations
+4. Desktop DnD
+5. Mobile selects
+6. Print
+7. Polish
 
 ---
 
 ## References
 
-- [`spec.md`](spec.md) — requirements, data model, MVP decisions  
+- [`spec.md`](spec.md) — requirements, data model, MVP decisions
 - [`README.md`](README.md) — project intro (update with dev commands when helpful)
