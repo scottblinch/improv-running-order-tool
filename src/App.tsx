@@ -1,7 +1,7 @@
 function App() {
   return (
-    <main className="app">
-      <h1>Improv Running Order</h1>
+    <main className="flex min-h-svh items-center justify-center p-6">
+      <h1 className="text-2xl font-semibold">Improv Running Order</h1>
     </main>
   );
 }

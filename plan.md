@@ -7,7 +7,7 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 | Step | Description                        | Status      |
 | ---- | ---------------------------------- | ----------- |
 | 1    | Vite + React + TypeScript scaffold | Done        |
-| 2    | Tailwind + shadcn/ui               | Not started |
+| 2    | Tailwind + shadcn/ui               | Done        |
 | 3    | Types + Zustand store              | Not started |
 | 4    | Static two-column layout           | Not started |
 | 5    | Roster + scenes (no drag)          | Not started |
@@ -27,16 +27,12 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 
 ---
 
-## 2. Design system
+## 2. Design system — Done
 
-- [ ] Install and configure **Tailwind CSS** (Vite + React guide)
-- [ ] Initialize **shadcn/ui** (`npx shadcn@latest init`)
-- [ ] Add primitives needed early:
-  - `button`, `input`, `card`, `badge`
-  - `alert-dialog` (delete person/scene, mark absent)
-  - `dropdown-menu` (row actions)
-  - `select` (mobile host/player assignment)
-- [ ] Set up path alias `@/` if shadcn init doesn’t already (match `vite.config.ts` + `tsconfig`)
+- [x] Tailwind CSS + `@tailwindcss/vite`
+- [x] shadcn/ui init (`radix-nova`, Lucide, Geist)
+- [x] Components in `src/components/ui/`: `button`, `input`, `card`, `badge`, `alert-dialog`, `dropdown-menu`, `select`
+- [x] Path fix: `components.json` uses `src/...` paths (not `@/...`) so CLI does not create a literal `@/` folder; root `tsconfig.json` includes `@/*` → `./src/*` for validation
 - [ ] Prefer component **variants** over custom class strings; avoid new `.css` files except minimal print rules (per spec §7)
 
 **Dependencies to add (when implementing):** `zustand`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `lucide-react`, `tailwindcss`, shadcn peer deps as prompted by CLI.
