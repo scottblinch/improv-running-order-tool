@@ -23,7 +23,7 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 - [x] `npm create vite@latest` — React + TypeScript
 - [x] `package.json`: ESM (`"type": "module"`), license `GPL-2.0-only`, app scripts (`dev`, `build`, `preview`, `lint`)
 
-**Cleanup (optional):** Remove default Vite demo assets (`src/assets/hero.png`, boilerplate copy in `App.tsx` / `App.css`) when starting real UI.
+**Cleanup:** Default Vite demo removed; minimal shell with app title only.
 
 ---
 
