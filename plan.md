@@ -8,7 +8,7 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 | ---- | ---------------------------------- | ----------- |
 | 1    | Vite + React + TypeScript scaffold | Done        |
 | 2    | Tailwind + shadcn/ui               | Done        |
-| 3    | Types + Zustand store              | Not started |
+| 3    | Types + Zustand store              | Done        |
 | 4    | Static two-column layout           | Not started |
 | 5    | Roster + scenes (no drag)          | Not started |
 | 6    | Desktop drag-and-drop              | Not started |
@@ -39,20 +39,13 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 
 ---
 
-## 3. Types + Zustand store
+## 3. Types + Zustand store — Done
 
-- [ ] Add `src/types/` (or `src/lib/types.ts`) matching spec §3: `Person`, `Scene`, `PersonId`, `SceneId`, `DeletePersonMode`
-- [ ] Create `src/store/useAppStore.ts`:
-  - State: `persons`, `scenes`
-  - Actions: all methods in spec `AppState`
-  - Invariants:
-    - `addPlayer`: dedupe with `includes` (keep `playerIds` as array, not `Set` in persisted state)
-    - `deletePerson`: `clearScenes` vs `keepAssignments` (soft delete via `isDeleted`)
-    - `removeScene`: delete scene and all assignments (no ghosts)
-    - `togglePersonAbsence`: toggle both ways
-  - IDs: `crypto.randomUUID()`
-- [ ] `persist` middleware → `localStorage`; **partialize** to persist only `persons` and `scenes` (not action functions)
-- [ ] Hydration: avoid flash/mismatch (render after rehydrate or use persist’s `onFinishHydration` if needed)
+- [x] `src/types/app.ts` — `Person`, `Scene`, IDs, `DeletePersonMode`, `PersistedState`
+- [x] `src/store/useAppStore.ts` — all spec actions + invariants
+- [x] `src/store/selectors.ts` — active/castable persons, lookups
+- [x] `src/store/useAppHydration.ts` — gate UI until `localStorage` rehydrates
+- [x] `persist` → key `improv-running-order`; partialize `persons` + `scenes` only
 
 ---
 
