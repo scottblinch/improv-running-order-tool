@@ -1,0 +1,20 @@
+{
+  "name": "improv-running-order-tool",
+  "version": "1.0.0",
+  "description": "A simple improv running order tool",
+  "type": "module",
+  "private": true,
+  "license": "GPL-2.0-only",
+  "author": "Scott Blinch",
+  "homepage": "https://github.com/scottblinch/improv-running-order-tool#readme",
+  "bugs": {
+    "url": "https://github.com/scottblinch/improv-running-order-tool/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scottblinch/improv-running-order-tool.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
