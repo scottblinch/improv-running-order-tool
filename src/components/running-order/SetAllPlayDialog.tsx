@@ -31,9 +31,9 @@ export function SetAllPlayDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('runningOrder.allPlayTitle')}</AlertDialogTitle>
+          <AlertDialogTitle>{t('lineup.allPlayTitle')}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t('runningOrder.allPlayDescription', {
+            {t('lineup.allPlayDescription', {
               count: playerCount,
               sceneName,
             })}
@@ -47,7 +47,7 @@ export function SetAllPlayDialog({
               onOpenChange(false);
             }}
           >
-            {t('runningOrder.switchToAllPlay')}
+            {t('lineup.switchToAllPlay')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

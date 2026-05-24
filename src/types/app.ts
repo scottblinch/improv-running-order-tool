@@ -1,5 +1,6 @@
 export type PersonId = string;
 export type SceneId = string;
+export type ShowId = string;
 
 export interface Person {
   id: PersonId;
@@ -23,4 +24,14 @@ export interface PersistedState {
   scenes: Scene[];
   showName: string;
   showDate: string;
+}
+
+export interface ShowRecord extends PersistedState {
+  id: ShowId;
+  updatedAt: string;
+}
+
+export interface WorkspacePersistedState {
+  activeShowId: ShowId;
+  shows: ShowRecord[];
 }

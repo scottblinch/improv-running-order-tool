@@ -4,16 +4,22 @@ import type {
   DeletePersonMode,
   PersonId,
   PersistedState,
+  ShowId,
   Scene,
   SceneId,
 } from '@/types/app';
 import { personHasSceneAssignments } from '@/store/selectors';
+import {
+  hydrateWorkspaceState,
+  parsePersistedWorkspace,
+} from '@/store/hydrate-persisted-state';
 import {
   migratePersistedState,
   PERSIST_VERSION,
 } from '@/store/migrate-persisted-state';
 import {
   canAddPerson,
+  canAddShow,
   canAddScene,
   INPUT_LIMITS,
   isDeletePersonMode,
@@ -23,12 +29,31 @@ import {
   sanitizeSceneName,
   sanitizeShowName,
 } from '@/lib/input-security';
-import { isIsoDateString, toIsoDateString } from '@/lib/show-date';
+import { isIsoDateString } from '@/lib/show-date';
+import {
+  createEmptyShow,
+  patchActiveShow,
+  pickMostRecentlyUpdatedShow,
+  type WorkspaceSlice,
+} from '@/lib/show-workspace';
 
 const STORAGE_KEY = 'improv-running-order';
 
 function createId(): string {
   return crypto.randomUUID();
+}
+
+function createInitialState(): WorkspaceSlice {
+  const show = createEmptyShow();
+
+  return {
+    activeShowId: show.id,
+    shows: [show],
+    persons: show.persons,
+    scenes: show.scenes,
+    showName: show.showName,
+    showDate: show.showDate,
+  };
 }
 
 function personExists(
@@ -96,17 +121,17 @@ export interface AppActions {
   setAllPlay: (sceneId: SceneId, isAllPlay: boolean) => void;
   setShowName: (name: string) => void;
   setShowDate: (date: string) => void;
+  createShow: () => void;
+  switchShow: (id: ShowId) => void;
+  deleteShow: (id: ShowId) => void;
 }
 
-export type AppStore = PersistedState & AppActions;
+export type AppStore = WorkspaceSlice & AppActions;
 
 export const useAppStore = create<AppStore>()(
   persist(
     (set) => ({
-      persons: [],
-      scenes: [],
-      showName: '',
-      showDate: toIsoDateString(),
+      ...createInitialState(),
 
       addPerson: (name) => {
         const sanitized = sanitizePersonName(name);
@@ -115,7 +140,7 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           if (!canAddPerson(state.persons.length)) return state;
 
-          return {
+          return patchActiveShow(state, {
             persons: [
               ...state.persons,
               {
@@ -125,7 +150,7 @@ export const useAppStore = create<AppStore>()(
                 isDeleted: false,
               },
             ],
-          };
+          });
         });
       },
 
@@ -138,11 +163,11 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           if (!personExists(state.persons, id)) return state;
 
-          return {
+          return patchActiveShow(state, {
             persons: state.persons.map((person) =>
               person.id === id ? { ...person, name: sanitized } : person,
             ),
-          };
+          });
         });
       },
 
@@ -159,17 +184,17 @@ export const useAppStore = create<AppStore>()(
           );
 
           if (!assigned || mode === 'clearScenes') {
-            return {
+            return patchActiveShow(state, {
               persons: state.persons.filter((person) => person.id !== id),
               scenes: clearPersonFromScenes(state.scenes, id),
-            };
+            });
           }
 
-          return {
+          return patchActiveShow(state, {
             persons: state.persons.map((person) =>
               person.id === id ? { ...person, isDeleted: true } : person,
             ),
-          };
+          });
         });
       },
 
@@ -179,13 +204,13 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           if (!personExists(state.persons, id)) return state;
 
-          return {
+          return patchActiveShow(state, {
             persons: state.persons.map((person) =>
               person.id === id
                 ? { ...person, isAbsent: !person.isAbsent }
                 : person,
             ),
-          };
+          });
         });
       },
 
@@ -196,7 +221,7 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           if (!canAddScene(state.scenes.length)) return state;
 
-          return {
+          return patchActiveShow(state, {
             scenes: [
               ...state.scenes,
               {
@@ -207,7 +232,7 @@ export const useAppStore = create<AppStore>()(
                 isAllPlay: false,
               },
             ],
-          };
+          });
         });
       },
 
@@ -220,11 +245,11 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           if (!sceneExists(state.scenes, id)) return state;
 
-          return {
+          return patchActiveShow(state, {
             scenes: state.scenes.map((scene) =>
               scene.id === id ? { ...scene, name: sanitized } : scene,
             ),
-          };
+          });
         });
       },
 
@@ -235,10 +260,10 @@ export const useAppStore = create<AppStore>()(
           if (!sceneExists(state.scenes, id)) return state;
           const scenes = state.scenes.filter((scene) => scene.id !== id);
 
-          return {
+          return patchActiveShow(state, {
             scenes,
             persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
-          };
+          });
         });
       },
 
@@ -261,7 +286,7 @@ export const useAppStore = create<AppStore>()(
           const [moved] = scenes.splice(fromIndex, 1);
           scenes.splice(toIndex, 0, moved);
 
-          return { scenes };
+          return patchActiveShow(state, { scenes });
         });
       },
 
@@ -285,7 +310,7 @@ export const useAppStore = create<AppStore>()(
           const [moved] = scenes.splice(index, 1);
           scenes.splice(targetIndex, 0, moved);
 
-          return { scenes };
+          return patchActiveShow(state, { scenes });
         });
       },
 
@@ -300,12 +325,12 @@ export const useAppStore = create<AppStore>()(
             return state;
           }
 
-          return {
+          return patchActiveShow(state, {
             scenes: updateScene(state.scenes, sceneId, (scene) => ({
               ...scene,
               hostId: personId,
             })),
-          };
+          });
         });
       },
 
@@ -319,10 +344,10 @@ export const useAppStore = create<AppStore>()(
             hostId: null,
           }));
 
-          return {
+          return patchActiveShow(state, {
             scenes,
             persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
-          };
+          });
         });
       },
 
@@ -337,7 +362,7 @@ export const useAppStore = create<AppStore>()(
             return state;
           }
 
-          return {
+          return patchActiveShow(state, {
             scenes: updateScene(state.scenes, sceneId, (scene) => {
               if (!scene.isAllPlay && scene.playerIds.includes(personId)) {
                 return scene;
@@ -358,7 +383,7 @@ export const useAppStore = create<AppStore>()(
                   : [...scene.playerIds, personId],
               };
             }),
-          };
+          });
         });
       },
 
@@ -380,7 +405,7 @@ export const useAppStore = create<AppStore>()(
             return state;
           }
 
-          return {
+          return patchActiveShow(state, {
             scenes: updateScene(state.scenes, sceneId, (scene) => {
               if (!scene.playerIds.includes(currentPersonId)) return scene;
 
@@ -396,7 +421,7 @@ export const useAppStore = create<AppStore>()(
                 ),
               };
             }),
-          };
+          });
         });
       },
 
@@ -410,10 +435,10 @@ export const useAppStore = create<AppStore>()(
             playerIds: scene.playerIds.filter((id) => id !== personId),
           }));
 
-          return {
+          return patchActiveShow(state, {
             scenes,
             persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
-          };
+          });
         });
       },
 
@@ -423,24 +448,96 @@ export const useAppStore = create<AppStore>()(
         set((state) => {
           if (!sceneExists(state.scenes, sceneId)) return state;
 
-          return {
+          return patchActiveShow(state, {
             scenes: updateScene(state.scenes, sceneId, (scene) => ({
               ...scene,
               isAllPlay,
               playerIds: isAllPlay ? [] : scene.playerIds,
             })),
-          };
+          });
         });
       },
 
       setShowName: (name) => {
-        set({ showName: sanitizeShowName(name) });
+        set((state) =>
+          patchActiveShow(state, { showName: sanitizeShowName(name) }),
+        );
       },
 
       setShowDate: (date) => {
         if (!isIsoDateString(date)) return;
 
-        set({ showDate: date });
+        set((state) => patchActiveShow(state, { showDate: date }));
+      },
+
+      createShow: () => {
+        set((state) => {
+          if (!canAddShow(state.shows.length)) return state;
+
+          const flushed = patchActiveShow(state, {});
+          const newShow = createEmptyShow();
+
+          return {
+            ...flushed,
+            shows: [...flushed.shows, newShow],
+            activeShowId: newShow.id,
+            persons: newShow.persons,
+            scenes: newShow.scenes,
+            showName: newShow.showName,
+            showDate: newShow.showDate,
+          };
+        });
+      },
+
+      switchShow: (id) => {
+        if (!isValidEntityId(id)) return;
+
+        set((state) => {
+          if (id === state.activeShowId) return state;
+
+          const flushed = patchActiveShow(state, {});
+          const target = flushed.shows.find((show) => show.id === id);
+          if (!target) return state;
+
+          const sanitized = sanitizePersistedState(target);
+
+          return {
+            ...flushed,
+            activeShowId: id,
+            ...sanitized,
+            shows: flushed.shows.map((show) =>
+              show.id === id ? { ...show, ...sanitized } : show,
+            ),
+          };
+        });
+      },
+
+      deleteShow: (id) => {
+        if (!isValidEntityId(id)) return;
+
+        set((state) => {
+          if (state.shows.length <= 1) return state;
+
+          const flushed = patchActiveShow(state, {});
+          const remaining = flushed.shows.filter((show) => show.id !== id);
+          if (remaining.length === flushed.shows.length) return state;
+
+          if (flushed.activeShowId !== id) {
+            return { ...flushed, shows: remaining };
+          }
+
+          const next = pickMostRecentlyUpdatedShow(remaining);
+          const sanitized = sanitizePersistedState(next);
+
+          return {
+            ...flushed,
+            activeShowId: next.id,
+            shows: remaining.map((show) =>
+              show.id === next.id ? { ...show, ...sanitized } : show,
+            ),
+            ...sanitized,
+          };
+        });
       },
     }),
     {
@@ -449,23 +546,35 @@ export const useAppStore = create<AppStore>()(
       migrate: migratePersistedState,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        persons: state.persons,
-        scenes: state.scenes,
-        showName: state.showName,
-        showDate: state.showDate,
+        activeShowId: state.activeShowId,
+        shows: state.shows.map(
+          ({ id, persons, scenes, showName, showDate, updatedAt }) => ({
+            id,
+            persons,
+            scenes,
+            showName,
+            showDate,
+            updatedAt,
+          }),
+        ),
       }),
+      merge: (persistedState, currentState) => {
+        if (!persistedState) return currentState;
+
+        return {
+          ...currentState,
+          ...hydrateWorkspaceState(parsePersistedWorkspace(persistedState)),
+        };
+      },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 
-        Object.assign(
-          state,
-          sanitizePersistedState({
-            persons: state.persons,
-            scenes: state.scenes,
-            showName: state.showName,
-            showDate: state.showDate,
-          }),
-        );
+        const hydrated = hydrateWorkspaceState({
+          activeShowId: state.activeShowId,
+          shows: state.shows,
+        });
+
+        Object.assign(state, hydrated);
       },
     },
   ),

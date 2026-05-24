@@ -1,9 +1,9 @@
 {
   "app": {
-    "title": "Improv Running Order",
+    "title": "Improv Show",
     "loading": "Loading application",
     "ready": "Application ready",
-    "defaultShowName": "Running Order"
+    "defaultShowName": "Untitled Show"
   },
   "common": {
     "add": "Add",
@@ -26,8 +26,8 @@
   "print": {
     "view": "Print view",
     "exitView": "Exit print view",
-    "runningOrderList": "Running order",
-    "noScenes": "No scenes in running order.",
+    "lineupList": "Lineup",
+    "noScenes": "No scenes in this show.",
     "hostSuffix": "{name} HOST",
     "allPlaySuffix": "+ ALL PLAY",
     "playersSuffix": "+ {names} PLAY",
@@ -35,7 +35,17 @@
   },
   "header": {
     "renameShow": "Rename show",
-    "showDate": "Show date"
+    "showDate": "Show date",
+    "switchShow": "Switch show"
+  },
+  "workspace": {
+    "newShow": "New show",
+    "deleteShow": "Delete show",
+    "deleteTitle": "Delete {label}?",
+    "deleteDescription": "This permanently removes this saved show. This cannot be undone.",
+    "savedShows": "Saved shows",
+    "upcomingShows": "Upcoming shows",
+    "pastShows": "Past shows"
   },
   "roster": {
     "heading": "Roster",
@@ -60,14 +70,14 @@
     "markAbsentDescription": "They will stay in assigned scene slots with a warning style, but cannot be dragged into new slots until cleared.",
     "deleteTitle": "Delete {name}?",
     "deleteDescriptionNoAssignments": "They will be permanently removed from the roster.",
-    "deleteDescriptionWithAssignments": "Choose whether to remove their scene assignments or keep them as warning slots on the running order.",
+    "deleteDescriptionWithAssignments": "Choose whether to remove their scene assignments or keep them as warning slots in the show.",
     "deleteKeepSlots": "Remove from roster, keep scene slots",
     "deleteClearScenes": "Remove from roster and all scenes"
   },
-  "runningOrder": {
-    "heading": "Running order",
+  "lineup": {
+    "heading": "Lineup",
     "reorderHelp": "On desktop, drag scenes to reorder. On mobile, use the up and down buttons on each scene card.",
-    "listLabel": "Scenes in running order",
+    "listLabel": "Scenes in lineup",
     "emptyTitle": "No scenes yet",
     "emptyDescription": "Add a scene above to start building the lineup.",
     "sceneName": "Scene name",
@@ -85,7 +95,7 @@
     "unassigned": "Unassigned",
     "noPerformersAvailable": "No performers available to assign.",
     "renameTitle": "Rename scene",
-    "renameDescription": "Update how this scene appears in the running order and printout.",
+    "renameDescription": "Update how this scene appears in the lineup and printout.",
     "removeTitle": "Remove {name}?",
     "removeDescription": "This removes the scene and all host and player assignments for it.",
     "allPlayTitle": "Switch to all play?",
@@ -94,7 +104,7 @@
   },
   "show": {
     "renameTitle": "Rename show",
-    "renameDescription": "Set the show name for the header and printout. Leave blank to use \"Running Order\".",
+    "renameDescription": "Set the show name for the header and printout. Leave blank to use \"Untitled Show\".",
     "showName": "Show name"
   },
   "fallback": {

@@ -31,7 +31,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
     <>
       <div className="min-w-0 flex-1 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
         <PersonSlotSelect
-          label={t('runningOrder.assignHost')}
+          label={t('lineup.assignHost')}
           value={scene.hostId}
           persons={slotPersons}
           onValueChange={(personId) => assignHost(scene.id, personId)}
@@ -56,7 +56,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
         ) : (
           <PersonAssignSelect
             inline
-            label={t('runningOrder.assignHost')}
+            label={t('lineup.assignHost')}
             persons={castablePersons}
             onAssign={(personId) => assignHost(scene.id, personId)}
           />

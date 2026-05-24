@@ -1,0 +1,9 @@
+.rdp-root {
+  --rdp-accent-color: var(--primary);
+  --rdp-accent-background-color: var(--muted);
+  --rdp-today-color: var(--foreground);
+}
+
+.rdp-chevron {
+  fill: var(--foreground);
+}

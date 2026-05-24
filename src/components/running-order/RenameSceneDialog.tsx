@@ -52,14 +52,14 @@ function RenameSceneDialogForm({
   return (
     <form onSubmit={handleSubmit}>
       <AlertDialogHeader>
-        <AlertDialogTitle>{t('runningOrder.renameTitle')}</AlertDialogTitle>
+        <AlertDialogTitle>{t('lineup.renameTitle')}</AlertDialogTitle>
         <AlertDialogDescription>
-          {t('runningOrder.renameDescription')}
+          {t('lineup.renameDescription')}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
         <label htmlFor={inputId} className="sr-only">
-          {t('runningOrder.sceneName')}
+          {t('lineup.sceneName')}
         </label>
         <Input
           id={inputId}
@@ -70,7 +70,7 @@ function RenameSceneDialogForm({
           maxLength={INPUT_LIMITS.maxSceneNameLength}
           required
           pattern=".*\S.*"
-          title={t('runningOrder.sceneNameRequired')}
+          title={t('lineup.sceneNameRequired')}
         />
       </div>
       <AlertDialogFooter>

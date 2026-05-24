@@ -14,6 +14,7 @@ export const INPUT_LIMITS = {
   maxPersons: 32,
   maxScenes: 32,
   maxPlayersPerScene: 16,
+  maxShows: 32,
 } as const;
 
 const CONTROL_CHARS =
@@ -127,4 +128,8 @@ export function canAddPerson(personCount: number): boolean {
 
 export function canAddScene(sceneCount: number): boolean {
   return sceneCount < INPUT_LIMITS.maxScenes;
+}
+
+export function canAddShow(showCount: number): boolean {
+  return showCount < INPUT_LIMITS.maxShows;
 }

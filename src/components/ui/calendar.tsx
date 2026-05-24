@@ -3,6 +3,7 @@ import { DayPicker } from 'react-day-picker';
 import { cn } from '@/lib/utils';
 
 import 'react-day-picker/style.css';
+import './calendar.css';
 
 function Calendar({
   className,

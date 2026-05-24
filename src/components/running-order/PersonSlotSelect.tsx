@@ -49,9 +49,7 @@ export function PersonSlotSelect({
       </SelectTrigger>
       <SelectContent>
         {onClear && value ? (
-          <SelectItem value={CLEAR_VALUE}>
-            {t('runningOrder.unassigned')}
-          </SelectItem>
+          <SelectItem value={CLEAR_VALUE}>{t('lineup.unassigned')}</SelectItem>
         ) : null}
         {persons.map((person) => {
           const isWarning = person.isAbsent || person.isDeleted;

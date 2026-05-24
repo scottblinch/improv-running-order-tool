@@ -39,7 +39,7 @@ function RunningOrderPrintContent({
         <p className="mt-[0.5em] text-[1em]">{formatPrintDate(showDate)}</p>
       </header>
 
-      <ol aria-label={t('print.runningOrderList')}>
+      <ol aria-label={t('print.lineupList')}>
         {scenes.map((scene) => {
           const castSuffix = formatRunningOrderCastSuffix(persons, scene);
           const sceneName = formatRunningOrderSceneName(scene.name);

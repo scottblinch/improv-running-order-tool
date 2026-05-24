@@ -28,18 +28,18 @@ export function RunningOrderPanel() {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
         <PanelShell>
           <div className="flex flex-col gap-2">
-            <h2 id="running-order-heading" className="sr-only">
-              {t('runningOrder.heading')}
+            <h2 id="lineup-heading" className="sr-only">
+              {t('lineup.heading')}
             </h2>
             <p id={SCENE_REORDER_HELP_ID} className="sr-only">
-              {t('runningOrder.reorderHelp')}
+              {t('lineup.reorderHelp')}
             </p>
             <SceneQuickAdd />
             {scenes.length === 0 ? (
               <EmptyState
                 icon={<Clapperboard aria-hidden className="size-4" />}
-                title={t('runningOrder.emptyTitle')}
-                description={t('runningOrder.emptyDescription')}
+                title={t('lineup.emptyTitle')}
+                description={t('lineup.emptyDescription')}
               />
             ) : (
               <SceneList scenes={scenes} />

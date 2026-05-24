@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { PrintPreviewToggle } from '@/components/layout/PrintPreviewToggle';
 import { RenameShowDialog } from '@/components/layout/RenameShowDialog';
+import { ShowSwitcher } from '@/components/layout/ShowSwitcher';
 import { ShowDatePicker } from '@/components/layout/ShowDatePicker';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Button } from '@/components/ui/button';
@@ -29,9 +30,8 @@ export function AppHeader() {
       >
         {!printPreview ? (
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <h1 className="truncate font-heading text-lg font-semibold tracking-tight">
-              {formatShowDisplayName(showName)}
-            </h1>
+            <h1 className="sr-only">{formatShowDisplayName(showName)}</h1>
+            <ShowSwitcher />
             <Button
               type="button"
               variant="outline"

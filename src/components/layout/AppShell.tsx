@@ -31,7 +31,7 @@ export function AppShell() {
             </aside>
 
             <main
-              aria-labelledby="running-order-heading"
+              aria-labelledby="lineup-heading"
               className={cn(
                 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:min-h-0 print:w-full print:max-w-none print:overflow-visible',
                 printPreview && 'overflow-y-auto bg-white',

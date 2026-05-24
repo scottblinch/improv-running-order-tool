@@ -56,7 +56,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
       })}
       <PersonAssignSelect
         inline
-        label={t('runningOrder.addPlayer')}
+        label={t('lineup.addPlayer')}
         persons={castablePersons}
         excludedPersonIds={scene.playerIds}
         onAssign={(personId) => addPlayer(scene.id, personId)}
@@ -93,7 +93,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
                     variant="ghost"
                     size="icon-sm"
                     className="shrink-0"
-                    aria-label={t('runningOrder.removePlayer', {
+                    aria-label={t('lineup.removePlayer', {
                       name: slot.name,
                     })}
                     onClick={() => removePlayer(scene.id, playerId)}
@@ -104,7 +104,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               );
             })}
             <PersonAssignSelect
-              label={t('runningOrder.addPlayer')}
+              label={t('lineup.addPlayer')}
               persons={castablePersons}
               excludedPersonIds={scene.playerIds}
               onAssign={(personId) => addPlayer(scene.id, personId)}

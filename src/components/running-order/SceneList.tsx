@@ -10,7 +10,7 @@ export function SceneList({ scenes }: SceneListProps) {
   const { t } = useTranslation();
 
   return (
-    <ol aria-label={t('runningOrder.listLabel')} className="space-y-2">
+    <ol aria-label={t('lineup.listLabel')} className="space-y-2">
       {scenes.map((scene, index) => (
         <SceneCard
           key={scene.id}

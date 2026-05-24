@@ -47,7 +47,7 @@ export function AllPlaySlot({
           variant="ghost"
           size="icon-sm"
           className="shrink-0"
-          aria-label={t('runningOrder.removeAllPlay')}
+          aria-label={t('lineup.removeAllPlay')}
           onClick={onRemove}
         >
           <X aria-hidden className="size-4" />

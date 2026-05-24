@@ -10,19 +10,19 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useTranslation } from '@/i18n';
 
-type RemoveSceneDialogProps = {
+type DeleteShowDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  sceneName: string;
+  label: string;
   onConfirm: () => void;
 };
 
-export function RemoveSceneDialog({
+export function DeleteShowDialog({
   open,
   onOpenChange,
-  sceneName,
+  label,
   onConfirm,
-}: RemoveSceneDialogProps) {
+}: DeleteShowDialogProps) {
   const { t } = useTranslation();
 
   return (
@@ -30,10 +30,10 @@ export function RemoveSceneDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {t('lineup.removeTitle', { name: sceneName })}
+            {t('workspace.deleteTitle', { label })}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {t('lineup.removeDescription')}
+            {t('workspace.deleteDescription')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -45,7 +45,7 @@ export function RemoveSceneDialog({
               onOpenChange(false);
             }}
           >
-            {t('lineup.removeScene')}
+            {t('common.delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

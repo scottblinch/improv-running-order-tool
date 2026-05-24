@@ -26,7 +26,7 @@ export function SceneReorderButtons({
         variant="outline"
         size="icon-sm"
         className="size-7"
-        aria-label={t('runningOrder.moveUp')}
+        aria-label={t('lineup.moveUp')}
         disabled={index === 0}
         onClick={() => moveScene(sceneId, 'up')}
       >
@@ -37,7 +37,7 @@ export function SceneReorderButtons({
         variant="outline"
         size="icon-sm"
         className="size-7"
-        aria-label={t('runningOrder.moveDown')}
+        aria-label={t('lineup.moveDown')}
         disabled={index >= sceneCount - 1}
         onClick={() => moveScene(sceneId, 'down')}
       >

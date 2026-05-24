@@ -32,12 +32,12 @@ export function SceneQuickAdd() {
         ref={inputRef}
         name="sceneName"
         autoComplete="off"
-        aria-label={t('runningOrder.sceneName')}
-        placeholder={t('runningOrder.sceneName')}
+        aria-label={t('lineup.sceneName')}
+        placeholder={t('lineup.sceneName')}
         maxLength={INPUT_LIMITS.maxSceneNameLength}
         required
         pattern=".*\S.*"
-        title={t('runningOrder.sceneNameRequired')}
+        title={t('lineup.sceneNameRequired')}
         className="min-w-0 flex-1"
       />
       <Button type="submit" className="shrink-0">

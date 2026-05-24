@@ -82,7 +82,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
       <li
         ref={setNodeRef}
         style={style}
-        aria-label={t('runningOrder.sceneLabel', {
+        aria-label={t('lineup.sceneLabel', {
           index: index + 1,
           name: scene.name,
         })}
@@ -98,7 +98,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               variant="ghost"
               size="icon-sm"
               className="mt-0.5 hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
-              aria-label={t('runningOrder.reorderScene', { name: scene.name })}
+              aria-label={t('lineup.reorderScene', { name: scene.name })}
               disabled={!desktopDndEnabled}
               {...listeners}
               {...attributes}
@@ -125,7 +125,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
                 variant="ghost"
                 size="icon-sm"
                 className="shrink-0"
-                aria-label={t('runningOrder.actionsForScene', {
+                aria-label={t('lineup.actionsForScene', {
                   name: scene.name,
                 })}
               >
@@ -149,7 +149,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
                 onSelect={() => setRemoveOpen(true)}
               >
                 <Trash2 aria-hidden className="size-4" />
-                {t('runningOrder.removeScene')}
+                {t('lineup.removeScene')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

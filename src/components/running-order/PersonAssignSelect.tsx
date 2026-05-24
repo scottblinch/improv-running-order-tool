@@ -35,7 +35,7 @@ export function PersonAssignSelect({
   if (available.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        {t('runningOrder.noPerformersAvailable')}
+        {t('lineup.noPerformersAvailable')}
       </p>
     );
   }

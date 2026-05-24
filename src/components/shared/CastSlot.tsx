@@ -63,7 +63,7 @@ export function CastSlot({
           variant="ghost"
           size="icon-sm"
           className="shrink-0"
-          aria-label={t('runningOrder.removePlayer', { name })}
+          aria-label={t('lineup.removePlayer', { name })}
           onClick={onRemove}
         >
           <X aria-hidden className="size-4" />
