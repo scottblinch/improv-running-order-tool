@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { INPUT_LIMITS } from '@/lib/input-security';
 
 type RenameSceneDialogProps = {
   open: boolean;
@@ -64,6 +65,7 @@ function RenameSceneDialogForm({
           defaultValue={currentName}
           autoComplete="off"
           autoFocus
+          maxLength={INPUT_LIMITS.maxSceneNameLength}
           required
           pattern=".*\S.*"
           title="Enter a scene name."

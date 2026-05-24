@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { INPUT_LIMITS } from '@/lib/input-security';
 
 type RenameShowDialogProps = {
   open: boolean;
@@ -73,6 +74,7 @@ function RenameShowDialogForm({
           defaultValue={currentName}
           autoComplete="off"
           autoFocus
+          maxLength={INPUT_LIMITS.maxShowNameLength}
           placeholder="Running Order"
         />
       </div>

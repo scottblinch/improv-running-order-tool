@@ -2,6 +2,7 @@ import { type FormEvent, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { INPUT_LIMITS } from '@/lib/input-security';
 import { useAppStore } from '@/store/useAppStore';
 
 export function SceneQuickAdd() {
@@ -31,6 +32,7 @@ export function SceneQuickAdd() {
         autoComplete="off"
         aria-label="Scene name"
         placeholder="Scene name"
+        maxLength={INPUT_LIMITS.maxSceneNameLength}
         required
         pattern=".*\S.*"
         title="Enter a scene name."

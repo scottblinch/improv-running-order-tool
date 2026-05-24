@@ -12,6 +12,17 @@ import {
   migratePersistedState,
   PERSIST_VERSION,
 } from '@/store/migrate-persisted-state';
+import {
+  canAddPerson,
+  canAddScene,
+  INPUT_LIMITS,
+  isDeletePersonMode,
+  isValidEntityId,
+  sanitizePersistedState,
+  sanitizePersonName,
+  sanitizeSceneName,
+  sanitizeShowName,
+} from '@/lib/input-security';
 import { isIsoDateString, toIsoDateString } from '@/lib/show-date';
 
 const STORAGE_KEY = 'improv-running-order';
@@ -20,8 +31,20 @@ function createId(): string {
   return crypto.randomUUID();
 }
 
-function trimName(name: string): string {
-  return name.trim();
+function personExists(
+  persons: PersistedState['persons'],
+  personId: PersonId,
+): boolean {
+  return (
+    isValidEntityId(personId) &&
+    persons.some((person) => person.id === personId)
+  );
+}
+
+function sceneExists(scenes: Scene[], sceneId: SceneId): boolean {
+  return (
+    isValidEntityId(sceneId) && scenes.some((scene) => scene.id === sceneId)
+  );
 }
 
 function clearPersonFromScenes(scenes: Scene[], personId: PersonId): Scene[] {
@@ -86,35 +109,49 @@ export const useAppStore = create<AppStore>()(
       showDate: toIsoDateString(),
 
       addPerson: (name) => {
-        const trimmed = trimName(name);
-        if (!trimmed) return;
+        const sanitized = sanitizePersonName(name);
+        if (!sanitized) return;
 
-        set((state) => ({
-          persons: [
-            ...state.persons,
-            {
-              id: createId(),
-              name: trimmed,
-              isAbsent: false,
-              isDeleted: false,
-            },
-          ],
-        }));
+        set((state) => {
+          if (!canAddPerson(state.persons.length)) return state;
+
+          return {
+            persons: [
+              ...state.persons,
+              {
+                id: createId(),
+                name: sanitized,
+                isAbsent: false,
+                isDeleted: false,
+              },
+            ],
+          };
+        });
       },
 
       renamePerson: (id, name) => {
-        const trimmed = trimName(name);
-        if (!trimmed) return;
+        if (!isValidEntityId(id)) return;
 
-        set((state) => ({
-          persons: state.persons.map((person) =>
-            person.id === id ? { ...person, name: trimmed } : person,
-          ),
-        }));
+        const sanitized = sanitizePersonName(name);
+        if (!sanitized) return;
+
+        set((state) => {
+          if (!personExists(state.persons, id)) return state;
+
+          return {
+            persons: state.persons.map((person) =>
+              person.id === id ? { ...person, name: sanitized } : person,
+            ),
+          };
+        });
       },
 
       deletePerson: (id, mode) => {
+        if (!isValidEntityId(id) || !isDeletePersonMode(mode)) return;
+
         set((state) => {
+          if (!personExists(state.persons, id)) return state;
+
           const assigned = personHasSceneAssignments(
             state.scenes,
             id,
@@ -137,46 +174,65 @@ export const useAppStore = create<AppStore>()(
       },
 
       togglePersonAbsence: (id) => {
-        set((state) => ({
-          persons: state.persons.map((person) =>
-            person.id === id
-              ? { ...person, isAbsent: !person.isAbsent }
-              : person,
-          ),
-        }));
+        if (!isValidEntityId(id)) return;
+
+        set((state) => {
+          if (!personExists(state.persons, id)) return state;
+
+          return {
+            persons: state.persons.map((person) =>
+              person.id === id
+                ? { ...person, isAbsent: !person.isAbsent }
+                : person,
+            ),
+          };
+        });
       },
 
       addScene: (name) => {
-        const trimmed = trimName(name);
-        if (!trimmed) return;
+        const sanitized = sanitizeSceneName(name);
+        if (!sanitized) return;
 
-        set((state) => ({
-          scenes: [
-            ...state.scenes,
-            {
-              id: createId(),
-              name: trimmed,
-              hostId: null,
-              playerIds: [],
-              isAllPlay: false,
-            },
-          ],
-        }));
+        set((state) => {
+          if (!canAddScene(state.scenes.length)) return state;
+
+          return {
+            scenes: [
+              ...state.scenes,
+              {
+                id: createId(),
+                name: sanitized,
+                hostId: null,
+                playerIds: [],
+                isAllPlay: false,
+              },
+            ],
+          };
+        });
       },
 
       renameScene: (id, name) => {
-        const trimmed = trimName(name);
-        if (!trimmed) return;
+        if (!isValidEntityId(id)) return;
 
-        set((state) => ({
-          scenes: state.scenes.map((scene) =>
-            scene.id === id ? { ...scene, name: trimmed } : scene,
-          ),
-        }));
+        const sanitized = sanitizeSceneName(name);
+        if (!sanitized) return;
+
+        set((state) => {
+          if (!sceneExists(state.scenes, id)) return state;
+
+          return {
+            scenes: state.scenes.map((scene) =>
+              scene.id === id ? { ...scene, name: sanitized } : scene,
+            ),
+          };
+        });
       },
 
       removeScene: (id) => {
+        if (!isValidEntityId(id)) return;
+
         set((state) => {
+          if (!sceneExists(state.scenes, id)) return state;
           const scenes = state.scenes.filter((scene) => scene.id !== id);
 
           return {
@@ -187,7 +243,13 @@ export const useAppStore = create<AppStore>()(
       },
 
       reorderScenes: (activeId, overId) => {
-        if (activeId === overId) return;
+        if (
+          activeId === overId ||
+          !isValidEntityId(activeId) ||
+          !isValidEntityId(overId)
+        ) {
+          return;
+        }
 
         set((state) => {
           const scenes = [...state.scenes];
@@ -204,6 +266,13 @@ export const useAppStore = create<AppStore>()(
       },
 
       moveScene: (sceneId, direction) => {
+        if (
+          !isValidEntityId(sceneId) ||
+          (direction !== 'up' && direction !== 'down')
+        ) {
+          return;
+        }
+
         set((state) => {
           const scenes = [...state.scenes];
           const index = scenes.findIndex((scene) => scene.id === sceneId);
@@ -221,16 +290,30 @@ export const useAppStore = create<AppStore>()(
       },
 
       assignHost: (sceneId, personId) => {
-        set((state) => ({
-          scenes: updateScene(state.scenes, sceneId, (scene) => ({
-            ...scene,
-            hostId: personId,
-          })),
-        }));
+        if (!isValidEntityId(sceneId) || !isValidEntityId(personId)) return;
+
+        set((state) => {
+          if (
+            !sceneExists(state.scenes, sceneId) ||
+            !personExists(state.persons, personId)
+          ) {
+            return state;
+          }
+
+          return {
+            scenes: updateScene(state.scenes, sceneId, (scene) => ({
+              ...scene,
+              hostId: personId,
+            })),
+          };
+        });
       },
 
       removeHost: (sceneId) => {
+        if (!isValidEntityId(sceneId)) return;
+
         set((state) => {
+          if (!sceneExists(state.scenes, sceneId)) return state;
           const scenes = updateScene(state.scenes, sceneId, (scene) => ({
             ...scene,
             hostId: null,
@@ -244,47 +327,84 @@ export const useAppStore = create<AppStore>()(
       },
 
       addPlayer: (sceneId, personId) => {
-        set((state) => ({
-          scenes: updateScene(state.scenes, sceneId, (scene) => {
-            if (!scene.isAllPlay && scene.playerIds.includes(personId)) {
-              return scene;
-            }
+        if (!isValidEntityId(sceneId) || !isValidEntityId(personId)) return;
 
-            return {
-              ...scene,
-              isAllPlay: false,
-              playerIds: scene.isAllPlay
-                ? [personId]
-                : [...scene.playerIds, personId],
-            };
-          }),
-        }));
+        set((state) => {
+          if (
+            !sceneExists(state.scenes, sceneId) ||
+            !personExists(state.persons, personId)
+          ) {
+            return state;
+          }
+
+          return {
+            scenes: updateScene(state.scenes, sceneId, (scene) => {
+              if (!scene.isAllPlay && scene.playerIds.includes(personId)) {
+                return scene;
+              }
+
+              if (
+                !scene.isAllPlay &&
+                scene.playerIds.length >= INPUT_LIMITS.maxPlayersPerScene
+              ) {
+                return scene;
+              }
+
+              return {
+                ...scene,
+                isAllPlay: false,
+                playerIds: scene.isAllPlay
+                  ? [personId]
+                  : [...scene.playerIds, personId],
+              };
+            }),
+          };
+        });
       },
 
       replacePlayer: (sceneId, currentPersonId, newPersonId) => {
-        if (currentPersonId === newPersonId) return;
+        if (
+          currentPersonId === newPersonId ||
+          !isValidEntityId(sceneId) ||
+          !isValidEntityId(currentPersonId) ||
+          !isValidEntityId(newPersonId)
+        ) {
+          return;
+        }
 
-        set((state) => ({
-          scenes: updateScene(state.scenes, sceneId, (scene) => {
-            if (!scene.playerIds.includes(currentPersonId)) return scene;
+        set((state) => {
+          if (
+            !sceneExists(state.scenes, sceneId) ||
+            !personExists(state.persons, newPersonId)
+          ) {
+            return state;
+          }
 
-            const playerIds = scene.playerIds.map((id) =>
-              id === currentPersonId ? newPersonId : id,
-            );
-            const firstNewIndex = playerIds.indexOf(newPersonId);
+          return {
+            scenes: updateScene(state.scenes, sceneId, (scene) => {
+              if (!scene.playerIds.includes(currentPersonId)) return scene;
 
-            return {
-              ...scene,
-              playerIds: playerIds.filter(
-                (id, index) => id !== newPersonId || index === firstNewIndex,
-              ),
-            };
-          }),
-        }));
+              const playerIds = scene.playerIds.map((id) =>
+                id === currentPersonId ? newPersonId : id,
+              );
+              const firstNewIndex = playerIds.indexOf(newPersonId);
+
+              return {
+                ...scene,
+                playerIds: playerIds.filter(
+                  (id, index) => id !== newPersonId || index === firstNewIndex,
+                ),
+              };
+            }),
+          };
+        });
       },
 
       removePlayer: (sceneId, personId) => {
+        if (!isValidEntityId(sceneId) || !isValidEntityId(personId)) return;
+
         set((state) => {
+          if (!sceneExists(state.scenes, sceneId)) return state;
           const scenes = updateScene(state.scenes, sceneId, (scene) => ({
             ...scene,
             playerIds: scene.playerIds.filter((id) => id !== personId),
@@ -298,17 +418,23 @@ export const useAppStore = create<AppStore>()(
       },
 
       setAllPlay: (sceneId, isAllPlay) => {
-        set((state) => ({
-          scenes: updateScene(state.scenes, sceneId, (scene) => ({
-            ...scene,
-            isAllPlay,
-            playerIds: isAllPlay ? [] : scene.playerIds,
-          })),
-        }));
+        if (!isValidEntityId(sceneId)) return;
+
+        set((state) => {
+          if (!sceneExists(state.scenes, sceneId)) return state;
+
+          return {
+            scenes: updateScene(state.scenes, sceneId, (scene) => ({
+              ...scene,
+              isAllPlay,
+              playerIds: isAllPlay ? [] : scene.playerIds,
+            })),
+          };
+        });
       },
 
       setShowName: (name) => {
-        set({ showName: name.trim() });
+        set({ showName: sanitizeShowName(name) });
       },
 
       setShowDate: (date) => {
@@ -328,6 +454,19 @@ export const useAppStore = create<AppStore>()(
         showName: state.showName,
         showDate: state.showDate,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+
+        Object.assign(
+          state,
+          sanitizePersistedState({
+            persons: state.persons,
+            scenes: state.scenes,
+            showName: state.showName,
+            showDate: state.showDate,
+          }),
+        );
+      },
     },
   ),
 );

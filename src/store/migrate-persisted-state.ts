@@ -1,8 +1,9 @@
 import { selectCastablePersons } from '@/store/selectors';
+import { sanitizePersistedState, sanitizeShowName } from '@/lib/input-security';
 import type { PersistedState, Person, Scene } from '@/types/app';
 import { toIsoDateString } from '@/lib/show-date';
 
-export const PERSIST_VERSION = 3;
+export const PERSIST_VERSION = 4;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -49,7 +50,7 @@ function normalizeScene(raw: unknown): Scene | null {
 }
 
 function normalizeShowName(raw: unknown): string {
-  return typeof raw === 'string' ? raw : '';
+  return typeof raw === 'string' ? sanitizeShowName(raw) : '';
 }
 
 function normalizeShowDate(raw: unknown): string {
@@ -101,12 +102,12 @@ export function migratePersistedState(
   version: number,
 ): PersistedState {
   if (!isRecord(persistedState)) {
-    return {
+    return sanitizePersistedState({
       persons: [],
       scenes: [],
       showName: '',
       showDate: toIsoDateString(),
-    };
+    });
   }
 
   const persons = Array.isArray(persistedState.persons)
@@ -132,5 +133,5 @@ export function migratePersistedState(
     state = migrateLegacyAllPlay(state);
   }
 
-  return state;
+  return sanitizePersistedState(state);
 }

@@ -2,6 +2,7 @@ import { type FormEvent, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { INPUT_LIMITS } from '@/lib/input-security';
 import { useAppStore } from '@/store/useAppStore';
 
 export function RosterQuickAdd() {
@@ -31,6 +32,7 @@ export function RosterQuickAdd() {
         autoComplete="off"
         aria-label="Performer name"
         placeholder="Performer name"
+        maxLength={INPUT_LIMITS.maxPersonNameLength}
         required
         pattern=".*\S.*"
         title="Enter a performer name."
