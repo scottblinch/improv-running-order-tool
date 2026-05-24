@@ -2,6 +2,25 @@
 
 Roadmap for building the Improv Running Order app. Product behavior and data rules live in [`spec.md`](spec.md); this file tracks **how** to build it in sensible chunks.
 
+## Component architecture
+
+Layered folders under `src/components/` — **no barrel `index.ts` files**; import from the module path.
+
+| Layer | Path | Role |
+| ----- | ---- | ---- |
+| **ui** | `components/ui/` | shadcn/Radix primitives (CLI-managed; ESLint exception for variant exports) |
+| **layout** | `components/layout/` | App chrome — shell, header, loading screen, shared panel wrapper |
+| **shared** | `components/shared/` | Cross-feature UI (e.g. `EmptyState`, future `CastSlot`) |
+| **feature** | `components/roster/`, `components/running-order/` | Domain panels composed of feature-specific subcomponents |
+| **theme** | `components/theme/` | Theme provider, hook, toggle |
+
+**Composition flow:** `App.tsx` → layout → feature panel → feature list/item → `ui` + `shared`.
+
+**Conventions:**
+- Feature **panels** (`RosterPanel`, `RunningOrderPanel`) wire store + compose children; keep business logic in `store/`.
+- **List/item** pairs live in the feature folder (`RosterList` / `RosterListItem`).
+- New step 5 pieces: `RosterQuickAdd`, `PersonRow`, `SceneCard`, `CastSlot` in their feature or `shared/` folders.
+
 ## Status
 
 | Step | Description                        | Status      |
@@ -58,6 +77,7 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 - [x] `useAppHydration()` gate before rendering persisted UI
 - [x] `print:hidden` on header and roster column (print step builds on this)
 - Hydration loading uses **`Spinner`**; consider **`Skeleton`** placeholders once layout/content design is stable
+- **`ThemeProvider`** — default `system`; follows OS `prefers-color-scheme`; Light / Dark / System toggle in header
 
 ---
 
