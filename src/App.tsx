@@ -9,7 +9,14 @@ function App() {
     return <AppLoadingScreen />;
   }
 
-  return <AppShell />;
+  return (
+    <>
+      <p className="sr-only" role="status">
+        Application ready
+      </p>
+      <AppShell />
+    </>
+  );
 }
 
 export default App;

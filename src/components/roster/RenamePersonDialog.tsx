@@ -34,10 +34,7 @@ function RenamePersonDialogForm({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const trimmed = name.trim();
-    if (!trimmed) return;
-
-    onConfirm(trimmed);
+    onConfirm(name.trim());
     onOpenChange(false);
   };
 
@@ -51,18 +48,20 @@ function RenamePersonDialogForm({
       </AlertDialogHeader>
       <div className="py-2">
         <Input
+          name="performerName"
           value={name}
           onChange={(event) => setName(event.target.value)}
           aria-label="Performer name"
           autoComplete="off"
           autoFocus
+          required
+          pattern=".*\S.*"
+          title="Enter a performer name."
         />
       </div>
       <AlertDialogFooter>
         <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-        <Button type="submit" disabled={!name.trim()}>
-          Save
-        </Button>
+        <Button type="submit">Save</Button>
       </AlertDialogFooter>
     </form>
   );

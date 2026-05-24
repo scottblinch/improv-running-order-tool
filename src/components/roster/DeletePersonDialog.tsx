@@ -1,5 +1,6 @@
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -7,7 +8,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
 import type { DeletePersonMode } from '@/types/app';
 
 type DeletePersonDialogProps = {
@@ -38,26 +38,24 @@ export function DeletePersonDialog({
             warning slots on the running order.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-          <Button
-            type="button"
-            variant="destructive"
-            className="w-full sm:w-auto"
-            onClick={() => handleConfirm('clearScenes')}
-          >
-            Remove from roster and all scenes
-          </Button>
-          <Button
-            type="button"
+        <AlertDialogFooter className="flex-col gap-2 sm:flex-col sm:items-stretch">
+          <AlertDialogCancel className="w-full sm:w-auto">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
             variant="outline"
             className="w-full sm:w-auto"
             onClick={() => handleConfirm('keepAssignments')}
           >
             Remove from roster, keep scene slots
-          </Button>
-          <AlertDialogCancel className="w-full sm:w-auto">
-            Cancel
-          </AlertDialogCancel>
+          </AlertDialogAction>
+          <AlertDialogAction
+            variant="destructive"
+            className="w-full sm:w-auto"
+            onClick={() => handleConfirm('clearScenes')}
+          >
+            Remove from roster and all scenes
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

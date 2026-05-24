@@ -8,6 +8,7 @@ export function RunningOrderPanel() {
 
   return (
     <PanelShell
+      headingId="running-order-heading"
       title="Running order"
       description="Scenes and cast assignments for the show"
     >

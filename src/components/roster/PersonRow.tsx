@@ -42,12 +42,12 @@ export function PersonRow({ person }: PersonRowProps) {
   return (
     <>
       <li
+        aria-label={person.isAbsent ? `${person.name}, absent` : person.name}
         className={cn(
           'flex items-center justify-between gap-2 rounded-lg border bg-card px-3 py-2',
           person.isAbsent && 'border-destructive/50 bg-destructive/5',
         )}
         data-draggable={person.isAbsent ? 'false' : 'true'}
-        aria-disabled={person.isAbsent}
       >
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <span
@@ -73,23 +73,23 @@ export function PersonRow({ person }: PersonRowProps) {
               className="shrink-0"
               aria-label={`Actions for ${person.name}`}
             >
-              <MoreHorizontal className="size-4" />
+              <MoreHorizontal aria-hidden className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
-              <Pencil className="size-4" />
+              <Pencil aria-hidden className="size-4" />
               Rename
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={handleAbsent}>
               {person.isAbsent ? (
                 <>
-                  <UserCheck className="size-4" />
+                  <UserCheck aria-hidden className="size-4" />
                   Clear absent
                 </>
               ) : (
                 <>
-                  <UserX className="size-4" />
+                  <UserX aria-hidden className="size-4" />
                   Mark absent
                 </>
               )}
@@ -99,7 +99,7 @@ export function PersonRow({ person }: PersonRowProps) {
               variant="destructive"
               onSelect={() => setDeleteOpen(true)}
             >
-              <Trash2 className="size-4" />
+              <Trash2 aria-hidden className="size-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

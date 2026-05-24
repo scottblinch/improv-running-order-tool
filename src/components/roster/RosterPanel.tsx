@@ -10,7 +10,11 @@ export function RosterPanel() {
   const activePersons = selectActivePersons(persons);
 
   return (
-    <PanelShell title="Roster" description="Performers available for casting">
+    <PanelShell
+      headingId="roster-heading"
+      title="Roster"
+      description="Performers available for casting"
+    >
       <div className="flex flex-col gap-4">
         <RosterQuickAdd />
         {activePersons.length === 0 ? (

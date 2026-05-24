@@ -7,7 +7,7 @@ type RosterListProps = {
 
 export function RosterList({ persons }: RosterListProps) {
   return (
-    <ul className="space-y-2">
+    <ul aria-label="Performers on roster" className="space-y-2">
       {persons.map((person) => (
         <PersonRow key={person.id} person={person} />
       ))}
