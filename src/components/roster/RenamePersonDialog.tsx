@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react';
+import { type FormEvent } from 'react';
 
 import {
   AlertDialog,
@@ -30,10 +30,13 @@ function RenamePersonDialogForm({
   onConfirm,
   onOpenChange,
 }: RenamePersonDialogFormProps) {
-  const [name, setName] = useState(currentName);
-
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get('performerName');
+    if (typeof name !== 'string') return;
+
     onConfirm(name.trim());
     onOpenChange(false);
   };
@@ -49,8 +52,7 @@ function RenamePersonDialogForm({
       <div className="py-2">
         <Input
           name="performerName"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          defaultValue={currentName}
           aria-label="Performer name"
           autoComplete="off"
           autoFocus

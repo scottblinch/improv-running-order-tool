@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useState } from 'react';
+import { type FormEvent, useId } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,13 +6,17 @@ import { useAppStore } from '@/store/useAppStore';
 
 export function RosterQuickAdd() {
   const addPerson = useAppStore((state) => state.addPerson);
-  const [name, setName] = useState('');
   const inputId = useId();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get('performerName');
+    if (typeof name !== 'string') return;
+
     addPerson(name.trim());
-    setName('');
+    event.currentTarget.reset();
   };
 
   return (
@@ -24,8 +28,6 @@ export function RosterQuickAdd() {
         <Input
           id={inputId}
           name="performerName"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
           autoComplete="off"
           required
           pattern=".*\S.*"
