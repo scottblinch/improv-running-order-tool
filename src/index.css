@@ -128,3 +128,20 @@
     @apply font-sans;
   }
 }
+
+@media print {
+  @page {
+    margin: 1.2cm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  [data-radix-popper-content-wrapper],
+  [role='dialog'] {
+    display: none !important;
+  }
+}

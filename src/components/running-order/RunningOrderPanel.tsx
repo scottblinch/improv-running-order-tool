@@ -1,6 +1,7 @@
 import { Clapperboard } from 'lucide-react';
 
 import { PanelShell } from '@/components/layout/PanelShell';
+import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPrintView';
 import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -10,23 +11,31 @@ export function RunningOrderPanel() {
   const scenes = useAppStore((state) => state.scenes);
 
   return (
-    <PanelShell
-      headingId="running-order-heading"
-      title="Running order"
-      description="Scenes and cast assignments for the show"
-    >
-      <div className="flex flex-col gap-4">
-        <SceneQuickAdd />
-        {scenes.length === 0 ? (
-          <EmptyState
-            icon={<Clapperboard aria-hidden className="size-4" />}
-            title="No scenes yet"
-            description="Add a scene above to start building the lineup."
-          />
-        ) : (
-          <SceneList scenes={scenes} />
-        )}
+    <>
+      <div className="print:hidden">
+        <PanelShell
+          headingId="running-order-heading"
+          title="Running order"
+          description="Scenes and cast assignments for the show"
+        >
+          <div className="flex flex-col gap-4">
+            <SceneQuickAdd />
+            {scenes.length === 0 ? (
+              <EmptyState
+                icon={<Clapperboard aria-hidden className="size-4" />}
+                title="No scenes yet"
+                description="Add a scene above to start building the lineup."
+              />
+            ) : (
+              <SceneList scenes={scenes} />
+            )}
+          </div>
+        </PanelShell>
       </div>
-    </PanelShell>
+
+      <div className="hidden px-6 py-10 print:block">
+        <RunningOrderPrintView scenes={scenes} />
+      </div>
+    </>
   );
 }

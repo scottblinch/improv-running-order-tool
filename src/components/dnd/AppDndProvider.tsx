@@ -183,7 +183,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
         >
           {children}
         </SortableContext>
-        <DragOverlay dropAnimation={null}>
+        <DragOverlay className="print:hidden" dropAnimation={null}>
           {activeDrag ? (
             activeDrag.type === 'scene' ? (
               <DragPreviewChip

@@ -32,8 +32,8 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 | 4    | Static two-column layout           | Done        |
 | 5    | Roster + scenes (no drag)          | Done        |
 | 6    | Desktop drag-and-drop              | Done        |
-| 7    | Mobile assignment (dropdowns)      | Not started |
-| 8    | Print styles                       | Not started |
+| 7    | Mobile assignment (dropdowns)      | Done        |
+| 8    | Print styles                       | Done        |
 | 9    | Polish & edge cases                | Not started |
 
 ---
@@ -128,12 +128,12 @@ Wire UI to the store before adding `@dnd-kit`.
 
 ---
 
-## 8. Print
+## 8. Print — Done
 
-- [ ] Tailwind `print:` modifiers and/or minimal global `@media print` rules
-- [ ] Hide: roster column, inputs, drag handles, remove buttons, dialogs/chrome
-- [ ] Show: running order full width; scenes + host + players; ink-friendly type
-- [ ] MVP print header: scenes + cast only (no show title/date/venue) — spec Option A
+- [x] Tailwind `print:` modifiers + minimal global `@media print` rules (`index.css`)
+- [x] Hide: roster column, inputs, drag handles, remove buttons, dialogs/chrome (interactive panel wrapped in `print:hidden`)
+- [x] Show: running order full width via `RunningOrderPrintView` (scenes + host + players; ink-friendly black on white)
+- [x] MVP print header: scenes + cast only (no show title/date/venue) — spec Option A
 
 ---
 

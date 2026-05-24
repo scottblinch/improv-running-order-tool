@@ -5,7 +5,7 @@ import { AppDndProvider } from '@/components/dnd/AppDndProvider';
 
 export function AppShell() {
   return (
-    <div className="flex min-h-svh flex-col bg-background">
+    <div className="flex min-h-svh flex-col bg-background print:min-h-0 print:bg-white">
       <AppHeader />
 
       <AppDndProvider>
@@ -19,7 +19,7 @@ export function AppShell() {
 
           <main
             aria-labelledby="running-order-heading"
-            className="flex min-h-0 min-w-0 flex-1 flex-col"
+            className="flex min-h-0 min-w-0 flex-1 flex-col print:block print:w-full print:max-w-none print:overflow-visible"
           >
             <RunningOrderPanel />
           </main>
