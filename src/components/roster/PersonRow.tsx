@@ -19,6 +19,7 @@ import {
   personHasSceneAssignments,
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
+import { useHoverStore } from '@/store/useHoverStore';
 import type { Person } from '@/types/app';
 
 function formatRoleCountLabel(role: 'Host' | 'Player', count: number): string {
@@ -35,6 +36,7 @@ export function PersonRow({ person }: PersonRowProps) {
   const renamePerson = useAppStore((state) => state.renamePerson);
   const deletePerson = useAppStore((state) => state.deletePerson);
   const togglePersonAbsence = useAppStore((state) => state.togglePersonAbsence);
+  const setHoveredPersonId = useHoverStore((state) => state.setHoveredPersonId);
 
   const hasSceneAssignments = personHasSceneAssignments(scenes, person.id);
   const { hostCount, playerCount } = countPersonSceneRoles(scenes, person.id);
@@ -69,8 +71,12 @@ export function PersonRow({ person }: PersonRowProps) {
         className={cn(
           'flex items-center justify-between gap-2 rounded-lg border bg-card px-3 py-2',
           person.isAbsent && 'border-destructive/50 bg-destructive/5',
+          hasSceneAssignments && 'hover:border-primary/40',
         )}
         data-draggable={person.isAbsent ? 'false' : 'true'}
+        data-person-id={person.id}
+        onMouseEnter={() => setHoveredPersonId(person.id)}
+        onMouseLeave={() => setHoveredPersonId(null)}
       >
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <span

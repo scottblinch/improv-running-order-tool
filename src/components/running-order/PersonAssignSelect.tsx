@@ -14,6 +14,7 @@ type PersonAssignSelectProps = {
   persons: Person[];
   excludedPersonIds?: PersonId[];
   onAssign: (personId: PersonId) => void;
+  inline?: boolean;
 };
 
 export function PersonAssignSelect({
@@ -21,6 +22,7 @@ export function PersonAssignSelect({
   persons,
   excludedPersonIds = [],
   onAssign,
+  inline = false,
 }: PersonAssignSelectProps) {
   const [selectKey, setSelectKey] = useState(0);
   const available = persons.filter(
@@ -43,7 +45,10 @@ export function PersonAssignSelect({
         setSelectKey((key) => key + 1);
       }}
     >
-      <SelectTrigger className="w-full" aria-label={label}>
+      <SelectTrigger
+        className={inline ? 'w-auto min-w-36' : 'w-full'}
+        aria-label={label}
+      >
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>

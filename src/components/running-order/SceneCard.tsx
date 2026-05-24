@@ -101,6 +101,7 @@ export function SceneCard({ scene, index }: SceneCardProps) {
             >
               {hostSlot ? (
                 <CastSlot
+                  personId={hostSlot.personId}
                   name={hostSlot.name}
                   isWarning={hostSlot.isWarning}
                   warningLabel={hostSlot.warningLabel}
@@ -124,28 +125,26 @@ export function SceneCard({ scene, index }: SceneCardProps) {
               Players
             </h3>
             <div
-              className="space-y-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3"
+              className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3"
               data-drop-zone="players"
             >
-              {scene.playerIds.length > 0 ? (
-                <ul className="space-y-2">
-                  {scene.playerIds.map((playerId) => {
-                    const slot = resolveSlotDisplay(persons, playerId);
+              {scene.playerIds.map((playerId) => {
+                const slot = resolveSlotDisplay(persons, playerId);
 
-                    return (
-                      <li key={playerId}>
-                        <CastSlot
-                          name={slot.name}
-                          isWarning={slot.isWarning}
-                          warningLabel={slot.warningLabel}
-                          onRemove={() => removePlayer(scene.id, playerId)}
-                        />
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : null}
+                return (
+                  <CastSlot
+                    key={playerId}
+                    inline
+                    personId={slot.personId}
+                    name={slot.name}
+                    isWarning={slot.isWarning}
+                    warningLabel={slot.warningLabel}
+                    onRemove={() => removePlayer(scene.id, playerId)}
+                  />
+                );
+              })}
               <PersonAssignSelect
+                inline
                 label="Add player"
                 persons={castablePersons}
                 excludedPersonIds={scene.playerIds}
