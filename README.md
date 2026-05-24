@@ -34,19 +34,19 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Scripts
 
-| Command                 | Description                                  |
-| ----------------------- | -------------------------------------------- |
-| `npm run dev`           | Start dev server                             |
-| `npm run build`         | Typecheck + production build                 |
-| `npm run build:pages`   | Production build for GitHub Pages base path  |
-| `npm run check`         | `lint` + `format:check` + `build`            |
-| `npm run check:pages`   | `lint` + `format:check` + `build:pages`      |
-| `npm run preview`       | Preview production build locally             |
-| `npm run preview:pages` | Build for GitHub Pages base path and preview |
-| `npm run lint`          | Run ESLint                                   |
-| `npm run lint:fix`      | ESLint with auto-fix                         |
-| `npm run format`        | Prettier write                               |
-| `npm run format:check`  | Prettier check                               |
+| Command                       | Description                                    |
+| ----------------------------- | ---------------------------------------------- |
+| `npm run dev`                 | Start dev server                               |
+| `npm run build`               | Typecheck + production build                   |
+| `npm run build:pages`         | Production build for GitHub Pages base path    |
+| `npm run check`               | `lint` + `format:check` + `build`              |
+| `npm run check:pages`         | `lint` + `format:check` + `build:pages`        |
+| `npm run preview`             | Preview production build locally               |
+| `npm run preview:pages`       | Build for GitHub Pages base path and preview   |
+| `npm run lint`                | Run ESLint                                     |
+| `npm run lint:fix`            | ESLint with auto-fix                           |
+| `npm run format`              | Prettier write                                 |
+| `npm run format:check`        | Prettier check                                 |
 | `npm run generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg` |
 
 Pushes to `main` and pull requests run [`ci.yml`](.github/workflows/ci.yml) (`npm run check`).
