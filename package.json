@@ -16,14 +16,14 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && BROWSERSLIST_ENV=production vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "fix": "npm run lint:fix && npm run format",
     "preview": "vite preview",
-    "preview:pages": "GITHUB_PAGES=true npm run build && vite preview --base /improv-running-order-tool/"
+    "preview:pages": "GITHUB_PAGES=true BROWSERSLIST_ENV=production npm run build && vite preview --base /improv-running-order-tool/"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -49,11 +49,14 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
+    "browserslist": "^4.28.2",
+    "browserslist-to-esbuild": "^2.1.1",
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "lightningcss": "^1.32.0",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",

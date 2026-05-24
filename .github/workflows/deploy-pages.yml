@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: 'true'
+          BROWSERSLIST_ENV: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

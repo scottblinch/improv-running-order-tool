@@ -1,0 +1,13 @@
+# Production: browsers that receive deployed builds (GitHub Pages).
+[production]
+> 0.5%
+last 2 versions
+Firefox ESR
+not dead
+not op_mini all
+
+# Development: local dev server (keep narrow for fast iteration).
+[development]
+last 1 Chrome version
+last 1 Firefox version
+last 1 Safari version
