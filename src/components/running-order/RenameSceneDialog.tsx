@@ -1,16 +1,4 @@
-import { type FormEvent, useId } from 'react';
-
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { RenameDialog } from '@/components/shared/RenameDialog';
 import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
 
@@ -21,86 +9,20 @@ type RenameSceneDialogProps = {
   onConfirm: (name: string) => void;
 };
 
-type RenameSceneDialogFormProps = {
-  currentName: string;
-  onConfirm: (name: string) => void;
-  onOpenChange: (open: boolean) => void;
-};
-
-function RenameSceneDialogForm({
-  currentName,
-  onConfirm,
-  onOpenChange,
-}: RenameSceneDialogFormProps) {
+export function RenameSceneDialog(props: RenameSceneDialogProps) {
   const { t } = useTranslation();
-  const inputId = useId();
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get('sceneName');
-    if (typeof name !== 'string') return;
-
-    const trimmed = name.trim();
-    if (!trimmed) return;
-
-    onConfirm(trimmed);
-    onOpenChange(false);
-  };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{t('lineup.renameTitle')}</AlertDialogTitle>
-        <AlertDialogDescription>
-          {t('lineup.renameDescription')}
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <div className="py-2">
-        <label htmlFor={inputId} className="sr-only">
-          {t('lineup.sceneName')}
-        </label>
-        <Input
-          id={inputId}
-          name="sceneName"
-          defaultValue={currentName}
-          autoComplete="off"
-          autoFocus
-          maxLength={INPUT_LIMITS.maxSceneNameLength}
-          required
-          pattern=".*\S.*"
-          title={t('lineup.sceneNameRequired')}
-        />
-      </div>
-      <AlertDialogFooter>
-        <AlertDialogCancel type="button">
-          {t('common.cancel')}
-        </AlertDialogCancel>
-        <Button type="submit">{t('common.save')}</Button>
-      </AlertDialogFooter>
-    </form>
-  );
-}
-
-export function RenameSceneDialog({
-  open,
-  onOpenChange,
-  currentName,
-  onConfirm,
-}: RenameSceneDialogProps) {
-  return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-sm">
-        {open ? (
-          <RenameSceneDialogForm
-            key={currentName}
-            currentName={currentName}
-            onConfirm={onConfirm}
-            onOpenChange={onOpenChange}
-          />
-        ) : null}
-      </AlertDialogContent>
-    </AlertDialog>
+    <RenameDialog
+      {...props}
+      title={t('lineup.renameTitle')}
+      description={t('lineup.renameDescription')}
+      inputLabel={t('lineup.sceneName')}
+      fieldName="sceneName"
+      maxLength={INPUT_LIMITS.maxSceneNameLength}
+      required
+      pattern=".*\S.*"
+      validationTitle={t('lineup.sceneNameRequired')}
+    />
   );
 }
