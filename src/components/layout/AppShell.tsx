@@ -11,15 +11,15 @@ export function AppShell() {
   return (
     <div
       className={cn(
-        'flex h-dvh flex-col overflow-hidden bg-background print:h-auto print:min-h-0 print:overflow-visible print:bg-white',
+        'flex h-dvh flex-col overflow-hidden bg-background print:block print:h-auto print:min-h-0 print:overflow-visible print:bg-white',
         printPreview && 'bg-white',
       )}
     >
       <AppHeader />
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:min-h-0">
         <AppDndProvider>
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row print:block print:h-auto print:min-h-0">
             <aside
               aria-labelledby="roster-heading"
               className={cn(
@@ -33,7 +33,7 @@ export function AppShell() {
             <main
               aria-labelledby="running-order-heading"
               className={cn(
-                'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:w-full print:max-w-none print:overflow-visible',
+                'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:min-h-0 print:w-full print:max-w-none print:overflow-visible',
                 printPreview && 'overflow-y-auto bg-white',
               )}
             >

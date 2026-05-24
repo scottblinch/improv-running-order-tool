@@ -15,8 +15,8 @@ export function RunningOrderPanel() {
 
   if (printPreview) {
     return (
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-10">
-        <RunningOrderPrintView scenes={scenes} />
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-6 py-10 print:p-0">
+        <RunningOrderPrintView scenes={scenes} fitToPage />
       </div>
     );
   }
@@ -47,8 +47,8 @@ export function RunningOrderPanel() {
         </PanelShell>
       </div>
 
-      <div className="hidden px-6 py-10 print:block">
-        <RunningOrderPrintView scenes={scenes} />
+      <div className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto">
+        <RunningOrderPrintView scenes={scenes} fitToPage fitTarget="page" />
       </div>
     </>
   );
