@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
 import { resolveSlotDisplay, selectCastablePersons } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
@@ -82,25 +81,24 @@ export function SceneCard({ scene, index }: SceneCardProps) {
           </DropdownMenu>
         </div>
 
-        <div className="mt-4 space-y-4">
-          <section aria-labelledby={`${scene.id}-host-label`}>
+        <div className="mt-4 flex flex-wrap items-start gap-3">
+          <section
+            aria-labelledby={`${scene.id}-host-label`}
+            className="flex min-w-0 flex-col gap-2"
+          >
             <h3
               id={`${scene.id}-host-label`}
-              className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase"
+              className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
             >
               Host
             </h3>
             <div
-              className={cn(
-                'rounded-lg border border-dashed p-3',
-                hostSlot
-                  ? 'border-border bg-transparent'
-                  : 'border-muted-foreground/25 bg-muted/30',
-              )}
+              className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3"
               data-drop-zone="host"
             >
               {hostSlot ? (
                 <CastSlot
+                  inline
                   personId={hostSlot.personId}
                   name={hostSlot.name}
                   isWarning={hostSlot.isWarning}
@@ -109,6 +107,7 @@ export function SceneCard({ scene, index }: SceneCardProps) {
                 />
               ) : (
                 <PersonAssignSelect
+                  inline
                   label="Assign host"
                   persons={castablePersons}
                   onAssign={(personId) => assignHost(scene.id, personId)}
@@ -117,10 +116,13 @@ export function SceneCard({ scene, index }: SceneCardProps) {
             </div>
           </section>
 
-          <section aria-labelledby={`${scene.id}-players-label`}>
+          <section
+            aria-labelledby={`${scene.id}-players-label`}
+            className="flex min-w-0 flex-1 flex-col gap-2"
+          >
             <h3
               id={`${scene.id}-players-label`}
-              className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase"
+              className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
             >
               Players
             </h3>
