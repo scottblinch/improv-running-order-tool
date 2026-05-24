@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
+import { useDesktopDndEnabled } from '@/components/dnd/desktop-dnd-context';
+import { CastDropZone } from '@/components/running-order/CastDropZone';
 import { PersonAssignSelect } from '@/components/running-order/PersonAssignSelect';
 import { RemoveSceneDialog } from '@/components/running-order/RemoveSceneDialog';
 import { RenameSceneDialog } from '@/components/running-order/RenameSceneDialog';
@@ -13,6 +17,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { sceneDragId } from '@/lib/dnd-ids';
+import { cn } from '@/lib/utils';
 import { resolveSlotDisplay, selectCastablePersons } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
@@ -33,6 +39,25 @@ export function SceneCard({ scene, index }: SceneCardProps) {
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
+  const desktopDndEnabled = useDesktopDndEnabled();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: sceneDragId(scene.id),
+    data: { type: 'scene', sceneId: scene.id },
+    disabled: !desktopDndEnabled,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const castablePersons = selectCastablePersons(persons);
   const hostSlot = scene.hostId
@@ -42,15 +67,35 @@ export function SceneCard({ scene, index }: SceneCardProps) {
   return (
     <>
       <li
+        ref={setNodeRef}
+        style={style}
         aria-label={`Scene ${index + 1}: ${scene.name}`}
-        className="rounded-xl border bg-card px-4 py-3 ring-1 ring-foreground/10"
+        className={cn(
+          'rounded-xl border bg-card px-4 py-3 ring-1 ring-foreground/10',
+          isDragging && 'opacity-50',
+        )}
       >
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-muted-foreground">
-              Scene {index + 1}
-            </p>
-            <p className="truncate font-medium">{scene.name}</p>
+          <div className="flex min-w-0 flex-1 items-start gap-2">
+            {desktopDndEnabled ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="mt-0.5 shrink-0 cursor-grab touch-none active:cursor-grabbing print:hidden"
+                aria-label={`Reorder ${scene.name}`}
+                {...listeners}
+                {...attributes}
+              >
+                <GripVertical aria-hidden className="size-4" />
+              </Button>
+            ) : null}
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-muted-foreground">
+                Scene {index + 1}
+              </p>
+              <p className="truncate font-medium">{scene.name}</p>
+            </div>
           </div>
 
           <DropdownMenu>
@@ -92,9 +137,10 @@ export function SceneCard({ scene, index }: SceneCardProps) {
             >
               Host
             </h3>
-            <div
+            <CastDropZone
+              sceneId={scene.id}
+              zone="host"
               className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3"
-              data-drop-zone="host"
             >
               {hostSlot ? (
                 <CastSlot
@@ -113,7 +159,7 @@ export function SceneCard({ scene, index }: SceneCardProps) {
                   onAssign={(personId) => assignHost(scene.id, personId)}
                 />
               )}
-            </div>
+            </CastDropZone>
           </section>
 
           <section
@@ -126,9 +172,10 @@ export function SceneCard({ scene, index }: SceneCardProps) {
             >
               Players
             </h3>
-            <div
+            <CastDropZone
+              sceneId={scene.id}
+              zone="players"
               className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3"
-              data-drop-zone="players"
             >
               {scene.playerIds.map((playerId) => {
                 const slot = resolveSlotDisplay(persons, playerId);
@@ -152,7 +199,7 @@ export function SceneCard({ scene, index }: SceneCardProps) {
                 excludedPersonIds={scene.playerIds}
                 onAssign={(personId) => addPlayer(scene.id, personId)}
               />
-            </div>
+            </CastDropZone>
           </section>
         </div>
       </li>

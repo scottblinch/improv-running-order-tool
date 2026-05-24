@@ -31,7 +31,7 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 | 3    | Types + Zustand store              | Done        |
 | 4    | Static two-column layout           | Done        |
 | 5    | Roster + scenes (no drag)          | Done        |
-| 6    | Desktop drag-and-drop              | Not started |
+| 6    | Desktop drag-and-drop              | Done        |
 | 7    | Mobile assignment (dropdowns)      | Not started |
 | 8    | Print styles                       | Not started |
 | 9    | Polish & edge cases                | Not started |
@@ -106,16 +106,16 @@ Wire UI to the store before adding `@dnd-kit`.
 
 ---
 
-## 6. Desktop drag-and-drop
+## 6. Desktop drag-and-drop — Done
 
-- [ ] Install `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
-- [ ] **Scene list:** sortable reorder → `reorderScenes`
-- [ ] **Roster → scenes:** drag with **DragOverlay** clone; roster item stays in place (stamp palette)
-- [ ] Valid sources: non-absent, non-deleted persons only
-- [ ] Host zone: max one; drop replaces
-- [ ] Players zone: append; dedupe on drop
-- [ ] Multiple contexts / sensors / collision detection so scene sort vs casting don’t conflict
-- [ ] Scrollable columns behave well while dragging
+- [x] Install `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+- [x] **Scene list:** sortable reorder → `reorderScenes`
+- [x] **Roster → scenes:** drag with **DragOverlay** clone; roster item stays in place (stamp palette)
+- [x] Valid sources: non-absent, non-deleted persons only
+- [x] Host zone: max one; drop replaces
+- [x] Players zone: append; dedupe on drop
+- [x] Multiple contexts / sensors / collision detection so scene sort vs casting don’t conflict
+- [x] Scrollable columns behave well while dragging
 
 ---
 

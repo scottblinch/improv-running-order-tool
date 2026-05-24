@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useDraggable } from '@dnd-kit/core';
 import {
+  GripVertical,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -8,6 +10,7 @@ import {
   UserX,
 } from 'lucide-react';
 
+import { useDesktopDndEnabled } from '@/components/dnd/desktop-dnd-context';
 import { DeletePersonDialog } from '@/components/roster/DeletePersonDialog';
 import { MarkAbsentDialog } from '@/components/roster/MarkAbsentDialog';
 import { RenamePersonDialog } from '@/components/roster/RenamePersonDialog';
@@ -21,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { rosterPersonDragId } from '@/lib/dnd-ids';
 import {
   countPersonSceneRoles,
   personHasSceneAssignments,
@@ -59,6 +63,14 @@ export function PersonRow({ person }: PersonRowProps) {
   const deletePerson = useAppStore((state) => state.deletePerson);
   const togglePersonAbsence = useAppStore((state) => state.togglePersonAbsence);
   const setHoveredPersonId = useHoverStore((state) => state.setHoveredPersonId);
+  const desktopDndEnabled = useDesktopDndEnabled();
+  const canDrag = desktopDndEnabled && !person.isAbsent;
+
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: rosterPersonDragId(person.id),
+    data: { type: 'roster-person', personId: person.id },
+    disabled: !canDrag,
+  });
 
   const hasSceneAssignments = personHasSceneAssignments(scenes, person.id);
   const { hostCount, playerCount } = countPersonSceneRoles(scenes, person.id);
@@ -86,48 +98,64 @@ export function PersonRow({ person }: PersonRowProps) {
   return (
     <>
       <li
+        ref={setNodeRef}
         aria-label={rowLabel}
         className={cn(
           'flex items-center justify-between gap-2 rounded-lg border bg-card px-3 py-2',
           person.isAbsent && 'border-destructive/50 bg-destructive/5',
           hasSceneAssignments && 'hover:border-primary/40',
+          isDragging && 'opacity-50',
         )}
-        data-draggable={person.isAbsent ? 'false' : 'true'}
         data-person-id={person.id}
         onMouseEnter={() => setHoveredPersonId(person.id)}
         onMouseLeave={() => setHoveredPersonId(null)}
       >
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-          <span
-            className={cn(
-              'truncate text-sm font-medium',
-              person.isAbsent && 'text-muted-foreground line-through',
-            )}
-          >
-            {person.name}
-          </span>
-          <Badge
-            variant="secondary"
-            className="shrink-0"
-            aria-label={formatRoleCountLabel('Host', hostCount)}
-          >
-            Host {hostCount}
-          </Badge>
-          <Badge
-            variant="outline"
-            className="shrink-0"
-            aria-label={formatRoleCountLabel('Player', playerCount)}
-          >
-            {playerCount === 0 ? (
-              <TriangleAlert aria-hidden className="size-3" />
-            ) : null}
-            Player {playerCount}
-          </Badge>
-          {person.isAbsent ? (
-            <Badge variant="destructive" className="shrink-0">
-              Absent
-            </Badge>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          {canDrag ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className="shrink-0 cursor-grab touch-none active:cursor-grabbing print:hidden"
+              aria-label={`Drag ${person.name}`}
+              {...listeners}
+              {...attributes}
+            >
+              <GripVertical aria-hidden className="size-4" />
+            </Button>
           ) : null}
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+            <span
+              className={cn(
+                'truncate text-sm font-medium',
+                person.isAbsent && 'text-muted-foreground line-through',
+              )}
+            >
+              {person.name}
+            </span>
+            <Badge
+              variant="secondary"
+              className="shrink-0"
+              aria-label={formatRoleCountLabel('Host', hostCount)}
+            >
+              Host {hostCount}
+            </Badge>
+            <Badge
+              variant="outline"
+              className="shrink-0"
+              aria-label={formatRoleCountLabel('Player', playerCount)}
+            >
+              {playerCount === 0 ? (
+                <TriangleAlert aria-hidden className="size-3" />
+              ) : null}
+              Player {playerCount}
+            </Badge>
+            {person.isAbsent ? (
+              <Badge variant="destructive" className="shrink-0">
+                Absent
+              </Badge>
+            ) : null}
+          </div>
         </div>
 
         <DropdownMenu>

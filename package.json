@@ -30,6 +30,9 @@
     "preview:pages": "GITHUB_PAGES=true BROWSERSLIST_ENV=production npm run build && vite preview --base /improv-running-order-tool/"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@fontsource-variable/geist": "^5.2.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
