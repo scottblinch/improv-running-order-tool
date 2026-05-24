@@ -32,6 +32,7 @@ import {
 import { isIsoDateString } from '@/lib/show-date';
 import {
   createEmptyShow,
+  createShowId,
   patchActiveShow,
   pickMostRecentlyUpdatedShow,
   type WorkspaceSlice,
@@ -124,6 +125,7 @@ export interface AppActions {
   createShow: () => void;
   switchShow: (id: ShowId) => void;
   deleteShow: (id: ShowId) => void;
+  importSharedShow: (payload: PersistedState) => boolean;
 }
 
 export type AppStore = WorkspaceSlice & AppActions;
@@ -538,6 +540,33 @@ export const useAppStore = create<AppStore>()(
             ...sanitized,
           };
         });
+      },
+
+      importSharedShow: (payload) => {
+        let imported = false;
+
+        set((state) => {
+          if (!canAddShow(state.shows.length)) return state;
+
+          const flushed = patchActiveShow(state, {});
+          const sanitized = sanitizePersistedState(payload);
+          const newShow = {
+            id: createShowId(),
+            ...sanitized,
+            updatedAt: new Date().toISOString(),
+          };
+
+          imported = true;
+
+          return {
+            ...flushed,
+            activeShowId: newShow.id,
+            shows: [...flushed.shows, newShow],
+            ...sanitized,
+          };
+        });
+
+        return imported;
       },
     }),
     {

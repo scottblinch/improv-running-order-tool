@@ -39,6 +39,21 @@
     "showDate": "Show date",
     "switchShow": "Switch show"
   },
+  "share": {
+    "copyLink": "Copy share link",
+    "copied": "Share link copied",
+    "importOk": "OK",
+    "importInvalidTitle": "Could not open shared show",
+    "importInvalidDescription": "This share link is invalid or out of date.",
+    "importFullTitle": "Cannot import shared show",
+    "importFullDescription": "You already have the maximum number of saved shows. Delete one, then open the link again.",
+    "tooLargeTitle": "Show is too large to share",
+    "tooLargeDescription": "This show has too much data for a share link. Try removing performers or scenes first.",
+    "encodeFailedTitle": "Could not create share link",
+    "encodeFailedDescription": "Something went wrong while building the link. Try again.",
+    "copyFailedTitle": "Could not copy link",
+    "copyFailedDescription": "Your browser blocked clipboard access. Copy the address bar after sharing again, or check browser permissions."
+  },
   "footer": {
     "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>)."
   },

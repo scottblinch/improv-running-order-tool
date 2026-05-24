@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { PrintPreviewToggle } from '@/components/layout/PrintPreviewToggle';
 import { RenameShowDialog } from '@/components/layout/RenameShowDialog';
+import { ShareShowButton } from '@/components/layout/ShareShowButton';
 import { ShowSwitcher } from '@/components/layout/ShowSwitcher';
 import { ShowDatePicker } from '@/components/layout/ShowDatePicker';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
@@ -43,6 +44,7 @@ export function AppHeader() {
               <Pencil aria-hidden className="size-4" />
             </Button>
             <ShowDatePicker />
+            <ShareShowButton />
           </div>
         ) : null}
         <div
