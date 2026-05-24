@@ -9,10 +9,7 @@ export function RosterPanel() {
   const activePersons = selectActivePersons(persons);
 
   return (
-    <PanelShell
-      title="Roster"
-      description="Performers available for casting"
-    >
+    <PanelShell title="Roster" description="Performers available for casting">
       {activePersons.length === 0 ? (
         <EmptyState>
           No performers yet. You will add people here in the next step.

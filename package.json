@@ -4,6 +4,9 @@
   "description": "A simple improv running order tool",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "license": "GPL-2.0-only",
   "author": "Scott Blinch",
   "homepage": "https://scottblinch.github.io/improv-running-order-tool/",
@@ -22,6 +25,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "fix": "npm run lint:fix && npm run format",
+    "check": "npm run lint && npm run format:check && npm run build",
     "preview": "vite preview",
     "preview:pages": "GITHUB_PAGES=true BROWSERSLIST_ENV=production npm run build && vite preview --base /improv-running-order-tool/"
   },
@@ -58,6 +62,7 @@
     "globals": "^17.6.0",
     "lightningcss": "^1.32.0",
     "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",

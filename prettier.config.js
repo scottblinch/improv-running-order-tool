@@ -4,4 +4,6 @@ export default {
   singleQuote: true,
   trailingComma: 'all',
   printWidth: 80,
+  plugins: ['prettier-plugin-tailwindcss'],
+  tailwindStylesheet: './src/index.css',
 };

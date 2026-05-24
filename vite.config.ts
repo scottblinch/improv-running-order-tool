@@ -25,7 +25,11 @@ const buildTarget = browserslistToEsbuild(supportedBrowsers);
 export default defineConfig({
   // GitHub project pages are served from /repo-name/, not domain root.
   base: process.env.GITHUB_PAGES === 'true' ? githubPagesBase : '/',
-  plugins: [react(), tailwindcss(), babel({ presets: [reactCompilerPreset()] })],
+  plugins: [
+    react(),
+    tailwindcss(),
+    babel({ presets: [reactCompilerPreset()] }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -33,7 +37,8 @@ export default defineConfig({
   },
   build: {
     target: buildTarget.length > 0 ? buildTarget : 'baseline-widely-available',
-    cssTarget: buildTarget.length > 0 ? buildTarget : 'baseline-widely-available',
+    cssTarget:
+      buildTarget.length > 0 ? buildTarget : 'baseline-widely-available',
   },
   css: {
     lightningcss: {
