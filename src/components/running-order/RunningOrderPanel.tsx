@@ -47,7 +47,10 @@ export function RunningOrderPanel() {
         </PanelShell>
       </div>
 
-      <div className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto">
+      <div
+        aria-hidden
+        className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto"
+      >
         <RunningOrderPrintView scenes={scenes} fitToPage fitTarget="page" />
       </div>
     </>
