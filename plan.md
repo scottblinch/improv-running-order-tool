@@ -9,7 +9,7 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 | 1    | Vite + React + TypeScript scaffold | Done        |
 | 2    | Tailwind + shadcn/ui               | Done        |
 | 3    | Types + Zustand store              | Done        |
-| 4    | Static two-column layout           | Not started |
+| 4    | Static two-column layout           | Done        |
 | 5    | Roster + scenes (no drag)          | Not started |
 | 6    | Desktop drag-and-drop              | Not started |
 | 7    | Mobile assignment (dropdowns)      | Not started |
@@ -50,12 +50,14 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 
 ---
 
-## 4. Static layout (no drag yet)
+## 4. Static layout (no drag yet) — Done
 
-- [ ] Replace demo `App` with two-column shell: **Roster** (left) | **Running order** (right)
-- [ ] Empty states for empty roster / no scenes
-- [ ] Page title / minimal chrome; desktop-first layout
-- [ ] Remove or replace default Vite styling (`App.css`, demo assets) as needed
+- [x] Two-column shell: **Roster** (left) | **Running order** (right)
+- [x] Empty states when roster / scenes are empty
+- [x] Page header; desktop-first (`md:` side-by-side, stacked on narrow viewports)
+- [x] `useAppHydration()` gate before rendering persisted UI
+- [x] `print:hidden` on header and roster column (print step builds on this)
+- Hydration loading uses **`Spinner`**; consider **`Skeleton`** placeholders once layout/content design is stable
 
 ---
 
