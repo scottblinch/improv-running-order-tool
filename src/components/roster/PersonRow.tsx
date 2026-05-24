@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { MoreHorizontal, Pencil, Trash2, UserCheck, UserX } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  TriangleAlert,
+  UserCheck,
+  UserX,
+} from 'lucide-react';
 
 import { DeletePersonDialog } from '@/components/roster/DeletePersonDialog';
 import { MarkAbsentDialog } from '@/components/roster/MarkAbsentDialog';
@@ -27,6 +34,21 @@ function formatRoleCountLabel(role: 'Host' | 'Player', count: number): string {
   return `${role} in ${count} ${noun}`;
 }
 
+function formatRowLabel(
+  name: string,
+  isAbsent: boolean,
+  hostCount: number,
+  playerCount: number,
+): string {
+  const parts = [
+    isAbsent ? 'absent' : null,
+    formatRoleCountLabel('Host', hostCount),
+    formatRoleCountLabel('Player', playerCount),
+  ].filter(Boolean);
+
+  return `${name}, ${parts.join(', ')}`;
+}
+
 type PersonRowProps = {
   person: Person;
 };
@@ -41,15 +63,12 @@ export function PersonRow({ person }: PersonRowProps) {
   const hasSceneAssignments = personHasSceneAssignments(scenes, person.id);
   const { hostCount, playerCount } = countPersonSceneRoles(scenes, person.id);
 
-  const roleSummary = [
-    person.isAbsent ? 'absent' : null,
-    hostCount > 0 ? formatRoleCountLabel('Host', hostCount) : null,
-    playerCount > 0 ? formatRoleCountLabel('Player', playerCount) : null,
-  ]
-    .filter(Boolean)
-    .join(', ');
-
-  const rowLabel = roleSummary ? `${person.name}, ${roleSummary}` : person.name;
+  const rowLabel = formatRowLabel(
+    person.name,
+    person.isAbsent,
+    hostCount,
+    playerCount,
+  );
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -87,24 +106,23 @@ export function PersonRow({ person }: PersonRowProps) {
           >
             {person.name}
           </span>
-          {hostCount > 0 ? (
-            <Badge
-              variant="secondary"
-              className="shrink-0"
-              aria-label={formatRoleCountLabel('Host', hostCount)}
-            >
-              Host {hostCount}
-            </Badge>
-          ) : null}
-          {playerCount > 0 ? (
-            <Badge
-              variant="outline"
-              className="shrink-0"
-              aria-label={formatRoleCountLabel('Player', playerCount)}
-            >
-              Player {playerCount}
-            </Badge>
-          ) : null}
+          <Badge
+            variant="secondary"
+            className="shrink-0"
+            aria-label={formatRoleCountLabel('Host', hostCount)}
+          >
+            Host {hostCount}
+          </Badge>
+          <Badge
+            variant="outline"
+            className="shrink-0"
+            aria-label={formatRoleCountLabel('Player', playerCount)}
+          >
+            {playerCount === 0 ? (
+              <TriangleAlert aria-hidden className="size-3" />
+            ) : null}
+            Player {playerCount}
+          </Badge>
           {person.isAbsent ? (
             <Badge variant="destructive" className="shrink-0">
               Absent
