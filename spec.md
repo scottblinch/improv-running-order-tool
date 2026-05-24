@@ -6,11 +6,11 @@ A purely client-side React single-page application (SPA) for building and managi
 
 ### Terminology
 
-| Term | Meaning |
-| ---- | ------- |
-| **Show** | A saved unit of work: roster + lineup + name + date |
-| **Lineup** | User-facing label for the scene list (right column) |
-| **Running order** | Legacy code/doc name for the lineup feature folder |
+| Term              | Meaning                                             |
+| ----------------- | --------------------------------------------------- |
+| **Show**          | A saved unit of work: roster + lineup + name + date |
+| **Lineup**        | User-facing label for the scene list (right column) |
+| **Running order** | Legacy code/doc name for the lineup feature folder  |
 
 ## 2. Tech Stack & Libraries
 
@@ -148,9 +148,9 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 
 ### Deleting a person
 
-| Mode              | Behavior |
-| ----------------- | -------- |
-| `clearScenes`     | Remove person; clear this `personId` from every scene's `hostId` and `playerIds`. |
+| Mode              | Behavior                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------- |
+| `clearScenes`     | Remove person; clear this `personId` from every scene's `hostId` and `playerIds`.                       |
 | `keepAssignments` | **Soft delete:** set `isDeleted: true`, hide from roster; keep scene refs; slots render as **warning**. |
 
 ### Deleting a scene
@@ -210,27 +210,27 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 
 ## 9. Product Decisions
 
-| Topic                     | Decision |
-| ------------------------- | -------- |
-| Multi-scene casting       | Allowed |
-| Host + player, same scene | Allowed |
-| All play                  | Allowed; clears named players |
-| Duplicate performer slots | Not allowed (`playerIds` deduped in store) |
+| Topic                     | Decision                                      |
+| ------------------------- | --------------------------------------------- |
+| Multi-scene casting       | Allowed                                       |
+| Host + player, same scene | Allowed                                       |
+| All play                  | Allowed; clears named players                 |
+| Duplicate performer slots | Not allowed (`playerIds` deduped in store)    |
 | Absent                    | Toggle both ways; confirm when marking absent |
-| Drag while absent         | Not allowed |
-| Roster sort               | Present A–Z, then absent A–Z |
-| Roster CRUD               | Add, rename, delete (with mode choice) |
-| Scene CRUD                | Add, rename, remove |
-| Multi-show workspace      | Up to 32 shows; switch/create/delete |
-| Show metadata             | Name + ISO date per show |
-| Warning slot visuals      | Same for absent and deleted-from-roster |
-| Player order              | Append-only |
-| Print                     | Title, date, scenes + cast |
-| Persistence               | `localStorage` workspace |
-| Theme                     | Light / dark / system |
-| i18n                      | i18next + ICU; English only |
-| Export / import           | Post-MVP |
-| Mobile                    | Dropdowns/selects for slots |
-| Back-to-back cast warning | Post-MVP |
-| Venue on print            | Post-MVP |
-| Terminology               | UI: **Absent**; code: `isAbsent` |
+| Drag while absent         | Not allowed                                   |
+| Roster sort               | Present A–Z, then absent A–Z                  |
+| Roster CRUD               | Add, rename, delete (with mode choice)        |
+| Scene CRUD                | Add, rename, remove                           |
+| Multi-show workspace      | Up to 32 shows; switch/create/delete          |
+| Show metadata             | Name + ISO date per show                      |
+| Warning slot visuals      | Same for absent and deleted-from-roster       |
+| Player order              | Append-only                                   |
+| Print                     | Title, date, scenes + cast                    |
+| Persistence               | `localStorage` workspace                      |
+| Theme                     | Light / dark / system                         |
+| i18n                      | i18next + ICU; English only                   |
+| Export / import           | Post-MVP                                      |
+| Mobile                    | Dropdowns/selects for slots                   |
+| Back-to-back cast warning | Post-MVP                                      |
+| Venue on print            | Post-MVP                                      |
+| Terminology               | UI: **Absent**; code: `isAbsent`              |

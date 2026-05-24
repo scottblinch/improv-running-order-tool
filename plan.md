@@ -6,14 +6,14 @@ Roadmap for building the Improv Show app. Product behavior and data rules live i
 
 Layered folders under `src/components/` — **no barrel `index.ts` files**; import from the module path.
 
-| Layer       | Path                                              | Role |
-| ----------- | ------------------------------------------------- | ---- |
-| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed) |
+| Layer       | Path                                              | Role                                                                                            |
+| ----------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed)                                                           |
 | **layout**  | `components/layout/`                              | App chrome — shell, header, footer, loading, panel wrapper, show switcher, date picker, dialogs |
-| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `AllPlaySlot`) |
-| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents |
-| **theme**   | `components/theme/`                               | Theme provider, hook, toggle |
-| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview |
+| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `AllPlaySlot`)                                      |
+| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                                 |
+| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                                    |
+| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                                 |
 
 **Composition flow:** `App.tsx` → `AppShell` (header + content + footer) → feature panels → list/item → `ui` + `shared`.
 
@@ -25,24 +25,24 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 
 ## Status
 
-| Step | Description | Status |
-| ---- | ----------- | ------ |
-| 1 | Vite + React + TypeScript scaffold | Done |
-| 2 | Tailwind + shadcn/ui | Done |
-| 3 | Types + Zustand store | Done |
-| 4 | Static two-column layout | Done |
-| 5 | Roster + scenes (no drag) | Done |
-| 6 | Desktop drag-and-drop | Done |
-| 7 | Mobile assignment (dropdowns) | Done |
-| 8 | Print styles | Done |
-| 9 | Polish & edge cases | Done |
-| 10 | Show metadata (name + date) | Done |
-| 11 | Multi-show workspace | Done |
-| 12 | All play scenes | Done |
-| 13 | Print preview + fit-to-page | Done |
-| 14 | i18n (i18next + ICU) | Done |
-| 15 | Input sanitization + persist hydration | Done |
-| 16 | App footer | Done |
+| Step | Description                            | Status |
+| ---- | -------------------------------------- | ------ |
+| 1    | Vite + React + TypeScript scaffold     | Done   |
+| 2    | Tailwind + shadcn/ui                   | Done   |
+| 3    | Types + Zustand store                  | Done   |
+| 4    | Static two-column layout               | Done   |
+| 5    | Roster + scenes (no drag)              | Done   |
+| 6    | Desktop drag-and-drop                  | Done   |
+| 7    | Mobile assignment (dropdowns)          | Done   |
+| 8    | Print styles                           | Done   |
+| 9    | Polish & edge cases                    | Done   |
+| 10   | Show metadata (name + date)            | Done   |
+| 11   | Multi-show workspace                   | Done   |
+| 12   | All play scenes                        | Done   |
+| 13   | Print preview + fit-to-page            | Done   |
+| 14   | i18n (i18next + ICU)                   | Done   |
+| 15   | Input sanitization + persist hydration | Done   |
+| 16   | App footer                             | Done   |
 
 ---
 

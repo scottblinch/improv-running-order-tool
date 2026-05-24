@@ -1,6 +1,7 @@
 {
   "app": {
     "title": "Improv Show",
+    "documentTitle": "Scott's Improv Running Order Tool",
     "loading": "Loading application",
     "ready": "Application ready",
     "defaultShowName": "Untitled Show"

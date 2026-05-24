@@ -11,6 +11,7 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 - **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile
 - **Print** — show title and date on the cast sheet; on-screen print preview; fit-to-page scaling
 - **Theme** — light, dark, or system
+- **PWA** — installable; works offline after first load (show data stays in `localStorage`)
 - **i18n** — UI strings in `src/locales/en.json` (i18next + ICU; English only for now)
 
 ## Requirements
@@ -46,7 +47,7 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | `npm run lint:fix`      | ESLint with auto-fix                         |
 | `npm run format`        | Prettier write                               |
 | `npm run format:check`  | Prettier check                               |
-| `npm run fix`           | `lint:fix` then `format`                     |
+| `npm run generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg` |
 
 Pushes to `main` and pull requests run [`ci.yml`](.github/workflows/ci.yml) (`npm run check`).
 
