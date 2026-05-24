@@ -68,6 +68,24 @@ export function resolveSlotDisplay(
   };
 }
 
+export function selectPersonsForSlot(
+  persons: Person[],
+  currentPersonId: PersonId | null,
+): Person[] {
+  const castablePersons = selectCastablePersons(persons);
+
+  if (!currentPersonId) {
+    return castablePersons;
+  }
+
+  if (castablePersons.some((person) => person.id === currentPersonId)) {
+    return castablePersons;
+  }
+
+  const currentPerson = getPersonById(persons, currentPersonId);
+  return currentPerson ? [...castablePersons, currentPerson] : castablePersons;
+}
+
 export function personHasSceneAssignments(
   scenes: Scene[],
   personId: PersonId,

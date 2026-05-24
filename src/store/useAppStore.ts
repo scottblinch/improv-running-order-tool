@@ -54,9 +54,15 @@ export interface AppActions {
   renameScene: (id: SceneId, name: string) => void;
   removeScene: (id: SceneId) => void;
   reorderScenes: (activeId: SceneId, overId: SceneId) => void;
+  moveScene: (sceneId: SceneId, direction: 'up' | 'down') => void;
   assignHost: (sceneId: SceneId, personId: PersonId) => void;
   removeHost: (sceneId: SceneId) => void;
   addPlayer: (sceneId: SceneId, personId: PersonId) => void;
+  replacePlayer: (
+    sceneId: SceneId,
+    currentPersonId: PersonId,
+    newPersonId: PersonId,
+  ) => void;
   removePlayer: (sceneId: SceneId, personId: PersonId) => void;
 }
 
@@ -181,6 +187,23 @@ export const useAppStore = create<AppStore>()(
         });
       },
 
+      moveScene: (sceneId, direction) => {
+        set((state) => {
+          const scenes = [...state.scenes];
+          const index = scenes.findIndex((scene) => scene.id === sceneId);
+
+          if (index === -1) return state;
+
+          const targetIndex = direction === 'up' ? index - 1 : index + 1;
+          if (targetIndex < 0 || targetIndex >= scenes.length) return state;
+
+          const [moved] = scenes.splice(index, 1);
+          scenes.splice(targetIndex, 0, moved);
+
+          return { scenes };
+        });
+      },
+
       assignHost: (sceneId, personId) => {
         set((state) => ({
           scenes: updateScene(state.scenes, sceneId, (scene) => ({
@@ -212,6 +235,28 @@ export const useAppStore = create<AppStore>()(
             return {
               ...scene,
               playerIds: [...scene.playerIds, personId],
+            };
+          }),
+        }));
+      },
+
+      replacePlayer: (sceneId, currentPersonId, newPersonId) => {
+        if (currentPersonId === newPersonId) return;
+
+        set((state) => ({
+          scenes: updateScene(state.scenes, sceneId, (scene) => {
+            if (!scene.playerIds.includes(currentPersonId)) return scene;
+
+            const playerIds = scene.playerIds.map((id) =>
+              id === currentPersonId ? newPersonId : id,
+            );
+            const firstNewIndex = playerIds.indexOf(newPersonId);
+
+            return {
+              ...scene,
+              playerIds: playerIds.filter(
+                (id, index) => id !== newPersonId || index === firstNewIndex,
+              ),
             };
           }),
         }));

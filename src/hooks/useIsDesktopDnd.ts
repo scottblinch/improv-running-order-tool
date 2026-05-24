@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 
-const DESKTOP_DND_QUERY = '(min-width: 768px)';
+import { MD_MIN_WIDTH_QUERY } from '@/lib/breakpoints';
 
 export function useIsDesktopDnd(): boolean {
   const [isDesktopDnd, setIsDesktopDnd] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return window.matchMedia(DESKTOP_DND_QUERY).matches;
+    return window.matchMedia(MD_MIN_WIDTH_QUERY).matches;
   });
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(DESKTOP_DND_QUERY);
+    const mediaQuery = window.matchMedia(MD_MIN_WIDTH_QUERY);
     const handleChange = () => setIsDesktopDnd(mediaQuery.matches);
 
     handleChange();

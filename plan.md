@@ -119,11 +119,12 @@ Wire UI to the store before adding `@dnd-kit`.
 
 ---
 
-## 7. Mobile assignment
+## 7. Mobile assignment — Done
 
-- [ ] Breakpoint strategy (e.g. `md:`): below breakpoint, hide cross-column drag for casting
-- [ ] Host + each player slot: shadcn `Select` populated from active, non-absent roster
-- [ ] Scene reorder on mobile: TBD (sortable DnD vs up/down buttons) — prefer simple controls if DnD is awkward on touch
+- [x] Breakpoint strategy (`md:`): base UI is mobile; desktop DnD and inline cast zones at `md+`
+- [x] Below `md`: host + each player slot use shadcn `Select` from active, non-absent roster (`PersonSlotSelect`)
+- [x] Scene reorder on mobile: up/down buttons (`SceneReorderButtons`); sortable DnD at `md+` only
+- [x] Mobile-first layout: stacked cast sections, full-width selects; roster hover highlight at `md+` only
 
 ---
 

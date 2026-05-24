@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { cn } from '@/lib/utils';
 import type { Person, PersonId } from '@/types/app';
 import {
   Select,
@@ -46,7 +47,7 @@ export function PersonAssignSelect({
       }}
     >
       <SelectTrigger
-        className={inline ? 'w-auto min-w-36' : 'w-full'}
+        className={cn('w-full', inline && 'md:w-auto md:min-w-36')}
         aria-label={label}
       >
         <SelectValue placeholder={label} />

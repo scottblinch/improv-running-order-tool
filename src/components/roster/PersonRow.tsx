@@ -103,21 +103,26 @@ export function PersonRow({ person }: PersonRowProps) {
         className={cn(
           'flex items-center justify-between gap-2 rounded-lg border bg-card px-3 py-2',
           person.isAbsent && 'border-destructive/50 bg-destructive/5',
-          hasSceneAssignments && 'hover:border-primary/40',
+          hasSceneAssignments && 'md:hover:border-primary/40',
           isDragging && 'opacity-50',
         )}
         data-person-id={person.id}
-        onMouseEnter={() => setHoveredPersonId(person.id)}
-        onMouseLeave={() => setHoveredPersonId(null)}
+        onMouseEnter={() => {
+          if (desktopDndEnabled) setHoveredPersonId(person.id);
+        }}
+        onMouseLeave={() => {
+          if (desktopDndEnabled) setHoveredPersonId(null);
+        }}
       >
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          {canDrag ? (
+          {!person.isAbsent ? (
             <Button
               type="button"
               variant="ghost"
               size="icon-sm"
-              className="shrink-0 cursor-grab touch-none active:cursor-grabbing print:hidden"
+              className="hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
               aria-label={`Drag ${person.name}`}
+              disabled={!canDrag}
               {...listeners}
               {...attributes}
             >
