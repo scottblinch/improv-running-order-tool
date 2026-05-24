@@ -1,4 +1,4 @@
-import { resolveSlotDisplay } from '@/store/selectors';
+import { resolveSlotDisplay, selectScenePlayerIds } from '@/store/selectors';
 import type { Person, PersonId, Scene } from '@/types/app';
 
 function formatPersonNameForPrint(
@@ -36,7 +36,7 @@ export function formatRunningOrderCastSuffix(
   if (isAllPlay) {
     segments.push('+ ALL PLAY');
   } else if (playerIds.length > 0) {
-    const names = playerIds
+    const names = selectScenePlayerIds(persons, playerIds)
       .map((playerId) => formatPersonNameForPrint(persons, playerId))
       .join(', ');
     segments.push(`+ ${names} PLAY`);

@@ -10,6 +10,7 @@ import {
   resolveSlotDisplay,
   selectCastablePersons,
   selectPersonsForSlot,
+  selectScenePlayerIds,
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
@@ -26,6 +27,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
   const setAllPlay = useAppStore((state) => state.setAllPlay);
 
   const castablePersons = selectCastablePersons(persons);
+  const sortedPlayerIds = selectScenePlayerIds(persons, scene.playerIds);
 
   const playerControls = scene.isAllPlay ? (
     <AllPlaySlot
@@ -35,7 +37,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
     />
   ) : (
     <>
-      {scene.playerIds.map((playerId) => {
+      {sortedPlayerIds.map((playerId) => {
         const slot = resolveSlotDisplay(persons, playerId);
 
         return (
@@ -70,7 +72,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
           />
         ) : (
           <>
-            {scene.playerIds.map((playerId) => {
+            {sortedPlayerIds.map((playerId) => {
               const slot = resolveSlotDisplay(persons, playerId);
 
               return (

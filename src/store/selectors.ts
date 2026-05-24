@@ -1,11 +1,37 @@
 import type { Person, PersonId, Scene } from '@/types/app';
 
+function comparePersonNames(a: Person, b: Person): number {
+  return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+}
+
+function sortPersonsByName(persons: Person[]): Person[] {
+  return [...persons].sort(comparePersonNames);
+}
+
 export function selectActivePersons(persons: Person[]): Person[] {
-  return persons.filter((person) => !person.isDeleted);
+  const active = persons.filter((person) => !person.isDeleted);
+  const present = sortPersonsByName(
+    active.filter((person) => !person.isAbsent),
+  );
+  const absent = sortPersonsByName(active.filter((person) => person.isAbsent));
+  return [...present, ...absent];
 }
 
 export function selectCastablePersons(persons: Person[]): Person[] {
-  return persons.filter((person) => !person.isDeleted && !person.isAbsent);
+  return sortPersonsByName(
+    persons.filter((person) => !person.isDeleted && !person.isAbsent),
+  );
+}
+
+export function selectScenePlayerIds(
+  persons: Person[],
+  playerIds: PersonId[],
+): PersonId[] {
+  return [...playerIds].sort((aId, bId) => {
+    const aName = getPersonById(persons, aId)?.name ?? '';
+    const bName = getPersonById(persons, bId)?.name ?? '';
+    return aName.localeCompare(bName, undefined, { sensitivity: 'base' });
+  });
 }
 
 export function getPersonById(
@@ -83,7 +109,9 @@ export function selectPersonsForSlot(
   }
 
   const currentPerson = getPersonById(persons, currentPersonId);
-  return currentPerson ? [...castablePersons, currentPerson] : castablePersons;
+  return currentPerson
+    ? sortPersonsByName([...castablePersons, currentPerson])
+    : castablePersons;
 }
 
 export function personPlaysInScene(
