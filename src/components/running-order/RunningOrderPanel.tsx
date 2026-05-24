@@ -7,9 +7,19 @@ import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { useAppStore } from '@/store/useAppStore';
+import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function RunningOrderPanel() {
   const scenes = useAppStore((state) => state.scenes);
+  const printPreview = usePrintPreviewStore((state) => state.enabled);
+
+  if (printPreview) {
+    return (
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-10">
+        <RunningOrderPrintView scenes={scenes} />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -2,10 +2,19 @@ import { AppHeader } from '@/components/layout/AppHeader';
 import { RosterPanel } from '@/components/roster/RosterPanel';
 import { RunningOrderPanel } from '@/components/running-order/RunningOrderPanel';
 import { AppDndProvider } from '@/components/dnd/AppDndProvider';
+import { cn } from '@/lib/utils';
+import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function AppShell() {
+  const printPreview = usePrintPreviewStore((state) => state.enabled);
+
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-background print:h-auto print:min-h-0 print:overflow-visible print:bg-white">
+    <div
+      className={cn(
+        'flex h-dvh flex-col overflow-hidden bg-background print:h-auto print:min-h-0 print:overflow-visible print:bg-white',
+        printPreview && 'bg-white',
+      )}
+    >
       <AppHeader />
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -13,14 +22,20 @@ export function AppShell() {
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
             <aside
               aria-labelledby="roster-heading"
-              className="flex min-h-0 shrink-0 flex-col overflow-hidden border-b max-md:max-h-[45vh] md:w-80 md:border-r md:border-b-0 print:hidden"
+              className={cn(
+                'flex min-h-0 shrink-0 flex-col overflow-hidden border-b max-md:max-h-[45vh] md:w-80 md:border-r md:border-b-0 print:hidden',
+                printPreview && 'hidden',
+              )}
             >
               <RosterPanel />
             </aside>
 
             <main
               aria-labelledby="running-order-heading"
-              className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:w-full print:max-w-none print:overflow-visible"
+              className={cn(
+                'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:w-full print:max-w-none print:overflow-visible',
+                printPreview && 'overflow-y-auto bg-white',
+              )}
             >
               <RunningOrderPanel />
             </main>

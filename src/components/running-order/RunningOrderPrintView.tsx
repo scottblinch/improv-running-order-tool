@@ -15,15 +15,13 @@ export function RunningOrderPrintView({ scenes }: RunningOrderPrintViewProps) {
 
   if (scenes.length === 0) {
     return (
-      <p className="text-center text-sm text-neutral-600">
-        No scenes in running order.
-      </p>
+      <p className="text-sm text-neutral-600">No scenes in running order.</p>
     );
   }
 
   return (
-    <div className="mx-auto max-w-3xl text-center text-black">
-      <header className="mb-10">
+    <div className="mx-auto w-full max-w-3xl text-left text-black">
+      <header className="mb-10 text-center">
         <h1 className="text-lg font-bold tracking-wide uppercase underline">
           Running Order
         </h1>
