@@ -7,7 +7,7 @@ type SceneListProps = {
 
 export function SceneList({ scenes }: SceneListProps) {
   return (
-    <ul aria-label="Scenes in running order" className="space-y-3">
+    <ul aria-label="Scenes in running order" className="space-y-2">
       {scenes.map((scene, index) => (
         <SceneCard
           key={scene.id}

@@ -13,7 +13,7 @@ export function RunningOrderPanel() {
 
   return (
     <>
-      <div className="print:hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
         <PanelShell>
           <div className="flex flex-col gap-4">
             <h2

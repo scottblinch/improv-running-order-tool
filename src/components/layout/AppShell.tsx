@@ -5,26 +5,28 @@ import { AppDndProvider } from '@/components/dnd/AppDndProvider';
 
 export function AppShell() {
   return (
-    <div className="flex min-h-svh flex-col bg-background print:min-h-0 print:bg-white">
+    <div className="flex h-dvh flex-col overflow-hidden bg-background print:h-auto print:min-h-0 print:overflow-visible print:bg-white">
       <AppHeader />
 
-      <AppDndProvider>
-        <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-          <aside
-            aria-labelledby="roster-heading"
-            className="flex min-h-64 w-full shrink-0 flex-col border-b md:min-h-0 md:w-80 md:border-r md:border-b-0 print:hidden"
-          >
-            <RosterPanel />
-          </aside>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <AppDndProvider>
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
+            <aside
+              aria-labelledby="roster-heading"
+              className="flex min-h-0 shrink-0 flex-col overflow-hidden border-b max-md:max-h-[45vh] md:w-80 md:border-r md:border-b-0 print:hidden"
+            >
+              <RosterPanel />
+            </aside>
 
-          <main
-            aria-labelledby="running-order-heading"
-            className="flex min-h-0 min-w-0 flex-1 flex-col print:block print:w-full print:max-w-none print:overflow-visible"
-          >
-            <RunningOrderPanel />
-          </main>
-        </div>
-      </AppDndProvider>
+            <main
+              aria-labelledby="running-order-heading"
+              className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:w-full print:max-w-none print:overflow-visible"
+            >
+              <RunningOrderPanel />
+            </main>
+          </div>
+        </AppDndProvider>
+      </div>
     </div>
   );
 }

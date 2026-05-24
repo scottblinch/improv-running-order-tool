@@ -1,6 +1,5 @@
 import { Users } from 'lucide-react';
 
-import { PanelShell } from '@/components/layout/PanelShell';
 import { RosterList } from '@/components/roster/RosterList';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -13,8 +12,8 @@ export function RosterPanel() {
   const activePersons = selectActivePersons(persons);
 
   return (
-    <PanelShell>
-      <div className="flex flex-col gap-4">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="shrink-0 space-y-4 px-4 pt-4">
         <h2
           id="roster-heading"
           className="font-heading text-base leading-snug font-medium"
@@ -26,6 +25,9 @@ export function RosterPanel() {
           using the dropdown menus in each scene.
         </p>
         <RosterQuickAdd />
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4 pb-4">
         {activePersons.length === 0 ? (
           <EmptyState
             icon={<Users aria-hidden className="size-4" />}
@@ -36,6 +38,6 @@ export function RosterPanel() {
           <RosterList persons={activePersons} />
         )}
       </div>
-    </PanelShell>
+    </div>
   );
 }

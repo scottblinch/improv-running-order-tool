@@ -27,7 +27,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
 
   return (
     <>
-      <div className="rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3 md:hidden">
+      <div className="min-w-0 flex-1 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
         <PersonSlotSelect
           label="Assign host"
           value={scene.hostId}
@@ -40,7 +40,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
       <CastDropZone
         sceneId={scene.id}
         zone="host"
-        className="hidden flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3 md:flex"
+        className="hidden min-w-0 flex-1 flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:flex"
       >
         {hostSlot ? (
           <CastSlot

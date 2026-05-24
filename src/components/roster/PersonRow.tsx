@@ -154,7 +154,7 @@ export function PersonRow({ person }: PersonRowProps) {
               className="shrink-0"
               aria-label={formatRoleCountLabel('Host', hostCount)}
             >
-              Host {hostCount}
+              H: {hostCount}
             </Badge>
             <Badge
               variant="outline"
@@ -164,7 +164,7 @@ export function PersonRow({ person }: PersonRowProps) {
               {playerCount === 0 ? (
                 <TriangleAlert aria-hidden className="size-3" />
               ) : null}
-              Player {playerCount}
+              P: {playerCount}
             </Badge>
             {person.isAbsent ? (
               <Badge variant="destructive" className="shrink-0">

@@ -28,7 +28,11 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
   const castablePersons = selectCastablePersons(persons);
 
   const allPlayControls = scene.isAllPlay ? (
-    <AllPlaySlot inline onRemove={() => setAllPlay(scene.id, false)} />
+    <AllPlaySlot
+      sceneId={scene.id}
+      inline
+      onRemove={() => setAllPlay(scene.id, false)}
+    />
   ) : (
     <>
       {scene.playerIds.map((playerId) => {
@@ -68,9 +72,12 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
 
   return (
     <>
-      <div className="space-y-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3 md:hidden">
+      <div className="min-w-0 flex-1 space-y-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
         {scene.isAllPlay ? (
-          <AllPlaySlot onRemove={() => setAllPlay(scene.id, false)} />
+          <AllPlaySlot
+            sceneId={scene.id}
+            onRemove={() => setAllPlay(scene.id, false)}
+          />
         ) : (
           <>
             {scene.playerIds.map((playerId) => {
@@ -123,7 +130,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
       <CastDropZone
         sceneId={scene.id}
         zone="players"
-        className="hidden flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-3 md:flex"
+        className="hidden min-w-0 flex-1 flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:flex"
       >
         {allPlayControls}
       </CastDropZone>

@@ -62,7 +62,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
         style={style}
         aria-label={`Scene ${index + 1}: ${scene.name}`}
         className={cn(
-          'rounded-xl border bg-card px-4 py-3 ring-1 ring-foreground/10',
+          'rounded-xl border bg-card px-4 py-2 ring-1 ring-foreground/10',
           isDragging && 'opacity-50',
         )}
       >
@@ -87,10 +87,10 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               sceneCount={sceneCount}
             />
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-muted-foreground">
-                Scene {index + 1}
+              <p className="truncate font-medium">
+                <span className="text-muted-foreground">{index + 1}.</span>{' '}
+                {scene.name}
               </p>
-              <p className="truncate font-medium">{scene.name}</p>
             </div>
           </div>
 
@@ -122,32 +122,38 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
           </DropdownMenu>
         </div>
 
-        <div className="mt-4 flex flex-col gap-4 md:flex-row md:flex-wrap md:items-start md:gap-3">
-          <section
+        <div className="mt-2 flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-2">
+          <div
             aria-labelledby={`${scene.id}-host-label`}
-            className="flex w-full min-w-0 flex-col gap-2 md:w-auto"
+            className="flex min-w-0 items-center gap-2"
           >
-            <h3
-              id={`${scene.id}-host-label`}
-              className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
-            >
+            <span id={`${scene.id}-host-label`} className="sr-only">
               Host
-            </h3>
-            <HostCastControl scene={scene} />
-          </section>
-
-          <section
-            aria-labelledby={`${scene.id}-players-label`}
-            className="flex w-full min-w-0 flex-1 flex-col gap-2"
-          >
-            <h3
-              id={`${scene.id}-players-label`}
-              className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
+            </span>
+            <span
+              aria-hidden
+              className="w-4 shrink-0 text-xs font-medium text-muted-foreground"
             >
+              H:
+            </span>
+            <HostCastControl scene={scene} />
+          </div>
+
+          <div
+            aria-labelledby={`${scene.id}-players-label`}
+            className="flex min-w-0 flex-1 items-center gap-2"
+          >
+            <span id={`${scene.id}-players-label`} className="sr-only">
               Players
-            </h3>
+            </span>
+            <span
+              aria-hidden
+              className="w-4 shrink-0 text-xs font-medium text-muted-foreground"
+            >
+              P:
+            </span>
             <PlayersCastControl scene={scene} />
-          </section>
+          </div>
         </div>
       </li>
 
