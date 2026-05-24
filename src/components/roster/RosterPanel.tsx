@@ -1,5 +1,6 @@
 import { PanelShell } from '@/components/layout/PanelShell';
 import { RosterList } from '@/components/roster/RosterList';
+import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { selectActivePersons } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
@@ -10,13 +11,16 @@ export function RosterPanel() {
 
   return (
     <PanelShell title="Roster" description="Performers available for casting">
-      {activePersons.length === 0 ? (
-        <EmptyState>
-          No performers yet. You will add people here in the next step.
-        </EmptyState>
-      ) : (
-        <RosterList persons={activePersons} />
-      )}
+      <div className="flex flex-col gap-4">
+        <RosterQuickAdd />
+        {activePersons.length === 0 ? (
+          <EmptyState>
+            No performers yet. Add someone above to get started.
+          </EmptyState>
+        ) : (
+          <RosterList persons={activePersons} />
+        )}
+      </div>
     </PanelShell>
   );
 }

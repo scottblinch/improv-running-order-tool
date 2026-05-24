@@ -86,14 +86,14 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 
 Wire UI to the store before adding `@dnd-kit`.
 
-### Roster
+### Roster — Done
 
-- [ ] Quick-add person (`Input` + Enter / button)
-- [ ] List active persons only (`!isDeleted`)
-- [ ] Rename person
-- [ ] Delete person → `AlertDialog` with mode choice: **clear all scenes** vs **keep assignments** (warning slots)
-- [ ] Mark **Absent** → confirm when turning on; no confirm when clearing absent
-- [ ] Absent styling in roster; absent persons not draggable (disable until step 6)
+- [x] Quick-add person (`Input` + Enter / button)
+- [x] List active persons only (`!isDeleted`)
+- [x] Rename person
+- [x] Delete person → `AlertDialog` with mode choice: **clear all scenes** vs **keep assignments** (warning slots)
+- [x] Mark **Absent** → confirm when turning on; no confirm when clearing absent
+- [x] Absent styling in roster; absent persons not draggable (`data-draggable="false"`, step 6)
 
 ### Running order
 
