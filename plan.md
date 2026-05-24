@@ -46,6 +46,7 @@ Roadmap for building the Improv Running Order app. Product behavior and data rul
 - [x] `src/store/selectors.ts` — active/castable persons, lookups
 - [x] `src/store/useAppHydration.ts` — gate UI until `localStorage` rehydrates
 - [x] `persist` → key `improv-running-order`; partialize `persons` + `scenes` only
+- Import directly from module paths (no barrel `index.ts` files)
 
 ---
 

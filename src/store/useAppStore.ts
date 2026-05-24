@@ -31,9 +31,7 @@ function updateScene(
   sceneId: SceneId,
   updater: (scene: Scene) => Scene,
 ): Scene[] {
-  return scenes.map((scene) =>
-    scene.id === sceneId ? updater(scene) : scene,
-  );
+  return scenes.map((scene) => (scene.id === sceneId ? updater(scene) : scene));
 }
 
 export interface AppActions {
