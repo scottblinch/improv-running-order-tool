@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useRef } from 'react';
+import { type FormEvent, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,6 @@ import { useAppStore } from '@/store/useAppStore';
 
 export function SceneQuickAdd() {
   const addScene = useAppStore((state) => state.addScene);
-  const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -25,22 +24,21 @@ export function SceneQuickAdd() {
   };
 
   return (
-    <form className="flex items-end gap-2" onSubmit={handleSubmit}>
-      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-sm font-medium">
-          Scene name
-        </label>
-        <Input
-          ref={inputRef}
-          id={inputId}
-          name="sceneName"
-          autoComplete="off"
-          required
-          pattern=".*\S.*"
-          title="Enter a scene name."
-        />
-      </div>
-      <Button type="submit">Add</Button>
+    <form className="flex items-center gap-2" onSubmit={handleSubmit}>
+      <Input
+        ref={inputRef}
+        name="sceneName"
+        autoComplete="off"
+        aria-label="Scene name"
+        placeholder="Scene name"
+        required
+        pattern=".*\S.*"
+        title="Enter a scene name."
+        className="min-w-0 flex-1"
+      />
+      <Button type="submit" className="shrink-0">
+        Add
+      </Button>
     </form>
   );
 }

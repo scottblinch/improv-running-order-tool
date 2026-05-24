@@ -12,12 +12,9 @@ export function RosterPanel() {
   const activePersons = selectActivePersons(persons);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="shrink-0 space-y-4 px-4 pt-4">
-        <h2
-          id="roster-heading"
-          className="font-heading text-base leading-snug font-medium"
-        >
+    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+      <div className="flex flex-col gap-2">
+        <h2 id="roster-heading" className="sr-only">
           Roster
         </h2>
         <p id={ROSTER_CASTING_HELP_ID} className="sr-only">
@@ -25,9 +22,6 @@ export function RosterPanel() {
           using the dropdown menus in each scene.
         </p>
         <RosterQuickAdd />
-      </div>
-
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4 pb-4">
         {activePersons.length === 0 ? (
           <EmptyState
             icon={<Users aria-hidden className="size-4" />}

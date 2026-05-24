@@ -15,11 +15,8 @@ export function RunningOrderPanel() {
     <>
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
         <PanelShell>
-          <div className="flex flex-col gap-4">
-            <h2
-              id="running-order-heading"
-              className="font-heading text-base leading-snug font-medium"
-            >
+          <div className="flex flex-col gap-2">
+            <h2 id="running-order-heading" className="sr-only">
               Running order
             </h2>
             <p id={SCENE_REORDER_HELP_ID} className="sr-only">

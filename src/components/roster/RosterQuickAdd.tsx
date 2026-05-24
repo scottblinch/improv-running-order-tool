@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useRef } from 'react';
+import { type FormEvent, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,6 @@ import { useAppStore } from '@/store/useAppStore';
 
 export function RosterQuickAdd() {
   const addPerson = useAppStore((state) => state.addPerson);
-  const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -25,22 +24,21 @@ export function RosterQuickAdd() {
   };
 
   return (
-    <form className="flex items-end gap-2" onSubmit={handleSubmit}>
-      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-sm font-medium">
-          Performer name
-        </label>
-        <Input
-          ref={inputRef}
-          id={inputId}
-          name="performerName"
-          autoComplete="off"
-          required
-          pattern=".*\S.*"
-          title="Enter a performer name."
-        />
-      </div>
-      <Button type="submit">Add</Button>
+    <form className="flex items-center gap-2" onSubmit={handleSubmit}>
+      <Input
+        ref={inputRef}
+        name="performerName"
+        autoComplete="off"
+        aria-label="Performer name"
+        placeholder="Performer name"
+        required
+        pattern=".*\S.*"
+        title="Enter a performer name."
+        className="min-w-0 flex-1"
+      />
+      <Button type="submit" className="shrink-0">
+        Add
+      </Button>
     </form>
   );
 }
