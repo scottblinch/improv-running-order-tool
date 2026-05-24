@@ -12,24 +12,24 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-type RenamePersonDialogProps = {
+type RenameShowDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentName: string;
   onConfirm: (name: string) => void;
 };
 
-type RenamePersonDialogFormProps = {
+type RenameShowDialogFormProps = {
   currentName: string;
   onConfirm: (name: string) => void;
   onOpenChange: (open: boolean) => void;
 };
 
-function RenamePersonDialogForm({
+function RenameShowDialogForm({
   currentName,
   onConfirm,
   onOpenChange,
-}: RenamePersonDialogFormProps) {
+}: RenameShowDialogFormProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,38 +46,34 @@ function RenamePersonDialogForm({
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const name = formData.get('performerName');
+    const name = formData.get('showName');
     if (typeof name !== 'string') return;
 
-    const trimmed = name.trim();
-    if (!trimmed) return;
-
-    onConfirm(trimmed);
+    onConfirm(name.trim());
     onOpenChange(false);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <AlertDialogHeader>
-        <AlertDialogTitle>Rename performer</AlertDialogTitle>
+        <AlertDialogTitle>Rename show</AlertDialogTitle>
         <AlertDialogDescription>
-          Update how this person appears in the roster and scene slots.
+          Set the show name for the header and printout. Leave blank to use
+          &ldquo;Running Order&rdquo;.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
         <label htmlFor={inputId} className="sr-only">
-          Performer name
+          Show name
         </label>
         <Input
           ref={inputRef}
           id={inputId}
-          name="performerName"
+          name="showName"
           defaultValue={currentName}
           autoComplete="off"
           autoFocus
-          required
-          pattern=".*\S.*"
-          title="Enter a performer name."
+          placeholder="Running Order"
         />
       </div>
       <AlertDialogFooter>
@@ -88,17 +84,17 @@ function RenamePersonDialogForm({
   );
 }
 
-export function RenamePersonDialog({
+export function RenameShowDialog({
   open,
   onOpenChange,
   currentName,
   onConfirm,
-}: RenamePersonDialogProps) {
+}: RenameShowDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-sm">
         {open ? (
-          <RenamePersonDialogForm
+          <RenameShowDialogForm
             key={currentName}
             currentName={currentName}
             onConfirm={onConfirm}

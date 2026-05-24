@@ -1,5 +1,5 @@
+import { formatPrintDate, formatShowPrintTitle } from '@/lib/show-date';
 import {
-  formatPrintDate,
   formatRunningOrderCastSuffix,
   formatRunningOrderSceneName,
 } from '@/lib/format-running-order-print';
@@ -12,6 +12,8 @@ type RunningOrderPrintViewProps = {
 
 export function RunningOrderPrintView({ scenes }: RunningOrderPrintViewProps) {
   const persons = useAppStore((state) => state.persons);
+  const showName = useAppStore((state) => state.showName);
+  const showDate = useAppStore((state) => state.showDate);
 
   if (scenes.length === 0) {
     return (
@@ -23,9 +25,9 @@ export function RunningOrderPrintView({ scenes }: RunningOrderPrintViewProps) {
     <div className="mx-auto w-full max-w-3xl text-left text-black">
       <header className="mb-10 text-center">
         <h1 className="text-lg font-bold tracking-wide uppercase underline">
-          Running Order
+          {formatShowPrintTitle(showName)}
         </h1>
-        <p className="mt-2 text-base">{formatPrintDate()}</p>
+        <p className="mt-2 text-base">{formatPrintDate(showDate)}</p>
       </header>
 
       <ol aria-label="Running order" className="space-y-6">

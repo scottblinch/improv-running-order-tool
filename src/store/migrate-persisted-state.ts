@@ -1,7 +1,8 @@
 import { selectCastablePersons } from '@/store/selectors';
 import type { PersistedState, Person, Scene } from '@/types/app';
+import { toIsoDateString } from '@/lib/show-date';
 
-export const PERSIST_VERSION = 2;
+export const PERSIST_VERSION = 3;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -47,6 +48,29 @@ function normalizeScene(raw: unknown): Scene | null {
   };
 }
 
+function normalizeShowName(raw: unknown): string {
+  return typeof raw === 'string' ? raw : '';
+}
+
+function normalizeShowDate(raw: unknown): string {
+  if (typeof raw !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    return toIsoDateString();
+  }
+
+  const [year, month, day] = raw.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return toIsoDateString();
+  }
+
+  return raw;
+}
+
 function migrateLegacyAllPlay(state: PersistedState): PersistedState {
   const castable = selectCastablePersons(state.persons);
 
@@ -77,7 +101,12 @@ export function migratePersistedState(
   version: number,
 ): PersistedState {
   if (!isRecord(persistedState)) {
-    return { persons: [], scenes: [] };
+    return {
+      persons: [],
+      scenes: [],
+      showName: '',
+      showDate: toIsoDateString(),
+    };
   }
 
   const persons = Array.isArray(persistedState.persons)
@@ -92,7 +121,12 @@ export function migratePersistedState(
         .filter((scene): scene is Scene => scene !== null)
     : [];
 
-  let state: PersistedState = { persons, scenes };
+  let state: PersistedState = {
+    persons,
+    scenes,
+    showName: normalizeShowName(persistedState.showName),
+    showDate: normalizeShowDate(persistedState.showDate),
+  };
 
   if (version < 2) {
     state = migrateLegacyAllPlay(state);

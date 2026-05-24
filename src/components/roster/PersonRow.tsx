@@ -186,7 +186,12 @@ export function PersonRow({ person }: PersonRowProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault();
+                setRenameOpen(true);
+              }}
+            >
               <Pencil aria-hidden className="size-4" />
               Rename
             </DropdownMenuItem>

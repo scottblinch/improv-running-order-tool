@@ -1,27 +1,62 @@
+import { Pencil } from 'lucide-react';
+import { useState } from 'react';
+
 import { PrintPreviewToggle } from '@/components/layout/PrintPreviewToggle';
+import { RenameShowDialog } from '@/components/layout/RenameShowDialog';
+import { ShowDatePicker } from '@/components/layout/ShowDatePicker';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { formatShowDisplayName } from '@/lib/show-date';
+import { useAppStore } from '@/store/useAppStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function AppHeader() {
   const printPreview = usePrintPreviewStore((state) => state.enabled);
+  const showName = useAppStore((state) => state.showName);
+  const setShowName = useAppStore((state) => state.setShowName);
+  const [renameOpen, setRenameOpen] = useState(false);
 
   return (
-    <header
-      className={cn(
-        'flex shrink-0 items-center justify-between gap-4 px-6 py-4 print:hidden',
-        !printPreview && 'border-b',
-      )}
-    >
-      {!printPreview && (
-        <h1 className="font-heading text-lg font-semibold tracking-tight">
-          Improv Running Order
-        </h1>
-      )}
-      <div className={cn('flex items-center gap-2', printPreview && 'ml-auto')}>
-        {!printPreview && <ThemeToggle />}
-        <PrintPreviewToggle />
-      </div>
-    </header>
+    <>
+      <header
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-4 px-6 py-4 print:hidden',
+          !printPreview && 'border-b',
+        )}
+      >
+        {!printPreview ? (
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <h1 className="truncate font-heading text-lg font-semibold tracking-tight">
+              {formatShowDisplayName(showName)}
+            </h1>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="shrink-0"
+              aria-label="Rename show"
+              onClick={() => setRenameOpen(true)}
+            >
+              <Pencil aria-hidden className="size-4" />
+            </Button>
+            <ShowDatePicker />
+          </div>
+        ) : null}
+        <div
+          className={cn('flex items-center gap-2', printPreview && 'ml-auto')}
+        >
+          {!printPreview && <ThemeToggle />}
+          <PrintPreviewToggle />
+        </div>
+      </header>
+
+      <RenameShowDialog
+        open={renameOpen}
+        onOpenChange={setRenameOpen}
+        currentName={showName}
+        onConfirm={setShowName}
+      />
+    </>
   );
 }

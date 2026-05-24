@@ -21,4 +21,6 @@ export type DeletePersonMode = 'clearScenes' | 'keepAssignments';
 export interface PersistedState {
   persons: Person[];
   scenes: Scene[];
+  showName: string;
+  showDate: string;
 }

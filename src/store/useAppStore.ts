@@ -12,6 +12,7 @@ import {
   migratePersistedState,
   PERSIST_VERSION,
 } from '@/store/migrate-persisted-state';
+import { isIsoDateString, toIsoDateString } from '@/lib/show-date';
 
 const STORAGE_KEY = 'improv-running-order';
 
@@ -70,6 +71,8 @@ export interface AppActions {
   ) => void;
   removePlayer: (sceneId: SceneId, personId: PersonId) => void;
   setAllPlay: (sceneId: SceneId, isAllPlay: boolean) => void;
+  setShowName: (name: string) => void;
+  setShowDate: (date: string) => void;
 }
 
 export type AppStore = PersistedState & AppActions;
@@ -79,6 +82,8 @@ export const useAppStore = create<AppStore>()(
     (set) => ({
       persons: [],
       scenes: [],
+      showName: '',
+      showDate: toIsoDateString(),
 
       addPerson: (name) => {
         const trimmed = trimName(name);
@@ -301,6 +306,16 @@ export const useAppStore = create<AppStore>()(
           })),
         }));
       },
+
+      setShowName: (name) => {
+        set({ showName: name.trim() });
+      },
+
+      setShowDate: (date) => {
+        if (!isIsoDateString(date)) return;
+
+        set({ showDate: date });
+      },
     }),
     {
       name: STORAGE_KEY,
@@ -310,6 +325,8 @@ export const useAppStore = create<AppStore>()(
       partialize: (state) => ({
         persons: state.persons,
         scenes: state.scenes,
+        showName: state.showName,
+        showDate: state.showDate,
       }),
     },
   ),
