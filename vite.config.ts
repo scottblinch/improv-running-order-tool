@@ -7,8 +7,13 @@ import babel from '@rolldown/plugin-babel';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const repositoryName = 'improv-running-order-tool';
+const githubPagesBase = `/${repositoryName}/`;
+
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub project pages are served from /repo-name/, not domain root.
+  base: process.env.GITHUB_PAGES === 'true' ? githubPagesBase : '/',
   plugins: [react(), tailwindcss(), babel({ presets: [reactCompilerPreset()] })],
   resolve: {
     alias: {

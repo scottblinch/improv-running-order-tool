@@ -6,7 +6,7 @@
   "private": true,
   "license": "GPL-2.0-only",
   "author": "Scott Blinch",
-  "homepage": "https://github.com/scottblinch/improv-running-order-tool#readme",
+  "homepage": "https://scottblinch.github.io/improv-running-order-tool/",
   "bugs": {
     "url": "https://github.com/scottblinch/improv-running-order-tool/issues"
   },
@@ -22,7 +22,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "fix": "npm run lint:fix && npm run format",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:pages": "GITHUB_PAGES=true npm run build && vite preview --base /improv-running-order-tool/"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
