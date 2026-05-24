@@ -1,3 +1,5 @@
+import { Users } from 'lucide-react';
+
 import { PanelShell } from '@/components/layout/PanelShell';
 import { RosterList } from '@/components/roster/RosterList';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
@@ -18,9 +20,11 @@ export function RosterPanel() {
       <div className="flex flex-col gap-4">
         <RosterQuickAdd />
         {activePersons.length === 0 ? (
-          <EmptyState>
-            No performers yet. Add someone above to get started.
-          </EmptyState>
+          <EmptyState
+            icon={<Users aria-hidden className="size-4" />}
+            title="No performers yet"
+            description="Add someone above to start building your roster."
+          />
         ) : (
           <RosterList persons={activePersons} />
         )}

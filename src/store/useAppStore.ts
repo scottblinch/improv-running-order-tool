@@ -7,6 +7,7 @@ import type {
   Scene,
   SceneId,
 } from '@/types/app';
+import { personHasSceneAssignments } from '@/store/selectors';
 
 const STORAGE_KEY = 'improv-running-order';
 
@@ -32,6 +33,16 @@ function updateScene(
   updater: (scene: Scene) => Scene,
 ): Scene[] {
   return scenes.map((scene) => (scene.id === sceneId ? updater(scene) : scene));
+}
+
+function purgeUnassignedSoftDeletedPersons(
+  persons: PersistedState['persons'],
+  scenes: Scene[],
+): PersistedState['persons'] {
+  return persons.filter(
+    (person) =>
+      !person.isDeleted || personHasSceneAssignments(scenes, person.id),
+  );
 }
 
 export interface AppActions {
@@ -86,19 +97,22 @@ export const useAppStore = create<AppStore>()(
       },
 
       deletePerson: (id, mode) => {
-        if (mode === 'clearScenes') {
-          set((state) => ({
-            persons: state.persons.filter((person) => person.id !== id),
-            scenes: clearPersonFromScenes(state.scenes, id),
-          }));
-          return;
-        }
+        set((state) => {
+          const assigned = personHasSceneAssignments(state.scenes, id);
 
-        set((state) => ({
-          persons: state.persons.map((person) =>
-            person.id === id ? { ...person, isDeleted: true } : person,
-          ),
-        }));
+          if (!assigned || mode === 'clearScenes') {
+            return {
+              persons: state.persons.filter((person) => person.id !== id),
+              scenes: clearPersonFromScenes(state.scenes, id),
+            };
+          }
+
+          return {
+            persons: state.persons.map((person) =>
+              person.id === id ? { ...person, isDeleted: true } : person,
+            ),
+          };
+        });
       },
 
       togglePersonAbsence: (id) => {
@@ -140,9 +154,14 @@ export const useAppStore = create<AppStore>()(
       },
 
       removeScene: (id) => {
-        set((state) => ({
-          scenes: state.scenes.filter((scene) => scene.id !== id),
-        }));
+        set((state) => {
+          const scenes = state.scenes.filter((scene) => scene.id !== id);
+
+          return {
+            scenes,
+            persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
+          };
+        });
       },
 
       reorderScenes: (activeId, overId) => {
@@ -172,12 +191,17 @@ export const useAppStore = create<AppStore>()(
       },
 
       removeHost: (sceneId) => {
-        set((state) => ({
-          scenes: updateScene(state.scenes, sceneId, (scene) => ({
+        set((state) => {
+          const scenes = updateScene(state.scenes, sceneId, (scene) => ({
             ...scene,
             hostId: null,
-          })),
-        }));
+          }));
+
+          return {
+            scenes,
+            persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
+          };
+        });
       },
 
       addPlayer: (sceneId, personId) => {
@@ -194,12 +218,17 @@ export const useAppStore = create<AppStore>()(
       },
 
       removePlayer: (sceneId, personId) => {
-        set((state) => ({
-          scenes: updateScene(state.scenes, sceneId, (scene) => ({
+        set((state) => {
+          const scenes = updateScene(state.scenes, sceneId, (scene) => ({
             ...scene,
             playerIds: scene.playerIds.filter((id) => id !== personId),
-          })),
-        }));
+          }));
+
+          return {
+            scenes,
+            persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
+          };
+        });
       },
     }),
     {

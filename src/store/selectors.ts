@@ -21,3 +21,58 @@ export function getSceneById(
 ): Scene | undefined {
   return scenes.find((scene) => scene.id === id);
 }
+
+export type ResolvedSlot = {
+  personId: PersonId;
+  name: string;
+  isWarning: boolean;
+  warningLabel?: 'Absent' | 'Removed';
+};
+
+export function resolveSlotDisplay(
+  persons: Person[],
+  personId: PersonId,
+): ResolvedSlot {
+  const person = getPersonById(persons, personId);
+
+  if (!person) {
+    return {
+      personId,
+      name: 'Unknown',
+      isWarning: true,
+    };
+  }
+
+  if (person.isAbsent) {
+    return {
+      personId,
+      name: person.name,
+      isWarning: true,
+      warningLabel: 'Absent',
+    };
+  }
+
+  if (person.isDeleted) {
+    return {
+      personId,
+      name: person.name,
+      isWarning: true,
+      warningLabel: 'Removed',
+    };
+  }
+
+  return {
+    personId,
+    name: person.name,
+    isWarning: false,
+  };
+}
+
+export function personHasSceneAssignments(
+  scenes: Scene[],
+  personId: PersonId,
+): boolean {
+  return scenes.some(
+    (scene) => scene.hostId === personId || scene.playerIds.includes(personId),
+  );
+}

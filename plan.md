@@ -30,7 +30,7 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 | 2    | Tailwind + shadcn/ui               | Done        |
 | 3    | Types + Zustand store              | Done        |
 | 4    | Static two-column layout           | Done        |
-| 5    | Roster + scenes (no drag)          | Not started |
+| 5    | Roster + scenes (no drag)          | Done        |
 | 6    | Desktop drag-and-drop              | Not started |
 | 7    | Mobile assignment (dropdowns)      | Not started |
 | 8    | Print styles                       | Not started |
@@ -95,14 +95,14 @@ Wire UI to the store before adding `@dnd-kit`.
 - [x] Mark **Absent** → confirm when turning on; no confirm when clearing absent
 - [x] Absent styling in roster; absent persons not draggable (`data-draggable="false"`, step 6)
 
-### Running order
+### Running order — Done
 
-- [ ] Quick-add scene
-- [ ] Scene cards: name (rename), remove scene (confirm), host slot, players list
-- [ ] Assign host/players via **click or temporary controls** if needed before DnD (or stub empty drop zones)
-- [ ] `CastSlot` / shared component: normal vs **warning** slot (`isAbsent || isDeleted`) — same visual per spec
-- [ ] Remove host/player with `X` (no confirm)
-- [ ] Resolve person by id; orphan fallback label if missing
+- [x] Quick-add scene
+- [x] Scene cards: name (rename), remove scene (confirm), host slot, players list
+- [x] Assign host/players via **Select** controls before DnD; empty drop zones stubbed (`data-drop-zone`)
+- [x] `CastSlot` shared component: normal vs **warning** slot (`isAbsent || isDeleted`) — same visual per spec
+- [x] Remove host/player with `X` (no confirm)
+- [x] Resolve person by id; orphan fallback label if missing
 
 ---
 

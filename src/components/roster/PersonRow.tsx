@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { personHasSceneAssignments } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import type { Person } from '@/types/app';
 
@@ -22,9 +23,12 @@ type PersonRowProps = {
 };
 
 export function PersonRow({ person }: PersonRowProps) {
+  const scenes = useAppStore((state) => state.scenes);
   const renamePerson = useAppStore((state) => state.renamePerson);
   const deletePerson = useAppStore((state) => state.deletePerson);
   const togglePersonAbsence = useAppStore((state) => state.togglePersonAbsence);
+
+  const hasSceneAssignments = personHasSceneAssignments(scenes, person.id);
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -124,7 +128,9 @@ export function PersonRow({ person }: PersonRowProps) {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         personName={person.name}
-        onConfirm={(mode) => deletePerson(person.id, mode)}
+        hasSceneAssignments={hasSceneAssignments}
+        onHardDelete={() => deletePerson(person.id, 'clearScenes')}
+        onDeleteWithMode={(mode) => deletePerson(person.id, mode)}
       />
     </>
   );

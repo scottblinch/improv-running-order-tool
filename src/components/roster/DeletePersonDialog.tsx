@@ -14,17 +14,26 @@ type DeletePersonDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   personName: string;
-  onConfirm: (mode: DeletePersonMode) => void;
+  hasSceneAssignments: boolean;
+  onHardDelete: () => void;
+  onDeleteWithMode: (mode: DeletePersonMode) => void;
 };
 
 export function DeletePersonDialog({
   open,
   onOpenChange,
   personName,
-  onConfirm,
+  hasSceneAssignments,
+  onHardDelete,
+  onDeleteWithMode,
 }: DeletePersonDialogProps) {
   const handleConfirm = (mode: DeletePersonMode) => {
-    onConfirm(mode);
+    onDeleteWithMode(mode);
+    onOpenChange(false);
+  };
+
+  const handleHardDelete = () => {
+    onHardDelete();
     onOpenChange(false);
   };
 
@@ -34,28 +43,45 @@ export function DeletePersonDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete {personName}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Choose whether to remove their scene assignments or keep them as
-            warning slots on the running order.
+            {hasSceneAssignments
+              ? 'Choose whether to remove their scene assignments or keep them as warning slots on the running order.'
+              : 'They will be permanently removed from the roster.'}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-col gap-2 sm:flex-col sm:items-stretch">
-          <AlertDialogCancel className="w-full sm:w-auto">
+        <AlertDialogFooter
+          className={
+            hasSceneAssignments
+              ? 'flex-col gap-2 sm:flex-col sm:items-stretch'
+              : undefined
+          }
+        >
+          <AlertDialogCancel
+            className={hasSceneAssignments ? 'w-full sm:w-auto' : undefined}
+          >
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={() => handleConfirm('keepAssignments')}
-          >
-            Remove from roster, keep scene slots
-          </AlertDialogAction>
-          <AlertDialogAction
-            variant="destructive"
-            className="w-full sm:w-auto"
-            onClick={() => handleConfirm('clearScenes')}
-          >
-            Remove from roster and all scenes
-          </AlertDialogAction>
+          {hasSceneAssignments ? (
+            <>
+              <AlertDialogAction
+                variant="outline"
+                className="w-full sm:w-auto"
+                onClick={() => handleConfirm('keepAssignments')}
+              >
+                Remove from roster, keep scene slots
+              </AlertDialogAction>
+              <AlertDialogAction
+                variant="destructive"
+                className="w-full sm:w-auto"
+                onClick={() => handleConfirm('clearScenes')}
+              >
+                Remove from roster and all scenes
+              </AlertDialogAction>
+            </>
+          ) : (
+            <AlertDialogAction variant="destructive" onClick={handleHardDelete}>
+              Delete
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
