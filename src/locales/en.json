@@ -38,6 +38,9 @@
     "showDate": "Show date",
     "switchShow": "Switch show"
   },
+  "footer": {
+    "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>)."
+  },
   "workspace": {
     "newShow": "New show",
     "deleteShow": "Delete show",
