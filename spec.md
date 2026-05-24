@@ -1,17 +1,27 @@
-# Improv Running Order App - Technical Specification
+# Improv Show App — Technical Specification
 
 ## 1. Project Overview
 
-A purely client-side React single-page application (SPA) for building and managing running orders for improv shows. The app provides a drag-and-drop interface to assign available performers to scenes, reorder the show lineup, and handle real-time cast adjustments (e.g., performers marked absent). Data is persisted locally in the browser. No backend is required.
+A purely client-side React single-page application (SPA) for building and managing improv **shows**. The app provides a drag-and-drop interface to assign available performers to scenes, reorder the lineup, handle real-time cast adjustments (e.g., performers marked absent), and print a cast sheet. Data is persisted locally in the browser. No backend is required.
+
+### Terminology
+
+| Term | Meaning |
+| ---- | ------- |
+| **Show** | A saved unit of work: roster + lineup + name + date |
+| **Lineup** | User-facing label for the scene list (right column) |
+| **Running order** | Legacy code/doc name for the lineup feature folder |
 
 ## 2. Tech Stack & Libraries
 
 - **Framework:** React + Vite (TypeScript)
-- **Styling & UI:** shadcn/ui on Radix primitives; use component `variant` / `size` props first. Tailwind utilities as bundled with shadcn are expected; avoid hand-rolled component class strings and bespoke `.css` files unless unavoidable (e.g. minimal `@media print` rules).
+- **Styling & UI:** shadcn/ui on Radix primitives; Tailwind CSS 4. Prefer component `variant` / `size` props first. Minimal custom CSS (print rules, third-party overrides e.g. calendar).
 - **State Management:** Zustand (`persist` middleware → `localStorage`)
 - **Drag & Drop:** `@dnd-kit/core`, `@dnd-kit/sortable` (desktop)
 - **Icons:** `lucide-react`
-- **IDs:** `crypto.randomUUID()` at runtime (no npm `uuid` package required for MVP)
+- **i18n:** `i18next`, `i18next-icu`, `react-i18next` — strings in `src/locales/en.json`
+- **Dates:** `date-fns`, `react-day-picker` (show date picker)
+- **IDs:** `crypto.randomUUID()` at runtime
 
 ## 3. Data Models (TypeScript Interfaces)
 
@@ -20,6 +30,7 @@ Use branded string types for compile-time safety; at runtime IDs are strings.
 ```typescript
 export type PersonId = string;
 export type SceneId = string;
+export type ShowId = string;
 
 export interface Person {
   id: PersonId;
@@ -33,65 +44,78 @@ export interface Scene {
   name: string;
   hostId: PersonId | null;
   playerIds: PersonId[]; // Ordered list; no duplicate IDs (dedupe in addPlayer, not via Set in persisted state)
+  isAllPlay: boolean; // When true, all castable performers play; playerIds is empty
 }
 
 export type DeletePersonMode = 'clearScenes' | 'keepAssignments';
 
-export interface AppState {
+export interface PersistedState {
   persons: Person[];
   scenes: Scene[];
+  showName: string;
+  showDate: string; // ISO date YYYY-MM-DD
+}
 
-  // Person Actions
-  addPerson: (name: string) => void;
-  renamePerson: (id: PersonId, name: string) => void;
-  deletePerson: (id: PersonId, mode: DeletePersonMode) => void;
-  togglePersonAbsence: (id: PersonId) => void;
+export interface ShowRecord extends PersistedState {
+  id: ShowId;
+  updatedAt: string; // ISO timestamp
+}
 
-  // Scene Actions
-  addScene: (name: string) => void;
-  renameScene: (id: SceneId, name: string) => void;
-  removeScene: (id: SceneId) => void; // Deletes scene and all host/player assignments for that scene
-  reorderScenes: (activeId: SceneId, overId: SceneId) => void;
-
-  // Casting Actions (drag-and-drop / mobile selects)
-  assignHost: (sceneId: SceneId, personId: PersonId) => void;
-  removeHost: (sceneId: SceneId) => void;
-  addPlayer: (sceneId: SceneId, personId: PersonId) => void; // Appends; no-op if personId already in playerIds
-  removePlayer: (sceneId: SceneId, personId: PersonId) => void;
+export interface WorkspacePersistedState {
+  activeShowId: ShowId;
+  shows: ShowRecord[];
 }
 ```
 
+Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowName`, `setShowDate`, `createShow`, `switchShow`, and `deleteShow`.
+
 ### ID generation & deduping
 
-- Generate new `PersonId` / `SceneId` values with `crypto.randomUUID()`.
-- Keep `playerIds` as a **array** (order matters for print; JSON-serializable). Do **not** persist a `Set` in Zustand state. Enforce uniqueness in `addPlayer` (e.g. `if (playerIds.includes(personId)) return`).
+- Generate new IDs with `crypto.randomUUID()`.
+- Keep `playerIds` as an **array** (order matters for print; JSON-serializable). Enforce uniqueness in `addPlayer`.
+- Enabling **all play** clears `playerIds`; adding a player clears `isAllPlay`.
 
 ### Active roster
 
 - **Roster UI** lists only persons where `isDeleted === false`.
-- Casting (drag / dropdowns) may only target non-deleted, non-absent persons unless replacing an existing slot.
+- Present performers first (A–Z), then absent performers (A–Z among themselves).
+- Casting dropdowns list castable persons (`!isDeleted && !isAbsent`) alphabetically.
+- Scene player lists in dropdowns are sorted alphabetically by name.
 
 ## 4. UI Layout & Architecture
 
-Desktop: two-column layout. Mobile: assignment via dropdowns/selects per slot (see §8).
+Desktop: two-column layout with header and footer. Mobile: stacked columns; assignment via dropdowns/selects per slot (see §8).
+
+### Header
+
+- **Show switcher** — dropdown of saved shows (upcoming vs past sections); create and delete shows
+- **Rename show** — dialog for `showName` (default: "Untitled Show")
+- **Show date** — calendar picker for `showDate`
+- **Theme toggle** — light / dark / system (separate `localStorage` key)
+- **Print preview** — on-screen WYSIWYG before printing
 
 ### Left Column: The Roster
 
 - Quick-add: shadcn `Input` + submit / Enter.
-- Scrollable list of active persons (`!isDeleted`).
+- Scrollable list of active persons (`!isDeleted`), sorted as above.
 - Each row: draggable (desktop) when **not** absent; clone/ghost drag preview; original stays in roster (stamp palette).
 - **Rename**, **delete**, and **Absent** toggle (with confirmation when marking absent).
-- Absent persons: not draggable; distinct roster styling.
+- Absent persons: not draggable; distinct roster styling; role counts (host/player scene totals).
 
-### Right Column: The Running Order
+### Right Column: The Lineup
 
 - Quick-add scenes; sortable scene cards (`@dnd-kit/sortable`).
-- Per card: editable scene name, remove scene (confirmed), drag handle, host zone (max 1), players zone (append-only, deduped).
+- Per card: editable scene name, remove scene (confirmed), drag handle, host zone (max 1), players zone (append-only, deduped), **all play** toggle.
 - Slot remove (`X`) does not require confirmation.
+
+### Footer
+
+- Author credit, GitHub feedback link, short GPL-2.0 summary (hidden when printing).
 
 ### Mobile
 
 - Assign host/players via shadcn `Select` (or similar) per slot instead of cross-column drag.
+- Scene reorder via up/down buttons; sortable DnD at `md+` only.
 
 ## 5. Key Behaviors & Mechanics
 
@@ -100,7 +124,8 @@ Desktop: two-column layout. Mobile: assignment via dropdowns/selects per slot (s
 - Same person in multiple scenes: allowed.
 - Same person as host and player on one scene: allowed.
 - No duplicate entries in one scene's `playerIds`.
-- Player order within a scene: append-only (MVP).
+- Player order within a scene: append-only.
+- **All play:** scene treats every castable performer as playing; confirmed when switching from named players.
 
 ### Drag & drop (desktop)
 
@@ -109,80 +134,103 @@ Desktop: two-column layout. Mobile: assignment via dropdowns/selects per slot (s
 
 ### Absent (`isAbsent`)
 
-- Toggles **on and off**; confirm when turning **on** (marking absent). Clearing absent does not require confirmation.
+- Toggles **on and off**; confirm when turning **on**. Clearing absent does not require confirmation.
 - Absent persons are not draggable.
-- Scene slots referencing an absent person use the **warning slot** presentation (see below).
+- Scene slots referencing an absent person use the **warning slot** presentation.
 
 ### Warning slots (absent & deleted-from-roster)
 
 Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 
 - **Active** (`!isAbsent && !isDeleted`): normal badge.
-- **Warning** (`isAbsent || isDeleted`): same visual treatment—red/amber border, distinct background, strikethrough on the **display name** (still show `person.name` for deleted-but-referenced persons via soft delete).
-- **Orphan** (ID in scene but no matching `Person`—should not occur if invariants hold): treat as warning slot with fallback label e.g. "Unknown".
-
-Use a shared shadcn `Badge` (or similar) variant for warning slots; avoid one-off Tailwind in feature components when a variant suffices.
+- **Warning** (`isAbsent || isDeleted`): red/amber border, distinct background, strikethrough on display name.
+- **Orphan** (ID in scene but no matching `Person`): warning slot with fallback label.
 
 ### Deleting a person
 
-Show shadcn `AlertDialog` with two explicit choices:
-
-| Mode              | Behavior                                                                                                                                                     |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `clearScenes`     | Set `isDeleted` or remove person from store; clear this `personId` from every scene's `hostId` and `playerIds`. Person gone from roster and all assignments. |
-| `keepAssignments` | **Soft delete:** set `isDeleted: true`, hide from roster; **keep** scene `hostId` / `playerIds` entries; slots render as **warning** (same as absent).       |
-
-Implementation note: soft delete (`isDeleted`) keeps the `Person` record so slotted names still resolve and match absent styling. Hard-remove from `persons[]` while keeping orphan IDs is discouraged (loses names).
+| Mode              | Behavior |
+| ----------------- | -------- |
+| `clearScenes`     | Remove person; clear this `personId` from every scene's `hostId` and `playerIds`. |
+| `keepAssignments` | **Soft delete:** set `isDeleted: true`, hide from roster; keep scene refs; slots render as **warning**. |
 
 ### Deleting a scene
 
 - Confirm via `AlertDialog`.
-- `removeScene` deletes the scene and **all** host/player assignments for that scene. No ghost slots remain.
+- `removeScene` deletes the scene and all host/player assignments for that scene.
 
-### Confirmations (MVP)
+### Multi-show workspace
+
+- Up to 32 saved shows; each holds its own roster, lineup, name, and date.
+- Switching shows updates the active slice in the store; `localStorage` persists the full workspace.
+- Delete show is confirmed; cannot delete the last remaining show.
+- Show switcher lists upcoming shows (date ≥ today) and past shows separately, sorted by date then name.
+
+### Confirmations
 
 Use shadcn `AlertDialog` for:
 
-- Delete person (include mode choice: clear all scenes vs keep assignments as warning slots)
+- Delete person (mode choice)
 - Delete scene
+- Delete show
 - Mark person absent
+- Switch scene to all play (when players are assigned)
 
-No confirmation required for: clearing absent, removing a single slot (`X`), rename.
+No confirmation for: clearing absent, removing a slot (`X`), rename.
 
 ## 6. Export & Print
 
-No PDF library. Minimal print CSS or Tailwind `print:` modifiers.
+No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rules.
 
-- **Hide:** roster column, inputs, drag handles, remove buttons, dialogs/chrome.
-- **Show:** running order only, full width, ink-friendly typography.
-- **Print header (MVP):** minimal—scene order + host + players only (no show title/date/venue yet).
+- **Hide:** roster column, inputs, drag handles, remove buttons, header/footer chrome, dialogs.
+- **Show:** lineup full width, ink-friendly black on white.
+- **Print header:** show title (uppercase) and formatted date, centered above the scene list.
+- **Print preview:** screen-only mode that mirrors print layout before invoking the browser print dialog.
+- **Fit-to-page:** dynamic font scaling so long lineups fit one printed page when possible.
+- **Scene line format:** `SCENE NAME - HOST HOST` / `+ ALL PLAY` / `+ NAMES PLAY`; warning suffix for absent/removed performers.
 
-## 7. Development Guidelines
+**Not yet implemented:** venue on print output.
 
-- Semantic HTML; shadcn/Radix defaults for a11y.
+## 7. Persistence & Security
+
+- **Storage key:** `improv-running-order`
+- **Version:** `PERSIST_VERSION` in `migrate-persisted-state.ts` (currently `1`); Zustand `migrate` hook ready for future schema changes
+- **Persisted shape:** `{ activeShowId, shows[] }` — not the flat single-show shape
+- **Hydration:** `hydrate-persisted-state.ts` normalizes and sanitizes on load; invalid data falls back to one empty show
+- **Input limits:** caps on persons, scenes, shows, name lengths, and IDs; sanitization strips control characters and drops invalid cross-references (defense against hand-edited `localStorage`)
+
+## 8. Development Guidelines
+
+- Semantic HTML (`ol` for scene list, sr-only headings, `role="status"` on loading, etc.).
+- shadcn/Radix defaults for a11y; keyboard submit on quick-add forms and rename dialogs.
 - `dnd-kit` must work inside scrollable panels.
-- Zustand `persist`: guard hydration (Vite SPA; no SSR expected).
-- Single page; no router for MVP.
-- **Styling:** prefer shadcn components and their variants; use Tailwind only as shadcn does or when no variant exists; avoid custom CSS files except minimal print rules.
+- Zustand `persist`: guard hydration before rendering persisted UI.
+- Single page; no router.
+- **i18n:** user-visible strings in `src/locales/en.json`; use `useTranslation` / `Trans` — no hardcoded UI copy in components.
+- **Styling:** prefer shadcn components and variants; avoid custom CSS except print rules and unavoidable third-party overrides.
 
-## 8. MVP Product Decisions
+## 9. Product Decisions
 
-| Topic                     | Decision                                                 |
-| ------------------------- | -------------------------------------------------------- |
-| Multi-scene casting       | Allowed                                                  |
-| Host + player, same scene | Allowed                                                  |
-| Duplicate performer slots | Not allowed (`playerIds` deduped in store)               |
-| Persisted dedupe type     | `PersonId[]` + logic in `addPlayer` (not `Set` in state) |
-| Absent                    | Toggle both ways; confirm when marking absent            |
-| Drag while absent         | Not allowed                                              |
-| Roster CRUD               | Add, rename, delete (with mode choice)                   |
-| Scene CRUD                | Add, rename, remove (removes all slots for that scene)   |
-| Delete person             | User chooses clear scenes vs keep warning slots          |
-| Warning slot visuals      | Same for absent and deleted-from-roster                  |
-| Player order              | Append-only                                              |
-| Print                     | Scenes + cast only                                       |
-| Persistence               | `localStorage` (MVP)                                     |
-| Export / import           | Post-MVP                                                 |
-| Mobile                    | Dropdowns/selects for slots                              |
-| Back-to-back cast warning | Post-MVP                                                 |
-| Terminology               | UI: **Absent** (not "Sick call"); code: `isAbsent`       |
+| Topic                     | Decision |
+| ------------------------- | -------- |
+| Multi-scene casting       | Allowed |
+| Host + player, same scene | Allowed |
+| All play                  | Allowed; clears named players |
+| Duplicate performer slots | Not allowed (`playerIds` deduped in store) |
+| Absent                    | Toggle both ways; confirm when marking absent |
+| Drag while absent         | Not allowed |
+| Roster sort               | Present A–Z, then absent A–Z |
+| Roster CRUD               | Add, rename, delete (with mode choice) |
+| Scene CRUD                | Add, rename, remove |
+| Multi-show workspace      | Up to 32 shows; switch/create/delete |
+| Show metadata             | Name + ISO date per show |
+| Warning slot visuals      | Same for absent and deleted-from-roster |
+| Player order              | Append-only |
+| Print                     | Title, date, scenes + cast |
+| Persistence               | `localStorage` workspace |
+| Theme                     | Light / dark / system |
+| i18n                      | i18next + ICU; English only |
+| Export / import           | Post-MVP |
+| Mobile                    | Dropdowns/selects for slots |
+| Back-to-back cast warning | Post-MVP |
+| Venue on print            | Post-MVP |
+| Terminology               | UI: **Absent**; code: `isAbsent` |

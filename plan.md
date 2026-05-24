@@ -1,170 +1,196 @@
 # Implementation Plan
 
-Roadmap for building the Improv Running Order app. Product behavior and data rules live in [`spec.md`](spec.md); this file tracks **how** to build it in sensible chunks.
+Roadmap for building the Improv Show app. Product behavior and data rules live in [`spec.md`](spec.md); this file tracks **how** to build it and what’s left.
 
 ## Component architecture
 
 Layered folders under `src/components/` — **no barrel `index.ts` files**; import from the module path.
 
-| Layer       | Path                                              | Role                                                                        |
-| ----------- | ------------------------------------------------- | --------------------------------------------------------------------------- |
-| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed; ESLint exception for variant exports) |
-| **layout**  | `components/layout/`                              | App chrome — shell, header, loading screen, shared panel wrapper            |
-| **shared**  | `components/shared/`                              | Cross-feature UI (e.g. `EmptyState`, future `CastSlot`)                     |
-| **feature** | `components/roster/`, `components/running-order/` | Domain panels composed of feature-specific subcomponents                    |
-| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                |
+| Layer       | Path                                              | Role |
+| ----------- | ------------------------------------------------- | ---- |
+| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed) |
+| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, loading, panel wrapper, show switcher, date picker, dialogs |
+| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `AllPlaySlot`) |
+| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents |
+| **theme**   | `components/theme/`                               | Theme provider, hook, toggle |
+| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview |
 
-**Composition flow:** `App.tsx` → layout → feature panel → feature list/item → `ui` + `shared`.
+**Composition flow:** `App.tsx` → `AppShell` (header + content + footer) → feature panels → list/item → `ui` + `shared`.
 
 **Conventions:**
 
-- Feature **panels** (`RosterPanel`, `RunningOrderPanel`) wire store + compose children; keep business logic in `store/`.
-- **List/item** pairs live in the feature folder (`RosterList` / `RosterListItem`).
-- New step 5 pieces: `RosterQuickAdd`, `PersonRow`, `SceneCard`, `CastSlot` in their feature or `shared/` folders.
+- Feature **panels** wire store + compose children; business logic lives in `store/` and `lib/`.
+- User-visible strings live in `src/locales/en.json` (i18next + ICU).
+- Code folder `running-order/` maps to UI label **Lineup**; persisted domain entity is **Show**.
 
 ## Status
 
-| Step | Description                        | Status |
-| ---- | ---------------------------------- | ------ |
-| 1    | Vite + React + TypeScript scaffold | Done   |
-| 2    | Tailwind + shadcn/ui               | Done   |
-| 3    | Types + Zustand store              | Done   |
-| 4    | Static two-column layout           | Done   |
-| 5    | Roster + scenes (no drag)          | Done   |
-| 6    | Desktop drag-and-drop              | Done   |
-| 7    | Mobile assignment (dropdowns)      | Done   |
-| 8    | Print styles                       | Done   |
-| 9    | Polish & edge cases                | Done   |
+| Step | Description | Status |
+| ---- | ----------- | ------ |
+| 1 | Vite + React + TypeScript scaffold | Done |
+| 2 | Tailwind + shadcn/ui | Done |
+| 3 | Types + Zustand store | Done |
+| 4 | Static two-column layout | Done |
+| 5 | Roster + scenes (no drag) | Done |
+| 6 | Desktop drag-and-drop | Done |
+| 7 | Mobile assignment (dropdowns) | Done |
+| 8 | Print styles | Done |
+| 9 | Polish & edge cases | Done |
+| 10 | Show metadata (name + date) | Done |
+| 11 | Multi-show workspace | Done |
+| 12 | All play scenes | Done |
+| 13 | Print preview + fit-to-page | Done |
+| 14 | i18n (i18next + ICU) | Done |
+| 15 | Input sanitization + persist hydration | Done |
+| 16 | App footer | Done |
 
 ---
 
 ## 1. Scaffold — Done
 
-- [x] `npm create vite@latest` — React + TypeScript
-- [x] `package.json`: ESM (`"type": "module"`), license `GPL-2.0-only`, app scripts (`dev`, `build`, `preview`, `lint`)
-
-**Cleanup:** Default Vite demo removed; minimal shell with app title only.
+- [x] Vite + React + TypeScript
+- [x] `package.json`: ESM, `GPL-2.0-only`, app scripts
+- [x] GitHub Actions CI and Pages deploy
 
 ---
 
 ## 2. Design system — Done
 
-- [x] Tailwind CSS + `@tailwindcss/vite`
-- [x] shadcn/ui init (`radix-nova`, Lucide, Geist)
-- [x] Components in `src/components/ui/`: `button`, `input`, `card`, `badge`, `alert-dialog`, `dropdown-menu`, `select`
-- [x] Path fix: `components.json` uses `src/...` paths (not `@/...`) so CLI does not create a literal `@/` folder; root `tsconfig.json` includes `@/*` → `./src/*` for validation
-- [ ] Prefer component **variants** over custom class strings; avoid new `.css` files except minimal print rules (per spec §7)
-
-**Dependencies to add (when implementing):** `zustand`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `lucide-react`, `tailwindcss`, shadcn peer deps as prompted by CLI.
+- [x] Tailwind CSS 4 + `@tailwindcss/vite`
+- [x] shadcn/ui (`radix-nova`, Lucide, Geist)
+- [x] Components: `button`, `input`, `card`, `badge`, `alert-dialog`, `dropdown-menu`, `select`, `popover`, `calendar`, `spinner`, `empty`
+- [x] `ThemeProvider` — light / dark / system toggle in header
 
 ---
 
 ## 3. Types + Zustand store — Done
 
-- [x] `src/types/app.ts` — `Person`, `Scene`, IDs, `DeletePersonMode`, `PersistedState`
-- [x] `src/store/useAppStore.ts` — all spec actions + invariants
-- [x] `src/store/selectors.ts` — active/castable persons, lookups
+- [x] `src/types/app.ts` — `Person`, `Scene`, `ShowRecord`, workspace types
+- [x] `src/store/useAppStore.ts` — roster, scene, cast, show, and workspace actions
+- [x] `src/store/selectors.ts` — active/castable persons, sorted lists, slot resolution
 - [x] `src/store/useAppHydration.ts` — gate UI until `localStorage` rehydrates
-- [x] `persist` → key `improv-running-order`; partialize `persons` + `scenes` only
-- Import directly from module paths (no barrel `index.ts` files)
+- [x] `persist` → key `improv-running-order`; partialize `activeShowId` + `shows[]`
+- [x] `hydrate-persisted-state.ts` — parse, normalize, sanitize on load
+- [x] `migrate-persisted-state.ts` — `PERSIST_VERSION` + `migrate` hook (no legacy migrations; ready for future bumps)
 
 ---
 
-## 4. Static layout (no drag yet) — Done
+## 4. Static layout — Done
 
-- [x] Two-column shell: **Roster** (left) | **Running order** (right)
-- [x] Empty states when roster / scenes are empty
-- [x] Page header; desktop-first (`md:` side-by-side, stacked on narrow viewports)
-- [x] `useAppHydration()` gate before rendering persisted UI
-- [x] `print:hidden` on header and roster column (print step builds on this)
-- Hydration loading uses **`Spinner`**; consider **`Skeleton`** placeholders once layout/content design is stable
-- **`ThemeProvider`** — default `system`; follows OS `prefers-color-scheme`; Light / Dark / System toggle in header
+- [x] Two-column shell: **Roster** (left) | **Lineup** (right)
+- [x] `AppHeader`, `AppFooter`, `PanelShell`, empty states
+- [x] Desktop-first (`md:` side-by-side; stacked on narrow viewports)
+- [x] Hydration gate before persisted UI
 
 ---
 
-## 5. Roster + scenes without drag
+## 5. Roster + scenes — Done
 
-Wire UI to the store before adding `@dnd-kit`.
-
-### Roster — Done
-
-- [x] Quick-add person (`Input` + Enter / button)
-- [x] List active persons only (`!isDeleted`)
-- [x] Rename person
-- [x] Delete person → `AlertDialog` with mode choice: **clear all scenes** vs **keep assignments** (warning slots)
-- [x] Mark **Absent** → confirm when turning on; no confirm when clearing absent
-- [x] Absent styling in roster; absent persons not draggable (`data-draggable="false"`, step 6)
-
-### Running order — Done
-
-- [x] Quick-add scene
-- [x] Scene cards: name (rename), remove scene (confirm), host slot, players list
-- [x] Assign host/players via **Select** controls before DnD; empty drop zones stubbed (`data-drop-zone`)
-- [x] `CastSlot` shared component: normal vs **warning** slot (`isAbsent || isDeleted`) — same visual per spec
-- [x] Remove host/player with `X` (no confirm)
-- [x] Resolve person by id; orphan fallback label if missing
+- [x] Quick-add, rename, delete (with mode), mark absent
+- [x] `CastSlot` / `AllPlaySlot` — normal vs warning slots
+- [x] Scene cards: host, players, all play, rename, remove
+- [x] Roster sorted present A–Z then absent A–Z; castable lists alphabetized
 
 ---
 
 ## 6. Desktop drag-and-drop — Done
 
-- [x] Install `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
-- [x] **Scene list:** sortable reorder → `reorderScenes`
-- [x] **Roster → scenes:** drag with **DragOverlay** clone; roster item stays in place (stamp palette)
-- [x] Valid sources: non-absent, non-deleted persons only
-- [x] Host zone: max one; drop replaces
-- [x] Players zone: append; dedupe on drop
-- [x] Multiple contexts / sensors / collision detection so scene sort vs casting don’t conflict
-- [x] Scrollable columns behave well while dragging
+- [x] Scene reorder + roster → scene casting via `@dnd-kit`
+- [x] DragOverlay stamp palette; scrollable columns
 
 ---
 
 ## 7. Mobile assignment — Done
 
-- [x] Breakpoint strategy (`md:`): base UI is mobile; desktop DnD and inline cast zones at `md+`
-- [x] Below `md`: host + each player slot use shadcn `Select` from active, non-absent roster (`PersonSlotSelect`)
-- [x] Scene reorder on mobile: up/down buttons (`SceneReorderButtons`); sortable DnD at `md+` only
-- [x] Mobile-first layout: stacked cast sections, full-width selects; roster hover highlight at `md+` only
+- [x] `PersonSlotSelect` / `PersonAssignSelect` below `md`
+- [x] `SceneReorderButtons` below `md`
 
 ---
 
 ## 8. Print — Done
 
-- [x] Tailwind `print:` modifiers + minimal global `@media print` rules (`index.css`)
-- [x] Hide: roster column, inputs, drag handles, remove buttons, dialogs/chrome (interactive panel wrapped in `print:hidden`)
-- [x] Show: running order full width via `RunningOrderPrintView` (scenes + host + players; ink-friendly black on white)
-- [x] MVP print header: scenes + cast only (no show title/date/venue) — spec Option A
+- [x] `RunningOrderPrintView` — show title + date + scene/cast lines
+- [x] `print:hidden` on chrome; `@media print` in `index.css`
+- [x] `PrintPreviewToggle` + off-screen print target
+- [x] `usePrintFitScale` / `lib/print-fit.ts` for fit-to-page
 
 ---
 
 ## 9. Polish & edge cases — Done
 
-- [x] Keyboard: Enter submits quick-adds (native `<form>`); input refocus after add; rename dialogs submit on Enter with `autoFocus`
-- [x] a11y: visible/sr-only labels on forms; Radix `AlertDialog` focus trap; sr-only help + `aria-describedby` on drag handles (mobile selects / reorder buttons as alternatives)
-- [x] Persisted data: `version` + `migrate` in Zustand persist (`migrate-persisted-state.ts`) with schema normalization
-- [x] CI: `.github/workflows/ci.yml` runs `npm run check`; deploy runs `check:pages`
-
-### Post-MVP (do not block MVP)
-
-- Export / import JSON
-- Back-to-back cast warning (same person in consecutive scenes)
-- Richer print metadata (title, date, venue)
+- [x] Keyboard: Enter on quick-adds and rename dialogs
+- [x] a11y: labels, sr-only headings, `role="status"`, scene list as `ol`
+- [x] CI: `npm run check` on PRs; `check:pages` on deploy
+- [x] Roster hover highlight synced to lineup slots
 
 ---
 
-## Suggested PR / commit chunks
+## 10. Show metadata — Done
 
-1. Tailwind + shadcn + empty two-column shell
-2. Store + types + persist
-3. Roster + scene CRUD + warning slots + confirmations
-4. Desktop DnD
-5. Mobile selects
-6. Print
-7. Polish
+- [x] `showName` + `showDate` on `PersistedState`
+- [x] `RenameShowDialog`, `ShowDatePicker` in header
+- [x] Print header uses title and formatted date
+- [x] Default name: "Untitled Show"
+
+---
+
+## 11. Multi-show workspace — Done
+
+- [x] `WorkspacePersistedState` — `activeShowId`, `shows[]`
+- [x] `createShow`, `switchShow`, `deleteShow` actions
+- [x] `ShowSwitcher` — upcoming vs past sections; sort by date then name
+- [x] `DeleteShowDialog`; max 32 shows (`INPUT_LIMITS.maxShows`)
+
+---
+
+## 12. All play — Done
+
+- [x] `isAllPlay` on `Scene`; `setAllPlay` store action
+- [x] `SetAllPlayDialog` when players are assigned
+- [x] Print suffix `+ ALL PLAY`
+
+---
+
+## 13. Print preview + fit-to-page — Done
+
+- [x] `usePrintPreviewStore` toggles screen preview mode
+- [x] Dynamic font scaling for long lineups
+
+---
+
+## 14. i18n — Done
+
+- [x] `i18next`, `i18next-icu`, `react-i18next`
+- [x] `src/locales/en.json` — all UI strings
+- [x] `lib/i18n-labels.ts`, print/date formatters use i18n
+
+---
+
+## 15. Input sanitization + persist hydration — Done
+
+- [x] `lib/input-security.ts` — limits, sanitization, `canAdd*` guards
+- [x] `hydrate-persisted-state.ts` — normalize workspace on load
+- [x] `migrate-persisted-state.ts` — version scaffold (legacy migrations removed; bump `PERSIST_VERSION` when schema changes)
+
+---
+
+## 16. App footer — Done
+
+- [x] Author credit, GitHub issues link, GPL-2.0 summary with license link
+- [x] `Trans` for inline links; hidden when printing
+
+---
+
+## Post-MVP (not yet implemented)
+
+- [ ] Export / import JSON
+- [ ] Back-to-back cast warning (same person in consecutive scenes)
+- [ ] Venue field on show + print output
+- [ ] Additional locales beyond English
 
 ---
 
 ## References
 
-- [`spec.md`](spec.md) — requirements, data model, MVP decisions
-- [`README.md`](README.md) — project intro (update with dev commands when helpful)
+- [`spec.md`](spec.md) — requirements, data model, product decisions
+- [`README.md`](README.md) — setup, scripts, deploy
