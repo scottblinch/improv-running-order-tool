@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 import type { SceneId } from '@/types/app';
 
@@ -15,6 +16,7 @@ export function SceneReorderButtons({
   index,
   sceneCount,
 }: SceneReorderButtonsProps) {
+  const { t } = useTranslation();
   const moveScene = useAppStore((state) => state.moveScene);
 
   return (
@@ -24,7 +26,7 @@ export function SceneReorderButtons({
         variant="outline"
         size="icon-sm"
         className="size-7"
-        aria-label="Move scene up"
+        aria-label={t('runningOrder.moveUp')}
         disabled={index === 0}
         onClick={() => moveScene(sceneId, 'up')}
       >
@@ -35,7 +37,7 @@ export function SceneReorderButtons({
         variant="outline"
         size="icon-sm"
         className="size-7"
-        aria-label="Move scene down"
+        aria-label={t('runningOrder.moveDown')}
         disabled={index >= sceneCount - 1}
         onClick={() => moveScene(sceneId, 'down')}
       >

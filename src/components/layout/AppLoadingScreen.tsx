@@ -1,6 +1,9 @@
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslation } from '@/i18n';
 
 export function AppLoadingScreen() {
+  const { t } = useTranslation();
+
   return (
     <div
       aria-busy
@@ -8,7 +11,7 @@ export function AppLoadingScreen() {
     >
       <Spinner aria-hidden className="size-5 text-muted-foreground" />
       <p className="sr-only" role="status">
-        Loading application
+        {t('app.loading')}
       </p>
     </div>
   );

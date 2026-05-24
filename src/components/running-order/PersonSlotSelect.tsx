@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n';
 import type { Person, PersonId } from '@/types/app';
 
 const CLEAR_VALUE = '__clear__';
@@ -29,6 +30,8 @@ export function PersonSlotSelect({
   onClear,
   className,
 }: PersonSlotSelectProps) {
+  const { t } = useTranslation();
+
   return (
     <Select
       value={value ?? undefined}
@@ -46,7 +49,9 @@ export function PersonSlotSelect({
       </SelectTrigger>
       <SelectContent>
         {onClear && value ? (
-          <SelectItem value={CLEAR_VALUE}>Unassigned</SelectItem>
+          <SelectItem value={CLEAR_VALUE}>
+            {t('runningOrder.unassigned')}
+          </SelectItem>
         ) : null}
         {persons.map((person) => {
           const isWarning = person.isAbsent || person.isDeleted;
@@ -57,7 +62,9 @@ export function PersonSlotSelect({
                 <span className="flex items-center gap-1.5">
                   <TriangleAlert aria-hidden className="size-3.5 shrink-0" />
                   {person.name}
-                  {person.isAbsent ? ' (Absent)' : ' (Removed)'}
+                  {person.isAbsent
+                    ? ` (${t('roster.absent')})`
+                    : ` (${t('fallback.removed')})`}
                 </span>
               ) : (
                 person.name

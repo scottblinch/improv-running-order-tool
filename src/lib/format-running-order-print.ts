@@ -1,3 +1,5 @@
+import i18n from '@/i18n';
+import { formatWarningLabel } from '@/lib/i18n-labels';
 import { resolveSlotDisplay, selectScenePlayerIds } from '@/store/selectors';
 import type { Person, PersonId, Scene } from '@/types/app';
 
@@ -9,7 +11,10 @@ function formatPersonNameForPrint(
   let name = slot.name.toUpperCase();
 
   if (slot.isWarning && slot.warningLabel) {
-    name = `${name} (${slot.warningLabel.toUpperCase()})`;
+    name = i18n.t('print.warningSuffix', {
+      name,
+      warning: formatWarningLabel(slot.warningLabel).toUpperCase(),
+    });
   }
 
   return name;
@@ -30,16 +35,20 @@ export function formatRunningOrderCastSuffix(
   const segments: string[] = [];
 
   if (hostId) {
-    segments.push(`${formatPersonNameForPrint(persons, hostId)} HOST`);
+    segments.push(
+      i18n.t('print.hostSuffix', {
+        name: formatPersonNameForPrint(persons, hostId),
+      }),
+    );
   }
 
   if (isAllPlay) {
-    segments.push('+ ALL PLAY');
+    segments.push(i18n.t('print.allPlaySuffix'));
   } else if (playerIds.length > 0) {
     const names = selectScenePlayerIds(persons, playerIds)
       .map((playerId) => formatPersonNameForPrint(persons, playerId))
       .join(', ');
-    segments.push(`+ ${names} PLAY`);
+    segments.push(i18n.t('print.playersSuffix', { names }));
   }
 
   return segments.join(' ');

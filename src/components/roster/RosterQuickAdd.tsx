@@ -2,10 +2,12 @@ import { type FormEvent, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
 import { useAppStore } from '@/store/useAppStore';
 
 export function RosterQuickAdd() {
+  const { t } = useTranslation();
   const addPerson = useAppStore((state) => state.addPerson);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,16 +32,16 @@ export function RosterQuickAdd() {
         ref={inputRef}
         name="performerName"
         autoComplete="off"
-        aria-label="Performer name"
-        placeholder="Performer name"
+        aria-label={t('roster.performerName')}
+        placeholder={t('roster.performerName')}
         maxLength={INPUT_LIMITS.maxPersonNameLength}
         required
         pattern=".*\S.*"
-        title="Enter a performer name."
+        title={t('roster.performerNameRequired')}
         className="min-w-0 flex-1"
       />
       <Button type="submit" className="shrink-0">
-        Add
+        {t('common.add')}
       </Button>
     </form>
   );

@@ -2,10 +2,12 @@ import { type FormEvent, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
 import { useAppStore } from '@/store/useAppStore';
 
 export function SceneQuickAdd() {
+  const { t } = useTranslation();
   const addScene = useAppStore((state) => state.addScene);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,16 +32,16 @@ export function SceneQuickAdd() {
         ref={inputRef}
         name="sceneName"
         autoComplete="off"
-        aria-label="Scene name"
-        placeholder="Scene name"
+        aria-label={t('runningOrder.sceneName')}
+        placeholder={t('runningOrder.sceneName')}
         maxLength={INPUT_LIMITS.maxSceneNameLength}
         required
         pattern=".*\S.*"
-        title="Enter a scene name."
+        title={t('runningOrder.sceneNameRequired')}
         className="min-w-0 flex-1"
       />
       <Button type="submit" className="shrink-0">
-        Add
+        {t('common.add')}
       </Button>
     </form>
   );

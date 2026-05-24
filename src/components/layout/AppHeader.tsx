@@ -8,10 +8,12 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatShowDisplayName } from '@/lib/show-date';
+import { useTranslation } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function AppHeader() {
+  const { t } = useTranslation();
   const printPreview = usePrintPreviewStore((state) => state.enabled);
   const showName = useAppStore((state) => state.showName);
   const setShowName = useAppStore((state) => state.setShowName);
@@ -35,7 +37,7 @@ export function AppHeader() {
               variant="outline"
               size="icon"
               className="shrink-0"
-              aria-label="Rename show"
+              aria-label={t('header.renameShow')}
               onClick={() => setRenameOpen(true)}
             >
               <Pencil aria-hidden className="size-4" />

@@ -3,11 +3,13 @@ import { Users } from 'lucide-react';
 import { RosterList } from '@/components/roster/RosterList';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { useTranslation } from '@/i18n';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { selectActivePersons } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 
 export function RosterPanel() {
+  const { t } = useTranslation();
   const persons = useAppStore((state) => state.persons);
   const activePersons = selectActivePersons(persons);
 
@@ -15,18 +17,17 @@ export function RosterPanel() {
     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
       <div className="flex flex-col gap-2">
         <h2 id="roster-heading" className="sr-only">
-          Roster
+          {t('roster.heading')}
         </h2>
         <p id={ROSTER_CASTING_HELP_ID} className="sr-only">
-          On desktop, drag performers into scene slots. On mobile, assign cast
-          using the dropdown menus in each scene.
+          {t('roster.castingHelp')}
         </p>
         <RosterQuickAdd />
         {activePersons.length === 0 ? (
           <EmptyState
             icon={<Users aria-hidden className="size-4" />}
-            title="No performers yet"
-            description="Add someone above to start building your roster."
+            title={t('roster.emptyTitle')}
+            description={t('roster.emptyDescription')}
           />
         ) : (
           <RosterList persons={activePersons} />

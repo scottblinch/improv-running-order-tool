@@ -5,11 +5,13 @@ import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPr
 import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { useTranslation } from '@/i18n';
 import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { useAppStore } from '@/store/useAppStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function RunningOrderPanel() {
+  const { t } = useTranslation();
   const scenes = useAppStore((state) => state.scenes);
   const printPreview = usePrintPreviewStore((state) => state.enabled);
 
@@ -27,18 +29,17 @@ export function RunningOrderPanel() {
         <PanelShell>
           <div className="flex flex-col gap-2">
             <h2 id="running-order-heading" className="sr-only">
-              Running order
+              {t('runningOrder.heading')}
             </h2>
             <p id={SCENE_REORDER_HELP_ID} className="sr-only">
-              On desktop, drag scenes to reorder. On mobile, use the up and down
-              buttons on each scene card.
+              {t('runningOrder.reorderHelp')}
             </p>
             <SceneQuickAdd />
             {scenes.length === 0 ? (
               <EmptyState
                 icon={<Clapperboard aria-hidden className="size-4" />}
-                title="No scenes yet"
-                description="Add a scene above to start building the lineup."
+                title={t('runningOrder.emptyTitle')}
+                description={t('runningOrder.emptyDescription')}
               />
             ) : (
               <SceneList scenes={scenes} />

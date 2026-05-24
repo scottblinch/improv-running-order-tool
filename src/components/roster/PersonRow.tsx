@@ -26,39 +26,22 @@ import {
 import { cn } from '@/lib/utils';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { rosterPersonDragId } from '@/lib/dnd-ids';
+import { formatPersonRowLabel, formatRoleCountLabel } from '@/lib/i18n-labels';
 import {
   countPersonSceneRoles,
   personHasSceneAssignments,
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { useHoverStore } from '@/store/useHoverStore';
+import { useTranslation } from '@/i18n';
 import type { Person } from '@/types/app';
-
-function formatRoleCountLabel(role: 'Host' | 'Player', count: number): string {
-  const noun = count === 1 ? 'scene' : 'scenes';
-  return `${role} in ${count} ${noun}`;
-}
-
-function formatRowLabel(
-  name: string,
-  isAbsent: boolean,
-  hostCount: number,
-  playerCount: number,
-): string {
-  const parts = [
-    isAbsent ? 'absent' : null,
-    formatRoleCountLabel('Host', hostCount),
-    formatRoleCountLabel('Player', playerCount),
-  ].filter(Boolean);
-
-  return `${name}, ${parts.join(', ')}`;
-}
 
 type PersonRowProps = {
   person: Person;
 };
 
 export function PersonRow({ person }: PersonRowProps) {
+  const { t } = useTranslation();
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
   const renamePerson = useAppStore((state) => state.renamePerson);
@@ -85,7 +68,7 @@ export function PersonRow({ person }: PersonRowProps) {
     persons,
   );
 
-  const rowLabel = formatRowLabel(
+  const rowLabel = formatPersonRowLabel(
     person.name,
     person.isAbsent,
     hostCount,
@@ -131,7 +114,7 @@ export function PersonRow({ person }: PersonRowProps) {
               variant="ghost"
               size="icon-sm"
               className="hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
-              aria-label={`Drag ${person.name}`}
+              aria-label={t('roster.dragPerformer', { name: person.name })}
               disabled={!canDrag}
               {...listeners}
               {...attributes}
@@ -152,14 +135,14 @@ export function PersonRow({ person }: PersonRowProps) {
             <Badge
               variant="secondary"
               className="shrink-0"
-              aria-label={formatRoleCountLabel('Host', hostCount)}
+              aria-label={formatRoleCountLabel('host', hostCount)}
             >
               H: {hostCount}
             </Badge>
             <Badge
               variant="outline"
               className="shrink-0"
-              aria-label={formatRoleCountLabel('Player', playerCount)}
+              aria-label={formatRoleCountLabel('player', playerCount)}
             >
               {playerCount === 0 ? (
                 <TriangleAlert aria-hidden className="size-3" />
@@ -168,7 +151,7 @@ export function PersonRow({ person }: PersonRowProps) {
             </Badge>
             {person.isAbsent ? (
               <Badge variant="destructive" className="shrink-0">
-                Absent
+                {t('roster.absent')}
               </Badge>
             ) : null}
           </div>
@@ -180,7 +163,7 @@ export function PersonRow({ person }: PersonRowProps) {
               variant="ghost"
               size="icon-sm"
               className="shrink-0"
-              aria-label={`Actions for ${person.name}`}
+              aria-label={t('roster.actionsFor', { name: person.name })}
             >
               <MoreHorizontal aria-hidden className="size-4" />
             </Button>
@@ -193,18 +176,18 @@ export function PersonRow({ person }: PersonRowProps) {
               }}
             >
               <Pencil aria-hidden className="size-4" />
-              Rename
+              {t('common.rename')}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={handleAbsent}>
               {person.isAbsent ? (
                 <>
                   <UserCheck aria-hidden className="size-4" />
-                  Clear absent
+                  {t('roster.clearAbsent')}
                 </>
               ) : (
                 <>
                   <UserX aria-hidden className="size-4" />
-                  Mark absent
+                  {t('roster.markAbsent')}
                 </>
               )}
             </DropdownMenuItem>
@@ -214,7 +197,7 @@ export function PersonRow({ person }: PersonRowProps) {
               onSelect={() => setDeleteOpen(true)}
             >
               <Trash2 aria-hidden className="size-4" />
-              Delete
+              {t('common.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

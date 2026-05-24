@@ -3,7 +3,9 @@ import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { formatWarningLabel } from '@/lib/i18n-labels';
 import { useHoverStore } from '@/store/useHoverStore';
+import { useTranslation } from '@/i18n';
 import type { PersonId } from '@/types/app';
 
 type CastSlotProps = {
@@ -23,6 +25,7 @@ export function CastSlot({
   inline = false,
   onRemove,
 }: CastSlotProps) {
+  const { t } = useTranslation();
   const isHighlighted = useHoverStore(
     (state) => state.hoveredPersonId === personId,
   );
@@ -51,7 +54,7 @@ export function CastSlot({
       </span>
       {isWarning && warningLabel ? (
         <Badge variant="destructive" className="shrink-0">
-          {warningLabel}
+          {formatWarningLabel(warningLabel)}
         </Badge>
       ) : null}
       {onRemove ? (
@@ -60,7 +63,7 @@ export function CastSlot({
           variant="ghost"
           size="icon-sm"
           className="shrink-0"
-          aria-label={`Remove ${name}`}
+          aria-label={t('runningOrder.removePlayer', { name })}
           onClick={onRemove}
         >
           <X aria-hidden className="size-4" />

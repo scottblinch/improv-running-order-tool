@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useTranslation } from '@/i18n';
 
 type RemoveSceneDialogProps = {
   open: boolean;
@@ -22,17 +23,21 @@ export function RemoveSceneDialog({
   sceneName,
   onConfirm,
 }: RemoveSceneDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Remove {sceneName}?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t('runningOrder.removeTitle', { name: sceneName })}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This removes the scene and all host and player assignments for it.
+            {t('runningOrder.removeDescription')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             onClick={() => {
@@ -40,7 +45,7 @@ export function RemoveSceneDialog({
               onOpenChange(false);
             }}
           >
-            Remove scene
+            {t('runningOrder.removeScene')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -27,6 +27,7 @@ import {
 import { sceneDragId } from '@/lib/dnd-ids';
 import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
 
@@ -37,6 +38,7 @@ type SceneCardProps = {
 };
 
 export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
+  const { t } = useTranslation();
   const renameScene = useAppStore((state) => state.renameScene);
   const removeScene = useAppStore((state) => state.removeScene);
   const setAllPlay = useAppStore((state) => state.setAllPlay);
@@ -80,7 +82,10 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
       <li
         ref={setNodeRef}
         style={style}
-        aria-label={`Scene ${index + 1}: ${scene.name}`}
+        aria-label={t('runningOrder.sceneLabel', {
+          index: index + 1,
+          name: scene.name,
+        })}
         className={cn(
           'rounded-xl border bg-card px-4 py-2 ring-1 ring-foreground/10',
           isDragging && 'opacity-50',
@@ -93,7 +98,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               variant="ghost"
               size="icon-sm"
               className="mt-0.5 hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
-              aria-label={`Reorder ${scene.name}`}
+              aria-label={t('runningOrder.reorderScene', { name: scene.name })}
               disabled={!desktopDndEnabled}
               {...listeners}
               {...attributes}
@@ -120,7 +125,9 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
                 variant="ghost"
                 size="icon-sm"
                 className="shrink-0"
-                aria-label={`Actions for ${scene.name}`}
+                aria-label={t('runningOrder.actionsForScene', {
+                  name: scene.name,
+                })}
               >
                 <MoreHorizontal aria-hidden className="size-4" />
               </Button>
@@ -128,12 +135,12 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
                 <Pencil aria-hidden className="size-4" />
-                Rename
+                {t('common.rename')}
               </DropdownMenuItem>
               {!scene.isAllPlay ? (
                 <DropdownMenuItem onSelect={handleAllPlaySelect}>
                   <Users aria-hidden className="size-4" />
-                  All play
+                  {t('common.allPlay')}
                 </DropdownMenuItem>
               ) : null}
               <DropdownMenuSeparator />
@@ -142,7 +149,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
                 onSelect={() => setRemoveOpen(true)}
               >
                 <Trash2 aria-hidden className="size-4" />
-                Remove scene
+                {t('runningOrder.removeScene')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -154,7 +161,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             className="flex min-w-0 items-center gap-2"
           >
             <span id={`${scene.id}-host-label`} className="sr-only">
-              Host
+              {t('common.host')}
             </span>
             <span
               aria-hidden
@@ -170,7 +177,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             className="flex min-w-0 flex-1 items-center gap-2"
           >
             <span id={`${scene.id}-players-label`} className="sr-only">
-              Players
+              {t('common.players')}
             </span>
             <span
               aria-hidden

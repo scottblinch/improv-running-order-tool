@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useTranslation } from '@/i18n';
 
 type SetAllPlayDialogProps = {
   open: boolean;
@@ -24,27 +25,29 @@ export function SetAllPlayDialog({
   playerCount,
   onConfirm,
 }: SetAllPlayDialogProps) {
-  const playerNoun = playerCount === 1 ? 'player' : 'players';
+  const { t } = useTranslation();
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Switch to all play?</AlertDialogTitle>
+          <AlertDialogTitle>{t('runningOrder.allPlayTitle')}</AlertDialogTitle>
           <AlertDialogDescription>
-            This removes {playerCount} assigned {playerNoun} from {sceneName}{' '}
-            and marks the scene as all play.
+            {t('runningOrder.allPlayDescription', {
+              count: playerCount,
+              sceneName,
+            })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
               onConfirm();
               onOpenChange(false);
             }}
           >
-            Switch to all play
+            {t('runningOrder.switchToAllPlay')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

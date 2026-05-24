@@ -1,4 +1,5 @@
 import { PersonRow } from '@/components/roster/PersonRow';
+import { useTranslation } from '@/i18n';
 import type { Person } from '@/types/app';
 
 type RosterListProps = {
@@ -6,8 +7,10 @@ type RosterListProps = {
 };
 
 export function RosterList({ persons }: RosterListProps) {
+  const { t } = useTranslation();
+
   return (
-    <ul aria-label="Performers on roster" className="space-y-2">
+    <ul aria-label={t('roster.listLabel')} className="space-y-2">
       {persons.map((person) => (
         <PersonRow key={person.id} person={person} />
       ))}

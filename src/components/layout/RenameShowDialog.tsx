@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
 
 type RenameShowDialogProps = {
@@ -31,6 +32,7 @@ function RenameShowDialogForm({
   onConfirm,
   onOpenChange,
 }: RenameShowDialogFormProps) {
+  const { t } = useTranslation();
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -57,15 +59,14 @@ function RenameShowDialogForm({
   return (
     <form onSubmit={handleSubmit}>
       <AlertDialogHeader>
-        <AlertDialogTitle>Rename show</AlertDialogTitle>
+        <AlertDialogTitle>{t('show.renameTitle')}</AlertDialogTitle>
         <AlertDialogDescription>
-          Set the show name for the header and printout. Leave blank to use
-          &ldquo;Running Order&rdquo;.
+          {t('show.renameDescription')}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
         <label htmlFor={inputId} className="sr-only">
-          Show name
+          {t('show.showName')}
         </label>
         <Input
           ref={inputRef}
@@ -75,12 +76,14 @@ function RenameShowDialogForm({
           autoComplete="off"
           autoFocus
           maxLength={INPUT_LIMITS.maxShowNameLength}
-          placeholder="Running Order"
+          placeholder={t('app.defaultShowName')}
         />
       </div>
       <AlertDialogFooter>
-        <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-        <Button type="submit">Save</Button>
+        <AlertDialogCancel type="button">
+          {t('common.cancel')}
+        </AlertDialogCancel>
+        <Button type="submit">{t('common.save')}</Button>
       </AlertDialogFooter>
     </form>
   );

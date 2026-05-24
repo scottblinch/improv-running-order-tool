@@ -13,6 +13,7 @@ import {
   selectScenePlayerIds,
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
+import { useTranslation } from '@/i18n';
 import type { Scene } from '@/types/app';
 
 type PlayersCastControlProps = {
@@ -20,6 +21,7 @@ type PlayersCastControlProps = {
 };
 
 export function PlayersCastControl({ scene }: PlayersCastControlProps) {
+  const { t } = useTranslation();
   const persons = useAppStore((state) => state.persons);
   const addPlayer = useAppStore((state) => state.addPlayer);
   const replacePlayer = useAppStore((state) => state.replacePlayer);
@@ -54,7 +56,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
       })}
       <PersonAssignSelect
         inline
-        label="Add player"
+        label={t('runningOrder.addPlayer')}
         persons={castablePersons}
         excludedPersonIds={scene.playerIds}
         onAssign={(personId) => addPlayer(scene.id, personId)}
@@ -78,7 +80,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               return (
                 <div key={playerId} className="flex items-center gap-2">
                   <PersonSlotSelect
-                    label="Player"
+                    label={t('common.player')}
                     value={playerId}
                     persons={selectPersonsForSlot(persons, playerId)}
                     onValueChange={(newPersonId) =>
@@ -91,7 +93,9 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
                     variant="ghost"
                     size="icon-sm"
                     className="shrink-0"
-                    aria-label={`Remove ${slot.name}`}
+                    aria-label={t('runningOrder.removePlayer', {
+                      name: slot.name,
+                    })}
                     onClick={() => removePlayer(scene.id, playerId)}
                   >
                     <X aria-hidden className="size-4" />
@@ -100,7 +104,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               );
             })}
             <PersonAssignSelect
-              label="Add player"
+              label={t('runningOrder.addPlayer')}
               persons={castablePersons}
               excludedPersonIds={scene.playerIds}
               onAssign={(personId) => addPlayer(scene.id, personId)}

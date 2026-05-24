@@ -29,6 +29,7 @@ import {
 } from '@/lib/dnd-ids';
 import { getPersonById } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
+import i18n from '@/i18n';
 import type { PersonId, SceneId } from '@/types/app';
 
 type ActiveDrag =
@@ -102,7 +103,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
       setActiveDrag({
         type: 'roster-person',
         personId: data.personId,
-        label: person?.name ?? 'Performer',
+        label: person?.name ?? i18n.t('fallback.performer'),
       });
       return;
     }
@@ -112,7 +113,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
       setActiveDrag({
         type: 'scene',
         sceneId: data.sceneId,
-        label: scene?.name ?? 'Scene',
+        label: scene?.name ?? i18n.t('fallback.scene'),
       });
     }
   };

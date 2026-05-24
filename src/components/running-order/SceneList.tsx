@@ -1,4 +1,5 @@
 import { SceneCard } from '@/components/running-order/SceneCard';
+import { useTranslation } from '@/i18n';
 import type { Scene } from '@/types/app';
 
 type SceneListProps = {
@@ -6,8 +7,10 @@ type SceneListProps = {
 };
 
 export function SceneList({ scenes }: SceneListProps) {
+  const { t } = useTranslation();
+
   return (
-    <ol aria-label="Scenes in running order" className="space-y-2">
+    <ol aria-label={t('runningOrder.listLabel')} className="space-y-2">
       {scenes.map((scene, index) => (
         <SceneCard
           key={scene.id}

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
 
 type RenameSceneDialogProps = {
@@ -31,6 +32,7 @@ function RenameSceneDialogForm({
   onConfirm,
   onOpenChange,
 }: RenameSceneDialogFormProps) {
+  const { t } = useTranslation();
   const inputId = useId();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -50,14 +52,14 @@ function RenameSceneDialogForm({
   return (
     <form onSubmit={handleSubmit}>
       <AlertDialogHeader>
-        <AlertDialogTitle>Rename scene</AlertDialogTitle>
+        <AlertDialogTitle>{t('runningOrder.renameTitle')}</AlertDialogTitle>
         <AlertDialogDescription>
-          Update how this scene appears on the running order.
+          {t('runningOrder.renameDescription')}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
         <label htmlFor={inputId} className="sr-only">
-          Scene name
+          {t('runningOrder.sceneName')}
         </label>
         <Input
           id={inputId}
@@ -68,12 +70,14 @@ function RenameSceneDialogForm({
           maxLength={INPUT_LIMITS.maxSceneNameLength}
           required
           pattern=".*\S.*"
-          title="Enter a scene name."
+          title={t('runningOrder.sceneNameRequired')}
         />
       </div>
       <AlertDialogFooter>
-        <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-        <Button type="submit">Save</Button>
+        <AlertDialogCancel type="button">
+          {t('common.cancel')}
+        </AlertDialogCancel>
+        <Button type="submit">{t('common.save')}</Button>
       </AlertDialogFooter>
     </form>
   );

@@ -1,0 +1,107 @@
+{
+  "app": {
+    "title": "Improv Running Order",
+    "loading": "Loading application",
+    "ready": "Application ready",
+    "defaultShowName": "Running Order"
+  },
+  "common": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "rename": "Rename",
+    "loading": "Loading",
+    "host": "Host",
+    "players": "Players",
+    "player": "Player",
+    "allPlay": "All play"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "print": {
+    "view": "Print view",
+    "exitView": "Exit print view",
+    "runningOrderList": "Running order",
+    "noScenes": "No scenes in running order.",
+    "hostSuffix": "{name} HOST",
+    "allPlaySuffix": "+ ALL PLAY",
+    "playersSuffix": "+ {names} PLAY",
+    "warningSuffix": "{name} ({warning})"
+  },
+  "header": {
+    "renameShow": "Rename show",
+    "showDate": "Show date"
+  },
+  "roster": {
+    "heading": "Roster",
+    "castingHelp": "On desktop, drag performers into scene slots. On mobile, assign cast using the dropdown menus in each scene.",
+    "listLabel": "Performers on roster",
+    "emptyTitle": "No performers yet",
+    "emptyDescription": "Add someone above to start building your roster.",
+    "performerName": "Performer name",
+    "performerNameRequired": "Enter a performer name.",
+    "absent": "Absent",
+    "roleCountHost": "Host in {count, plural, one {# scene} other {# scenes}}",
+    "roleCountPlayer": "Player in {count, plural, one {# scene} other {# scenes}}",
+    "rowLabel": "{name}, {details}",
+    "rowLabelAbsent": "absent",
+    "dragPerformer": "Drag {name}",
+    "actionsFor": "Actions for {name}",
+    "clearAbsent": "Clear absent",
+    "markAbsent": "Mark absent",
+    "renameTitle": "Rename performer",
+    "renameDescription": "Update how this person appears in the roster and scene slots.",
+    "markAbsentTitle": "Mark {name} absent?",
+    "markAbsentDescription": "They will stay in assigned scene slots with a warning style, but cannot be dragged into new slots until cleared.",
+    "deleteTitle": "Delete {name}?",
+    "deleteDescriptionNoAssignments": "They will be permanently removed from the roster.",
+    "deleteDescriptionWithAssignments": "Choose whether to remove their scene assignments or keep them as warning slots on the running order.",
+    "deleteKeepSlots": "Remove from roster, keep scene slots",
+    "deleteClearScenes": "Remove from roster and all scenes"
+  },
+  "runningOrder": {
+    "heading": "Running order",
+    "reorderHelp": "On desktop, drag scenes to reorder. On mobile, use the up and down buttons on each scene card.",
+    "listLabel": "Scenes in running order",
+    "emptyTitle": "No scenes yet",
+    "emptyDescription": "Add a scene above to start building the lineup.",
+    "sceneName": "Scene name",
+    "sceneNameRequired": "Enter a scene name.",
+    "sceneLabel": "Scene {index}: {name}",
+    "reorderScene": "Reorder {name}",
+    "actionsForScene": "Actions for {name}",
+    "removeScene": "Remove scene",
+    "moveUp": "Move scene up",
+    "moveDown": "Move scene down",
+    "assignHost": "Assign host",
+    "addPlayer": "Add player",
+    "removePlayer": "Remove {name}",
+    "removeAllPlay": "Remove all play",
+    "unassigned": "Unassigned",
+    "noPerformersAvailable": "No performers available to assign.",
+    "renameTitle": "Rename scene",
+    "renameDescription": "Update how this scene appears in the running order and printout.",
+    "removeTitle": "Remove {name}?",
+    "removeDescription": "This removes the scene and all host and player assignments for it.",
+    "allPlayTitle": "Switch to all play?",
+    "allPlayDescription": "This removes {count, plural, one {# assigned player} other {# assigned players}} from {sceneName} and marks the scene as all play.",
+    "switchToAllPlay": "Switch to all play"
+  },
+  "show": {
+    "renameTitle": "Rename show",
+    "renameDescription": "Set the show name for the header and printout. Leave blank to use \"Running Order\".",
+    "showName": "Show name"
+  },
+  "fallback": {
+    "unknownPerson": "Unknown",
+    "unknownScene": "Scene",
+    "performer": "Performer",
+    "scene": "Scene",
+    "removed": "Removed"
+  }
+}

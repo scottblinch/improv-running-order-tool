@@ -1,9 +1,11 @@
 import { Printer } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/i18n';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function PrintPreviewToggle() {
+  const { t } = useTranslation();
   const enabled = usePrintPreviewStore((state) => state.enabled);
   const toggle = usePrintPreviewStore((state) => state.toggle);
 
@@ -13,7 +15,7 @@ export function PrintPreviewToggle() {
       variant={enabled ? 'default' : 'outline'}
       size="icon"
       className="shrink-0"
-      aria-label={enabled ? 'Exit print view' : 'Print view'}
+      aria-label={enabled ? t('print.exitView') : t('print.view')}
       aria-pressed={enabled}
       onClick={toggle}
     >

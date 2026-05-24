@@ -8,6 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useTranslation } from '@/i18n';
 import {
   formatPrintDate,
   isoDateToDate,
@@ -16,6 +17,7 @@ import {
 import { useAppStore } from '@/store/useAppStore';
 
 export function ShowDatePicker() {
+  const { t } = useTranslation();
   const showDate = useAppStore((state) => state.showDate);
   const setShowDate = useAppStore((state) => state.setShowDate);
   const [open, setOpen] = useState(false);
@@ -28,7 +30,7 @@ export function ShowDatePicker() {
           type="button"
           variant="outline"
           className="shrink-0 font-normal"
-          aria-label="Show date"
+          aria-label={t('header.showDate')}
         >
           <CalendarIcon aria-hidden className="size-4" />
           {formatPrintDate(showDate)}

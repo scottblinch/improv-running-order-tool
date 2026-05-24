@@ -7,6 +7,7 @@ import {
 import { formatPrintDate, formatShowPrintTitle } from '@/lib/show-date';
 import { BASE_FONT_PX, type PrintFitTarget } from '@/lib/print-fit';
 import { usePrintFitScale } from '@/hooks/usePrintFitScale';
+import { useTranslation } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 import type { Person, Scene } from '@/types/app';
 
@@ -27,6 +28,8 @@ function RunningOrderPrintContent({
   showDate: string;
   persons: Person[];
 }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <header className="mb-[2.5em] text-center print:mb-[1.25em]">
@@ -36,7 +39,7 @@ function RunningOrderPrintContent({
         <p className="mt-[0.5em] text-[1em]">{formatPrintDate(showDate)}</p>
       </header>
 
-      <ol aria-label="Running order">
+      <ol aria-label={t('print.runningOrderList')}>
         {scenes.map((scene) => {
           const castSuffix = formatRunningOrderCastSuffix(persons, scene);
           const sceneName = formatRunningOrderSceneName(scene.name);
@@ -66,6 +69,7 @@ export function RunningOrderPrintView({
   fitToPage = false,
   fitTarget = 'panel',
 }: RunningOrderPrintViewProps) {
+  const { t } = useTranslation();
   const persons = useAppStore((state) => state.persons);
   const showName = useAppStore((state) => state.showName);
   const showDate = useAppStore((state) => state.showDate);
@@ -82,9 +86,7 @@ export function RunningOrderPrintView({
   );
 
   if (scenes.length === 0) {
-    return (
-      <p className="text-sm text-neutral-600">No scenes in running order.</p>
-    );
+    return <p className="text-sm text-neutral-600">{t('print.noScenes')}</p>;
   }
 
   const content = (

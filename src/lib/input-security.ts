@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import type {
   DeletePersonMode,
   PersistedState,
@@ -49,11 +50,11 @@ export function isDeletePersonMode(value: string): value is DeletePersonMode {
 }
 
 function fallbackPersonName(name: string): string {
-  return sanitizePersonName(name) || 'Unknown';
+  return sanitizePersonName(name) || i18n.t('fallback.unknownPerson');
 }
 
 function fallbackSceneName(name: string): string {
-  return sanitizeSceneName(name) || 'Scene';
+  return sanitizeSceneName(name) || i18n.t('fallback.unknownScene');
 }
 
 function normalizePlayerIds(

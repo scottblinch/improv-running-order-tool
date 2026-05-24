@@ -1,3 +1,5 @@
+import i18n from '@/i18n';
+
 export function toIsoDateString(date: Date = new Date()): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -20,20 +22,21 @@ export function isIsoDateString(value: string): boolean {
 }
 
 export function formatPrintDate(isoDate: string): string {
-  if (!isIsoDateString(isoDate)) {
-    return formatPrintDate(toIsoDateString());
-  }
+  const date = isoDateToDate(isoDate) ?? new Date();
 
-  const [year, month, day] = isoDate.split('-');
-  return `${day}/${month}/${year}`;
+  return new Intl.DateTimeFormat(i18n.language, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date);
 }
 
 export function formatShowPrintTitle(showName: string): string {
-  return (showName.trim() || 'Running Order').toUpperCase();
+  return (showName.trim() || i18n.t('app.defaultShowName')).toUpperCase();
 }
 
 export function formatShowDisplayName(showName: string): string {
-  return showName.trim() || 'Running Order';
+  return showName.trim() || i18n.t('app.defaultShowName');
 }
 
 export function isoDateToDate(isoDate: string): Date | undefined {

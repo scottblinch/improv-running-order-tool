@@ -2,6 +2,7 @@ import { Users, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n';
 import { personPlaysInScene } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { useHoverStore } from '@/store/useHoverStore';
@@ -18,6 +19,7 @@ export function AllPlaySlot({
   inline = false,
   onRemove,
 }: AllPlaySlotProps) {
+  const { t } = useTranslation();
   const hoveredPersonId = useHoverStore((state) => state.hoveredPersonId);
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
@@ -38,14 +40,14 @@ export function AllPlaySlot({
       )}
     >
       <Users aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-      <span className="text-sm font-medium">All play</span>
+      <span className="text-sm font-medium">{t('common.allPlay')}</span>
       {onRemove ? (
         <Button
           type="button"
           variant="ghost"
           size="icon-sm"
           className="shrink-0"
-          aria-label="Remove all play"
+          aria-label={t('runningOrder.removeAllPlay')}
           onClick={onRemove}
         >
           <X aria-hidden className="size-4" />

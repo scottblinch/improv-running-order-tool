@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import type { Person, PersonId, Scene } from '@/types/app';
 
 function comparePersonNames(a: Person, b: Person): number {
@@ -64,7 +65,7 @@ export function resolveSlotDisplay(
   if (!person) {
     return {
       personId,
-      name: 'Unknown',
+      name: i18n.t('fallback.unknownPerson'),
       isWarning: true,
     };
   }

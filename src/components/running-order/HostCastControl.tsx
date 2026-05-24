@@ -8,6 +8,7 @@ import {
   selectPersonsForSlot,
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
+import { useTranslation } from '@/i18n';
 import type { Scene } from '@/types/app';
 
 type HostCastControlProps = {
@@ -15,6 +16,7 @@ type HostCastControlProps = {
 };
 
 export function HostCastControl({ scene }: HostCastControlProps) {
+  const { t } = useTranslation();
   const persons = useAppStore((state) => state.persons);
   const assignHost = useAppStore((state) => state.assignHost);
   const removeHost = useAppStore((state) => state.removeHost);
@@ -29,7 +31,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
     <>
       <div className="min-w-0 flex-1 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
         <PersonSlotSelect
-          label="Assign host"
+          label={t('runningOrder.assignHost')}
           value={scene.hostId}
           persons={slotPersons}
           onValueChange={(personId) => assignHost(scene.id, personId)}
@@ -54,7 +56,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
         ) : (
           <PersonAssignSelect
             inline
-            label="Assign host"
+            label={t('runningOrder.assignHost')}
             persons={castablePersons}
             onAssign={(personId) => assignHost(scene.id, personId)}
           />

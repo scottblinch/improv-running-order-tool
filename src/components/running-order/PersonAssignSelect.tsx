@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n';
 import type { Person, PersonId } from '@/types/app';
 import {
   Select,
@@ -25,6 +26,7 @@ export function PersonAssignSelect({
   onAssign,
   inline = false,
 }: PersonAssignSelectProps) {
+  const { t } = useTranslation();
   const [selectKey, setSelectKey] = useState(0);
   const available = persons.filter(
     (person) => !excludedPersonIds.includes(person.id),
@@ -33,7 +35,7 @@ export function PersonAssignSelect({
   if (available.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No performers available to assign.
+        {t('runningOrder.noPerformersAvailable')}
       </p>
     );
   }

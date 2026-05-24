@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
 
 type RenamePersonDialogProps = {
@@ -31,6 +32,7 @@ function RenamePersonDialogForm({
   onConfirm,
   onOpenChange,
 }: RenamePersonDialogFormProps) {
+  const { t } = useTranslation();
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,14 +62,14 @@ function RenamePersonDialogForm({
   return (
     <form onSubmit={handleSubmit}>
       <AlertDialogHeader>
-        <AlertDialogTitle>Rename performer</AlertDialogTitle>
+        <AlertDialogTitle>{t('roster.renameTitle')}</AlertDialogTitle>
         <AlertDialogDescription>
-          Update how this person appears in the roster and scene slots.
+          {t('roster.renameDescription')}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
         <label htmlFor={inputId} className="sr-only">
-          Performer name
+          {t('roster.performerName')}
         </label>
         <Input
           ref={inputRef}
@@ -79,12 +81,14 @@ function RenamePersonDialogForm({
           maxLength={INPUT_LIMITS.maxPersonNameLength}
           required
           pattern=".*\S.*"
-          title="Enter a performer name."
+          title={t('roster.performerNameRequired')}
         />
       </div>
       <AlertDialogFooter>
-        <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-        <Button type="submit">Save</Button>
+        <AlertDialogCancel type="button">
+          {t('common.cancel')}
+        </AlertDialogCancel>
+        <Button type="submit">{t('common.save')}</Button>
       </AlertDialogFooter>
     </form>
   );

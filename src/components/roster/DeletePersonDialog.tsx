@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useTranslation } from '@/i18n';
 import type { DeletePersonMode } from '@/types/app';
 
 type DeletePersonDialogProps = {
@@ -27,6 +28,8 @@ export function DeletePersonDialog({
   onHardDelete,
   onDeleteWithMode,
 }: DeletePersonDialogProps) {
+  const { t } = useTranslation();
+
   const handleConfirm = (mode: DeletePersonMode) => {
     onDeleteWithMode(mode);
     onOpenChange(false);
@@ -41,11 +44,13 @@ export function DeletePersonDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete {personName}?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t('roster.deleteTitle', { name: personName })}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {hasSceneAssignments
-              ? 'Choose whether to remove their scene assignments or keep them as warning slots on the running order.'
-              : 'They will be permanently removed from the roster.'}
+              ? t('roster.deleteDescriptionWithAssignments')
+              : t('roster.deleteDescriptionNoAssignments')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter
@@ -58,7 +63,7 @@ export function DeletePersonDialog({
           <AlertDialogCancel
             className={hasSceneAssignments ? 'w-full sm:w-auto' : undefined}
           >
-            Cancel
+            {t('common.cancel')}
           </AlertDialogCancel>
           {hasSceneAssignments ? (
             <>
@@ -67,19 +72,19 @@ export function DeletePersonDialog({
                 className="w-full sm:w-auto"
                 onClick={() => handleConfirm('keepAssignments')}
               >
-                Remove from roster, keep scene slots
+                {t('roster.deleteKeepSlots')}
               </AlertDialogAction>
               <AlertDialogAction
                 variant="destructive"
                 className="w-full sm:w-auto"
                 onClick={() => handleConfirm('clearScenes')}
               >
-                Remove from roster and all scenes
+                {t('roster.deleteClearScenes')}
               </AlertDialogAction>
             </>
           ) : (
             <AlertDialogAction variant="destructive" onClick={handleHardDelete}>
-              Delete
+              {t('common.delete')}
             </AlertDialogAction>
           )}
         </AlertDialogFooter>

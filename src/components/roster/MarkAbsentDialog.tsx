@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useTranslation } from '@/i18n';
 
 type MarkAbsentDialogProps = {
   open: boolean;
@@ -22,18 +23,21 @@ export function MarkAbsentDialog({
   personName,
   onConfirm,
 }: MarkAbsentDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Mark {personName} absent?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t('roster.markAbsentTitle', { name: personName })}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            They will stay in assigned scene slots with a warning style, but
-            cannot be dragged into new slots until cleared.
+            {t('roster.markAbsentDescription')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             onClick={() => {
@@ -41,7 +45,7 @@ export function MarkAbsentDialog({
               onOpenChange(false);
             }}
           >
-            Mark absent
+            {t('roster.markAbsent')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
