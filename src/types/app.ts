@@ -13,6 +13,7 @@ export interface Scene {
   name: string;
   hostId: PersonId | null;
   playerIds: PersonId[];
+  isAllPlay: boolean;
 }
 
 export type DeletePersonMode = 'clearScenes' | 'keepAssignments';

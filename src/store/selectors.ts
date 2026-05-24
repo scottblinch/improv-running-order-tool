@@ -86,12 +86,26 @@ export function selectPersonsForSlot(
   return currentPerson ? [...castablePersons, currentPerson] : castablePersons;
 }
 
+export function personPlaysInScene(
+  persons: Person[],
+  scene: Scene,
+  personId: PersonId,
+): boolean {
+  if (scene.playerIds.includes(personId)) return true;
+  if (!scene.isAllPlay) return false;
+
+  const person = getPersonById(persons, personId);
+  return person !== undefined && !person.isDeleted && !person.isAbsent;
+}
+
 export function personHasSceneAssignments(
   scenes: Scene[],
   personId: PersonId,
+  persons: Person[] = [],
 ): boolean {
   return scenes.some(
-    (scene) => scene.hostId === personId || scene.playerIds.includes(personId),
+    (scene) =>
+      scene.hostId === personId || personPlaysInScene(persons, scene, personId),
   );
 }
 
@@ -103,13 +117,14 @@ export type PersonSceneRoleCounts = {
 export function countPersonSceneRoles(
   scenes: Scene[],
   personId: PersonId,
+  persons: Person[],
 ): PersonSceneRoleCounts {
   let hostCount = 0;
   let playerCount = 0;
 
   for (const scene of scenes) {
     if (scene.hostId === personId) hostCount++;
-    if (scene.playerIds.includes(personId)) playerCount++;
+    if (personPlaysInScene(persons, scene, personId)) playerCount++;
   }
 
   return { hostCount, playerCount };

@@ -14,12 +14,14 @@ export function RunningOrderPanel() {
   return (
     <>
       <div className="print:hidden">
-        <PanelShell
-          headingId="running-order-heading"
-          title="Running order"
-          description="Scenes and cast assignments for the show"
-        >
+        <PanelShell>
           <div className="flex flex-col gap-4">
+            <h2
+              id="running-order-heading"
+              className="font-heading text-base leading-snug font-medium"
+            >
+              Running order
+            </h2>
             <p id={SCENE_REORDER_HELP_ID} className="sr-only">
               On desktop, drag scenes to reorder. On mobile, use the up and down
               buttons on each scene card.

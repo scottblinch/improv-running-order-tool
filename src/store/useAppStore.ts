@@ -45,7 +45,8 @@ function purgeUnassignedSoftDeletedPersons(
 ): PersistedState['persons'] {
   return persons.filter(
     (person) =>
-      !person.isDeleted || personHasSceneAssignments(scenes, person.id),
+      !person.isDeleted ||
+      personHasSceneAssignments(scenes, person.id, persons),
   );
 }
 
@@ -68,6 +69,7 @@ export interface AppActions {
     newPersonId: PersonId,
   ) => void;
   removePlayer: (sceneId: SceneId, personId: PersonId) => void;
+  setAllPlay: (sceneId: SceneId, isAllPlay: boolean) => void;
 }
 
 export type AppStore = PersistedState & AppActions;
@@ -108,7 +110,11 @@ export const useAppStore = create<AppStore>()(
 
       deletePerson: (id, mode) => {
         set((state) => {
-          const assigned = personHasSceneAssignments(state.scenes, id);
+          const assigned = personHasSceneAssignments(
+            state.scenes,
+            id,
+            state.persons,
+          );
 
           if (!assigned || mode === 'clearScenes') {
             return {
@@ -147,6 +153,7 @@ export const useAppStore = create<AppStore>()(
               name: trimmed,
               hostId: null,
               playerIds: [],
+              isAllPlay: false,
             },
           ],
         }));
@@ -234,11 +241,16 @@ export const useAppStore = create<AppStore>()(
       addPlayer: (sceneId, personId) => {
         set((state) => ({
           scenes: updateScene(state.scenes, sceneId, (scene) => {
-            if (scene.playerIds.includes(personId)) return scene;
+            if (!scene.isAllPlay && scene.playerIds.includes(personId)) {
+              return scene;
+            }
 
             return {
               ...scene,
-              playerIds: [...scene.playerIds, personId],
+              isAllPlay: false,
+              playerIds: scene.isAllPlay
+                ? [personId]
+                : [...scene.playerIds, personId],
             };
           }),
         }));
@@ -278,6 +290,16 @@ export const useAppStore = create<AppStore>()(
             persons: purgeUnassignedSoftDeletedPersons(state.persons, scenes),
           };
         });
+      },
+
+      setAllPlay: (sceneId, isAllPlay) => {
+        set((state) => ({
+          scenes: updateScene(state.scenes, sceneId, (scene) => ({
+            ...scene,
+            isAllPlay,
+            playerIds: isAllPlay ? [] : scene.playerIds,
+          })),
+        }));
       },
     }),
     {

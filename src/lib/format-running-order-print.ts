@@ -1,4 +1,4 @@
-import { resolveSlotDisplay, selectCastablePersons } from '@/store/selectors';
+import { resolveSlotDisplay } from '@/store/selectors';
 import type { Person, PersonId, Scene } from '@/types/app';
 
 function formatPersonNameForPrint(
@@ -15,19 +15,6 @@ function formatPersonNameForPrint(
   return name;
 }
 
-function isAllPlay(
-  persons: Person[],
-  hostId: PersonId | null,
-  playerIds: PersonId[],
-): boolean {
-  const castable = selectCastablePersons(persons);
-  if (castable.length === 0 || playerIds.length === 0) return false;
-
-  return castable.every(
-    (person) => person.id === hostId || playerIds.includes(person.id),
-  );
-}
-
 export function formatPrintDate(date: Date = new Date()): string {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -40,13 +27,11 @@ export function formatRunningOrderCastSuffix(
   persons: Person[],
   scene: Scene,
 ): string | null {
-  const { hostId, playerIds } = scene;
+  const { hostId, playerIds, isAllPlay } = scene;
 
-  if (!hostId && playerIds.length === 0) return null;
+  if (!hostId && !isAllPlay && playerIds.length === 0) return null;
 
-  const allPlay = isAllPlay(persons, hostId, playerIds);
-
-  if (hostId && playerIds.length === 0) {
+  if (hostId && !isAllPlay && playerIds.length === 0) {
     return formatPersonNameForPrint(persons, hostId);
   }
 
@@ -56,15 +41,13 @@ export function formatRunningOrderCastSuffix(
     segments.push(`${formatPersonNameForPrint(persons, hostId)} HOST`);
   }
 
-  if (playerIds.length > 0) {
-    if (allPlay) {
-      segments.push('+ ALL PLAY');
-    } else {
-      const names = playerIds
-        .map((playerId) => formatPersonNameForPrint(persons, playerId))
-        .join(', ');
-      segments.push(`+ ${names} PLAY`);
-    }
+  if (isAllPlay) {
+    segments.push('+ ALL PLAY');
+  } else if (playerIds.length > 0) {
+    const names = playerIds
+      .map((playerId) => formatPersonNameForPrint(persons, playerId))
+      .join(', ');
+    segments.push(`+ ${names} PLAY`);
   }
 
   return segments.join(' ');

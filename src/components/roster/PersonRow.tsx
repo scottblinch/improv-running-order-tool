@@ -59,6 +59,7 @@ type PersonRowProps = {
 };
 
 export function PersonRow({ person }: PersonRowProps) {
+  const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
   const renamePerson = useAppStore((state) => state.renamePerson);
   const deletePerson = useAppStore((state) => state.deletePerson);
@@ -73,8 +74,16 @@ export function PersonRow({ person }: PersonRowProps) {
     disabled: !canDrag,
   });
 
-  const hasSceneAssignments = personHasSceneAssignments(scenes, person.id);
-  const { hostCount, playerCount } = countPersonSceneRoles(scenes, person.id);
+  const hasSceneAssignments = personHasSceneAssignments(
+    scenes,
+    person.id,
+    persons,
+  );
+  const { hostCount, playerCount } = countPersonSceneRoles(
+    scenes,
+    person.id,
+    persons,
+  );
 
   const rowLabel = formatRowLabel(
     person.name,
