@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import {
+  GripVertical,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Users,
+} from 'lucide-react';
 
 import { useDesktopDndEnabled } from '@/components/dnd/desktop-dnd-context';
 import { HostCastControl } from '@/components/running-order/HostCastControl';
@@ -9,6 +15,7 @@ import { PlayersCastControl } from '@/components/running-order/PlayersCastContro
 import { RemoveSceneDialog } from '@/components/running-order/RemoveSceneDialog';
 import { RenameSceneDialog } from '@/components/running-order/RenameSceneDialog';
 import { SceneReorderButtons } from '@/components/running-order/SceneReorderButtons';
+import { SetAllPlayDialog } from '@/components/running-order/SetAllPlayDialog';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -32,10 +39,23 @@ type SceneCardProps = {
 export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
   const renameScene = useAppStore((state) => state.renameScene);
   const removeScene = useAppStore((state) => state.removeScene);
+  const setAllPlay = useAppStore((state) => state.setAllPlay);
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
+  const [allPlayConfirmOpen, setAllPlayConfirmOpen] = useState(false);
   const desktopDndEnabled = useDesktopDndEnabled();
+
+  const enableAllPlay = () => setAllPlay(scene.id, true);
+
+  const handleAllPlaySelect = () => {
+    if (scene.playerIds.length > 0) {
+      setAllPlayConfirmOpen(true);
+      return;
+    }
+
+    enableAllPlay();
+  };
 
   const {
     attributes,
@@ -110,6 +130,12 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
                 <Pencil aria-hidden className="size-4" />
                 Rename
               </DropdownMenuItem>
+              {!scene.isAllPlay ? (
+                <DropdownMenuItem onSelect={handleAllPlaySelect}>
+                  <Users aria-hidden className="size-4" />
+                  All play
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
@@ -169,6 +195,14 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
         onOpenChange={setRemoveOpen}
         sceneName={scene.name}
         onConfirm={() => removeScene(scene.id)}
+      />
+
+      <SetAllPlayDialog
+        open={allPlayConfirmOpen}
+        onOpenChange={setAllPlayConfirmOpen}
+        sceneName={scene.name}
+        playerCount={scene.playerIds.length}
+        onConfirm={enableAllPlay}
       />
     </>
   );

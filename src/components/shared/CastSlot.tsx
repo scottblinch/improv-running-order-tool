@@ -31,7 +31,7 @@ export function CastSlot({
     <div
       data-person-id={personId}
       className={cn(
-        'items-center gap-2 rounded-lg border px-2 py-1.5 transition-colors',
+        'items-center gap-2 rounded-lg border px-2 py-1.5 transition-colors select-none',
         inline ? 'inline-flex max-w-full shrink-0' : 'flex w-full',
         isWarning
           ? 'border-destructive/50 bg-destructive/5'

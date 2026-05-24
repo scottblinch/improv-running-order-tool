@@ -31,7 +31,7 @@ export function AllPlaySlot({
   return (
     <div
       className={cn(
-        'items-center gap-2 rounded-lg border border-border bg-muted/50 px-2 py-1.5 transition-colors',
+        'items-center gap-2 rounded-lg border border-border bg-muted/50 px-2 py-1.5 transition-colors select-none',
         inline ? 'inline-flex max-w-full shrink-0' : 'flex w-full',
         isHighlighted &&
           'border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-1 ring-offset-background',

@@ -1,4 +1,4 @@
-import { Users, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 import { AllPlaySlot } from '@/components/shared/AllPlaySlot';
 import { CastDropZone } from '@/components/running-order/CastDropZone';
@@ -27,7 +27,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
 
   const castablePersons = selectCastablePersons(persons);
 
-  const allPlayControls = scene.isAllPlay ? (
+  const playerControls = scene.isAllPlay ? (
     <AllPlaySlot
       sceneId={scene.id}
       inline
@@ -57,16 +57,6 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
         excludedPersonIds={scene.playerIds}
         onAssign={(personId) => addPlayer(scene.id, personId)}
       />
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="shrink-0"
-        onClick={() => setAllPlay(scene.id, true)}
-      >
-        <Users aria-hidden className="size-3.5" />
-        All play
-      </Button>
     </>
   );
 
@@ -113,16 +103,6 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               excludedPersonIds={scene.playerIds}
               onAssign={(personId) => addPlayer(scene.id, personId)}
             />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={() => setAllPlay(scene.id, true)}
-            >
-              <Users aria-hidden className="size-3.5" />
-              All play
-            </Button>
           </>
         )}
       </div>
@@ -132,7 +112,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
         zone="players"
         className="hidden min-w-0 flex-1 flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:flex"
       >
-        {allPlayControls}
+        {playerControls}
       </CastDropZone>
     </>
   );
