@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react';
+import { type FormEvent, useId } from 'react';
 
 import {
   AlertDialog,
@@ -30,6 +30,8 @@ function RenameSceneDialogForm({
   onConfirm,
   onOpenChange,
 }: RenameSceneDialogFormProps) {
+  const inputId = useId();
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -37,7 +39,10 @@ function RenameSceneDialogForm({
     const name = formData.get('sceneName');
     if (typeof name !== 'string') return;
 
-    onConfirm(name.trim());
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    onConfirm(trimmed);
     onOpenChange(false);
   };
 
@@ -50,10 +55,13 @@ function RenameSceneDialogForm({
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
+        <label htmlFor={inputId} className="sr-only">
+          Scene name
+        </label>
         <Input
+          id={inputId}
           name="sceneName"
           defaultValue={currentName}
-          aria-label="Scene name"
           autoComplete="off"
           autoFocus
           required

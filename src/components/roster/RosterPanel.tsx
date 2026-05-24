@@ -4,6 +4,7 @@ import { PanelShell } from '@/components/layout/PanelShell';
 import { RosterList } from '@/components/roster/RosterList';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { selectActivePersons } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -18,6 +19,10 @@ export function RosterPanel() {
       description="Performers available for casting"
     >
       <div className="flex flex-col gap-4">
+        <p id={ROSTER_CASTING_HELP_ID} className="sr-only">
+          On desktop, drag performers into scene slots. On mobile, assign cast
+          using the dropdown menus in each scene.
+        </p>
         <RosterQuickAdd />
         {activePersons.length === 0 ? (
           <EmptyState

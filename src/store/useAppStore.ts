@@ -8,6 +8,10 @@ import type {
   SceneId,
 } from '@/types/app';
 import { personHasSceneAssignments } from '@/store/selectors';
+import {
+  migratePersistedState,
+  PERSIST_VERSION,
+} from '@/store/migrate-persisted-state';
 
 const STORAGE_KEY = 'improv-running-order';
 
@@ -278,6 +282,8 @@ export const useAppStore = create<AppStore>()(
     }),
     {
       name: STORAGE_KEY,
+      version: PERSIST_VERSION,
+      migrate: migratePersistedState,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         persons: state.persons,

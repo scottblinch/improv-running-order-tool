@@ -1,4 +1,4 @@
-import { type FormEvent, useId } from 'react';
+import { type FormEvent, useId, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { useAppStore } from '@/store/useAppStore';
 export function RosterQuickAdd() {
   const addPerson = useAppStore((state) => state.addPerson);
   const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -15,8 +16,12 @@ export function RosterQuickAdd() {
     const name = formData.get('performerName');
     if (typeof name !== 'string') return;
 
-    addPerson(name.trim());
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    addPerson(trimmed);
     event.currentTarget.reset();
+    inputRef.current?.focus();
   };
 
   return (
@@ -26,6 +31,7 @@ export function RosterQuickAdd() {
           Performer name
         </label>
         <Input
+          ref={inputRef}
           id={inputId}
           name="performerName"
           autoComplete="off"

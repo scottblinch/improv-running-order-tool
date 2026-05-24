@@ -5,6 +5,7 @@ import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPr
 import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { useAppStore } from '@/store/useAppStore';
 
 export function RunningOrderPanel() {
@@ -19,6 +20,10 @@ export function RunningOrderPanel() {
           description="Scenes and cast assignments for the show"
         >
           <div className="flex flex-col gap-4">
+            <p id={SCENE_REORDER_HELP_ID} className="sr-only">
+              On desktop, drag scenes to reorder. On mobile, use the up and down
+              buttons on each scene card.
+            </p>
             <SceneQuickAdd />
             {scenes.length === 0 ? (
               <EmptyState

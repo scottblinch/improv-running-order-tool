@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { sceneDragId } from '@/lib/dnd-ids';
+import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
@@ -76,6 +77,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               disabled={!desktopDndEnabled}
               {...listeners}
               {...attributes}
+              aria-describedby={SCENE_REORDER_HELP_ID}
             >
               <GripVertical aria-hidden className="size-4" />
             </Button>

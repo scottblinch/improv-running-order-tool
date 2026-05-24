@@ -24,17 +24,17 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 
 ## Status
 
-| Step | Description                        | Status      |
-| ---- | ---------------------------------- | ----------- |
-| 1    | Vite + React + TypeScript scaffold | Done        |
-| 2    | Tailwind + shadcn/ui               | Done        |
-| 3    | Types + Zustand store              | Done        |
-| 4    | Static two-column layout           | Done        |
-| 5    | Roster + scenes (no drag)          | Done        |
-| 6    | Desktop drag-and-drop              | Done        |
-| 7    | Mobile assignment (dropdowns)      | Done        |
-| 8    | Print styles                       | Done        |
-| 9    | Polish & edge cases                | Not started |
+| Step | Description                        | Status |
+| ---- | ---------------------------------- | ------ |
+| 1    | Vite + React + TypeScript scaffold | Done   |
+| 2    | Tailwind + shadcn/ui               | Done   |
+| 3    | Types + Zustand store              | Done   |
+| 4    | Static two-column layout           | Done   |
+| 5    | Roster + scenes (no drag)          | Done   |
+| 6    | Desktop drag-and-drop              | Done   |
+| 7    | Mobile assignment (dropdowns)      | Done   |
+| 8    | Print styles                       | Done   |
+| 9    | Polish & edge cases                | Done   |
 
 ---
 
@@ -137,12 +137,12 @@ Wire UI to the store before adding `@dnd-kit`.
 
 ---
 
-## 9. Polish & edge cases
+## 9. Polish & edge cases — Done
 
-- [ ] Keyboard: Enter to submit quick-adds; focus management in dialogs
-- [ ] a11y: labels, `AlertDialog` focus trap, draggable alternatives where needed
-- [ ] Persisted data shape changes: version/migrate key if store shape evolves
-- [ ] Lint + `npm run build` clean in CI locally
+- [x] Keyboard: Enter submits quick-adds (native `<form>`); input refocus after add; rename dialogs submit on Enter with `autoFocus`
+- [x] a11y: visible/sr-only labels on forms; Radix `AlertDialog` focus trap; sr-only help + `aria-describedby` on drag handles (mobile selects / reorder buttons as alternatives)
+- [x] Persisted data: `version` + `migrate` in Zustand persist (`migrate-persisted-state.ts`) with schema normalization
+- [x] CI: `.github/workflows/ci.yml` runs `npm run check`; deploy runs `check:pages`
 
 ### Post-MVP (do not block MVP)
 

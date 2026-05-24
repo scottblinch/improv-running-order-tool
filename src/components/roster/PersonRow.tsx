@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { rosterPersonDragId } from '@/lib/dnd-ids';
 import {
   countPersonSceneRoles,
@@ -125,6 +126,7 @@ export function PersonRow({ person }: PersonRowProps) {
               disabled={!canDrag}
               {...listeners}
               {...attributes}
+              aria-describedby={ROSTER_CASTING_HELP_ID}
             >
               <GripVertical aria-hidden className="size-4" />
             </Button>
