@@ -14,9 +14,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { personHasSceneAssignments } from '@/store/selectors';
+import {
+  countPersonSceneRoles,
+  personHasSceneAssignments,
+} from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import type { Person } from '@/types/app';
+
+function formatRoleCountLabel(role: 'Host' | 'Player', count: number): string {
+  const noun = count === 1 ? 'scene' : 'scenes';
+  return `${role} in ${count} ${noun}`;
+}
 
 type PersonRowProps = {
   person: Person;
@@ -29,6 +37,17 @@ export function PersonRow({ person }: PersonRowProps) {
   const togglePersonAbsence = useAppStore((state) => state.togglePersonAbsence);
 
   const hasSceneAssignments = personHasSceneAssignments(scenes, person.id);
+  const { hostCount, playerCount } = countPersonSceneRoles(scenes, person.id);
+
+  const roleSummary = [
+    person.isAbsent ? 'absent' : null,
+    hostCount > 0 ? formatRoleCountLabel('Host', hostCount) : null,
+    playerCount > 0 ? formatRoleCountLabel('Player', playerCount) : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const rowLabel = roleSummary ? `${person.name}, ${roleSummary}` : person.name;
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -46,14 +65,14 @@ export function PersonRow({ person }: PersonRowProps) {
   return (
     <>
       <li
-        aria-label={person.isAbsent ? `${person.name}, absent` : person.name}
+        aria-label={rowLabel}
         className={cn(
           'flex items-center justify-between gap-2 rounded-lg border bg-card px-3 py-2',
           person.isAbsent && 'border-destructive/50 bg-destructive/5',
         )}
         data-draggable={person.isAbsent ? 'false' : 'true'}
       >
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <span
             className={cn(
               'truncate text-sm font-medium',
@@ -62,6 +81,24 @@ export function PersonRow({ person }: PersonRowProps) {
           >
             {person.name}
           </span>
+          {hostCount > 0 ? (
+            <Badge
+              variant="secondary"
+              className="shrink-0"
+              aria-label={formatRoleCountLabel('Host', hostCount)}
+            >
+              Host {hostCount}
+            </Badge>
+          ) : null}
+          {playerCount > 0 ? (
+            <Badge
+              variant="outline"
+              className="shrink-0"
+              aria-label={formatRoleCountLabel('Player', playerCount)}
+            >
+              Player {playerCount}
+            </Badge>
+          ) : null}
           {person.isAbsent ? (
             <Badge variant="destructive" className="shrink-0">
               Absent

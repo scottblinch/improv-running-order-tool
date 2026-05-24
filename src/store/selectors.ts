@@ -76,3 +76,23 @@ export function personHasSceneAssignments(
     (scene) => scene.hostId === personId || scene.playerIds.includes(personId),
   );
 }
+
+export type PersonSceneRoleCounts = {
+  hostCount: number;
+  playerCount: number;
+};
+
+export function countPersonSceneRoles(
+  scenes: Scene[],
+  personId: PersonId,
+): PersonSceneRoleCounts {
+  let hostCount = 0;
+  let playerCount = 0;
+
+  for (const scene of scenes) {
+    if (scene.hostId === personId) hostCount++;
+    if (scene.playerIds.includes(personId)) playerCount++;
+  }
+
+  return { hostCount, playerCount };
+}
