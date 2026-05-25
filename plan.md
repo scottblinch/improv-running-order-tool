@@ -135,7 +135,7 @@ Supporting folders (not under `components/`):
 
 - [x] Keyboard: Enter on quick-adds and rename dialogs
 - [x] a11y: labels, sr-only headings, `role="status"`, scene list as `ol`
-- [x] CI: `npm run check` on PRs; `check:pages` on deploy
+- [x] CI: `pnpm check` on PRs; `check:pages` on deploy
 - [x] Roster hover highlight synced to lineup slots
 
 ---
@@ -213,7 +213,7 @@ Supporting folders (not under `components/`):
 
 - [x] `vite-plugin-pwa` — manifest, Workbox, `registerType: 'autoUpdate'`
 - [x] `src/pwa/register-service-worker.ts` — prod registration; update-available toast with Refresh action
-- [x] Icons via `npm run generate:pwa-assets`; GitHub Pages uses `npm run build:pages`
+- [x] Icons via `pnpm generate:pwa-assets`; GitHub Pages uses `pnpm build:pages`
 
 ---
 

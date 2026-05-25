@@ -4,6 +4,7 @@
   "description": "A simple improv running order tool",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": ">=22"
   },
@@ -21,16 +22,16 @@
     "dev": "vite",
     "build": "tsc -b && BROWSERSLIST_ENV=production vite build",
     "build:pages": "tsc -b && GITHUB_PAGES=true BROWSERSLIST_ENV=production vite build",
-    "check:pages": "npm run lint && npm run format:check && npm run build:pages",
+    "check:pages": "pnpm lint && pnpm format:check && pnpm build:pages",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "fix": "npm run lint:fix && npm run format",
+    "fix": "pnpm lint:fix && pnpm format",
     "generate:pwa-assets": "pwa-assets-generator --config pwa-assets.config.ts",
-    "check": "npm run lint && npm run format:check && npm run build",
+    "check": "pnpm lint && pnpm format:check && pnpm build",
     "preview": "vite preview",
-    "preview:pages": "npm run build:pages && vite preview --base /improv-running-order-tool/"
+    "preview:pages": "pnpm build:pages && vite preview --base /improv-running-order-tool/"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

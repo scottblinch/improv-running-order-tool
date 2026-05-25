@@ -19,39 +19,42 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 ## Requirements
 
 - Node.js 22+ (see [`.nvmrc`](.nvmrc))
+- [pnpm](https://pnpm.io/installation) 11+ (see `packageManager` in `package.json`)
 
 ## Setup
 
 ```bash
-npm ci
+pnpm install --frozen-lockfile
 ```
+
+For local development, `pnpm install` is fine too.
 
 ## Development
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Scripts
 
-| Command                       | Description                                    |
-| ----------------------------- | ---------------------------------------------- |
-| `npm run dev`                 | Start dev server                               |
-| `npm run build`               | Typecheck + production build                   |
-| `npm run build:pages`         | Production build for GitHub Pages base path    |
-| `npm run check`               | `lint` + `format:check` + `build`              |
-| `npm run check:pages`         | `lint` + `format:check` + `build:pages`        |
-| `npm run preview`             | Preview production build locally               |
-| `npm run preview:pages`       | Build for GitHub Pages base path and preview   |
-| `npm run lint`                | Run ESLint                                     |
-| `npm run lint:fix`            | ESLint with auto-fix                           |
-| `npm run format`              | Prettier write                                 |
-| `npm run format:check`        | Prettier check                                 |
-| `npm run generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg` |
+| Command                    | Description                                    |
+| -------------------------- | ---------------------------------------------- |
+| `pnpm dev`                 | Start dev server                               |
+| `pnpm build`               | Typecheck + production build                   |
+| `pnpm build:pages`         | Production build for GitHub Pages base path    |
+| `pnpm check`               | `lint` + `format:check` + `build`              |
+| `pnpm check:pages`         | `lint` + `format:check` + `build:pages`        |
+| `pnpm preview`             | Preview production build locally               |
+| `pnpm preview:pages`       | Build for GitHub Pages base path and preview   |
+| `pnpm lint`                | Run ESLint                                     |
+| `pnpm lint:fix`            | ESLint with auto-fix                           |
+| `pnpm format`              | Prettier write                                 |
+| `pnpm format:check`        | Prettier check                                 |
+| `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg` |
 
-Pushes to `main` and pull requests run [`ci.yml`](.github/workflows/ci.yml) (`npm run check`).
+Pushes to `main` and pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`).
 
 ## Deploy
 
