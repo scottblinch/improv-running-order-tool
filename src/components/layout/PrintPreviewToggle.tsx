@@ -3,14 +3,14 @@ import { Printer } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
 import { LINEUP_HEADING_ID } from '@/lib/a11y-ids';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function PrintPreviewToggle() {
   const { t } = useTranslation();
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const enabled = usePrintPreviewStore((state) => state.enabled);
   const toggle = usePrintPreviewStore((state) => state.toggle);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -20,7 +20,7 @@ export function PrintPreviewToggle() {
   const handleToggle = () => {
     const entering = !enabled;
     toggle();
-    announce(entering ? t('a11y.printPreviewOn') : t('a11y.printPreviewOff'));
+    announceA11y(entering ? 'a11y.printPreviewOn' : 'a11y.printPreviewOff');
 
     requestAnimationFrame(() => {
       if (entering) {

@@ -21,7 +21,12 @@ import {
 import { DragPreviewChip } from '@/components/dnd/DragPreviewChip';
 import { DesktopDndProvider } from '@/components/dnd/desktop-dnd-context';
 import { useIsDesktopDnd } from '@/hooks/useIsDesktopDnd';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
+import {
+  announceCastNamedPersonInScene,
+  resolvePerformerName,
+} from '@/lib/cast-a11y';
 import {
   parseSceneDragId,
   sceneDragId,
@@ -29,7 +34,6 @@ import {
   type DndDropData,
 } from '@/lib/dnd-ids';
 import { getPersonById } from '@/store/selectors';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import type { PersonId, SceneId } from '@/types/app';
 
@@ -73,7 +77,7 @@ function resolveCollisionDetection(
 
 export function AppDndProvider({ children }: AppDndProviderProps) {
   const { t } = useTranslation();
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const isDesktopDnd = useIsDesktopDnd();
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
@@ -102,14 +106,13 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
     setActiveDragType(data.type);
 
     if (data.type === 'roster-person') {
-      const person = getPersonById(persons, data.personId);
-      const label = person?.name ?? t('fallback.performer');
+      const label = resolvePerformerName(persons, data.personId, t);
       setActiveDrag({
         type: 'roster-person',
         personId: data.personId,
         label,
       });
-      announce(t('a11y.draggingPerformer', { name: label }));
+      announceA11y('a11y.draggingPerformer', { name: label });
       return;
     }
 
@@ -121,7 +124,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
         sceneId: data.sceneId,
         label,
       });
-      announce(t('a11y.draggingScene', { name: label }));
+      announceA11y('a11y.draggingScene', { name: label });
     }
   };
 
@@ -131,7 +134,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
     setActiveDragType(undefined);
 
     if (!over) {
-      announce(t('a11y.dragCancelled'));
+      announceA11y('a11y.dragCancelled');
       return;
     }
 
@@ -141,7 +144,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
     if (activeData?.type === 'roster-person') {
       const person = getPersonById(persons, activeData.personId);
       if (!person || person.isAbsent || person.isDeleted) {
-        announce(t('a11y.dropFailed'));
+        announceA11y('a11y.dropFailed');
         return;
       }
 
@@ -152,21 +155,27 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
 
       if (overData?.type === 'host-zone') {
         assignHost(overData.sceneId, activeData.personId);
-        announce(
-          t('a11y.assignedHost', { name: person.name, scene: sceneName }),
+        announceCastNamedPersonInScene(
+          announceA11y,
+          person.name,
+          sceneName,
+          'a11y.assignedHost',
         );
         return;
       }
 
       if (overData?.type === 'player-zone') {
         addPlayer(overData.sceneId, activeData.personId);
-        announce(
-          t('a11y.addedPlayer', { name: person.name, scene: sceneName }),
+        announceCastNamedPersonInScene(
+          announceA11y,
+          person.name,
+          sceneName,
+          'a11y.addedPlayer',
         );
         return;
       }
 
-      announce(t('a11y.dropFailed'));
+      announceA11y('a11y.dropFailed');
       return;
     }
 
@@ -179,13 +188,11 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
       if (overSceneId && overSceneId !== activeData.sceneId) {
         reorderScenes(activeData.sceneId, overSceneId);
         const scene = scenes.find((item) => item.id === activeData.sceneId);
-        announce(
-          t('a11y.movedScene', {
-            name: scene?.name ?? t('fallback.scene'),
-          }),
-        );
+        announceA11y('a11y.movedScene', {
+          name: scene?.name ?? t('fallback.scene'),
+        });
       } else {
-        announce(t('a11y.sceneOrderUnchanged'));
+        announceA11y('a11y.sceneOrderUnchanged');
       }
     }
   };
@@ -193,7 +200,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
   const handleDragCancel = () => {
     setActiveDrag(null);
     setActiveDragType(undefined);
-    announce(t('a11y.dragCancelled'));
+    announceA11y('a11y.dragCancelled');
   };
 
   if (!isDesktopDnd) {

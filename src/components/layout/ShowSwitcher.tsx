@@ -20,7 +20,7 @@ import {
   partitionShowsByShowDate,
 } from '@/lib/show-workspace';
 import { formatShowDisplayName } from '@/lib/show-date';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useAppStore } from '@/store/useAppStore';
 import type { ShowId, ShowRecord } from '@/types/app';
 
@@ -82,7 +82,7 @@ function ShowMenuItem({
 
 export function ShowSwitcher() {
   const { t } = useTranslation();
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const activeShowId = useAppStore((state) => state.activeShowId);
   const shows = useAppStore((state) => state.shows);
   const showName = useAppStore((state) => state.showName);
@@ -109,22 +109,18 @@ export function ShowSwitcher() {
     const show = shows.find((item) => item.id === id);
     switchShow(id);
     if (show) {
-      announce(
-        t('a11y.switchedShow', {
-          label: formatShowMenuLabel(show.showName, show.showDate),
-        }),
-      );
+      announceA11y('a11y.switchedShow', {
+        label: formatShowMenuLabel(show.showName, show.showDate),
+      });
     }
   };
 
   const handleCreateShow = () => {
     createShow();
     const { showName: nextName, showDate: nextDate } = useAppStore.getState();
-    announce(
-      t('a11y.createdShow', {
-        label: formatShowMenuLabel(nextName, nextDate),
-      }),
-    );
+    announceA11y('a11y.createdShow', {
+      label: formatShowMenuLabel(nextName, nextDate),
+    });
   };
 
   return (
@@ -207,7 +203,7 @@ export function ShowSwitcher() {
 
           const { label } = deleteTarget;
           deleteShow(deleteTarget.id);
-          announce(t('a11y.deletedShow', { label }));
+          announceA11y('a11y.deletedShow', { label });
           setDeleteTarget(null);
         }}
       />

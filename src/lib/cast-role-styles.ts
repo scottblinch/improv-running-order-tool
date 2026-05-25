@@ -11,3 +11,6 @@ export function castRoleLabelClasses(role: CastSlotRole): string {
     ? 'text-cast-host-foreground'
     : 'text-cast-player-foreground';
 }
+
+export const castDropSurfaceClasses =
+  'rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2';

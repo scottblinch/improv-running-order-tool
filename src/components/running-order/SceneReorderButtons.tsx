@@ -2,8 +2,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import type { SceneId } from '@/types/app';
 
@@ -22,7 +22,7 @@ export function SceneReorderButtons({
 }: SceneReorderButtonsProps) {
   const { t } = useTranslation();
   const moveScene = useAppStore((state) => state.moveScene);
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const moveUpLabel = t('lineup.moveSceneUp', { name: sceneName });
   const moveDownLabel = t('lineup.moveSceneDown', { name: sceneName });
 
@@ -38,7 +38,7 @@ export function SceneReorderButtons({
           disabled={index === 0}
           onClick={() => {
             moveScene(sceneId, 'up');
-            announce(t('a11y.movedSceneUp', { name: sceneName }));
+            announceA11y('a11y.movedSceneUp', { name: sceneName });
           }}
         >
           <ChevronUp aria-hidden className="size-4" />
@@ -54,7 +54,7 @@ export function SceneReorderButtons({
           disabled={index >= sceneCount - 1}
           onClick={() => {
             moveScene(sceneId, 'down');
-            announce(t('a11y.movedSceneDown', { name: sceneName }));
+            announceA11y('a11y.movedSceneDown', { name: sceneName });
           }}
         >
           <ChevronDown aria-hidden className="size-4" />

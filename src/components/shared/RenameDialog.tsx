@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
 
 export type RenameDialogProps = {
@@ -27,6 +28,8 @@ export type RenameDialogProps = {
   validationMessage?: string;
   /** When true (default), trimmed empty values are rejected on submit. */
   rejectEmpty?: boolean;
+  announceMessageKey?: string;
+  getAnnounceParams?: (name: string) => Record<string, string>;
 };
 
 type RenameDialogFormProps = Omit<RenameDialogProps, 'open'>;
@@ -43,8 +46,11 @@ function RenameDialogForm({
   placeholder,
   validationMessage: validationMessageProp,
   rejectEmpty = true,
+  announceMessageKey,
+  getAnnounceParams,
 }: RenameDialogFormProps) {
   const { t } = useTranslation();
+  const announceA11y = useA11yAnnounce();
   const inputId = useId();
   const errorId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -79,6 +85,12 @@ function RenameDialogForm({
 
     setError(null);
     onConfirm(trimmed);
+    if (announceMessageKey) {
+      announceA11y(
+        announceMessageKey,
+        getAnnounceParams?.(trimmed) ?? { name: trimmed },
+      );
+    }
     onOpenChange(false);
   };
 

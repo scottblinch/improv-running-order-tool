@@ -29,8 +29,8 @@ import { sceneDragId } from '@/lib/dnd-ids';
 import { castRoleLabelClasses } from '@/lib/cast-role-styles';
 import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { cn } from '@/lib/utils';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
 
@@ -42,7 +42,7 @@ type SceneCardProps = {
 
 export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
   const { t } = useTranslation();
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const renameScene = useAppStore((state) => state.renameScene);
   const removeScene = useAppStore((state) => state.removeScene);
   const setAllPlay = useAppStore((state) => state.setAllPlay);
@@ -54,7 +54,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
 
   const enableAllPlay = () => {
     setAllPlay(scene.id, true);
-    announce(t('a11y.enabledAllPlay', { scene: scene.name }));
+    announceA11y('a11y.enabledAllPlay', { scene: scene.name });
   };
 
   const handleAllPlaySelect = () => {
@@ -230,7 +230,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
         sceneName={scene.name}
         onConfirm={() => {
           removeScene(scene.id);
-          announce(t('a11y.removedScene', { name: scene.name }));
+          announceA11y('a11y.removedScene', { name: scene.name });
         }}
       />
 

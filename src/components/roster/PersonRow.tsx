@@ -37,9 +37,9 @@ import {
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { useHoverStore } from '@/store/useHoverStore';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
-import type { Person } from '@/types/app';
+import type { DeletePersonMode, Person } from '@/types/app';
 
 type PersonRowProps = {
   person: Person;
@@ -47,7 +47,7 @@ type PersonRowProps = {
 
 export function PersonRow({ person }: PersonRowProps) {
   const { t } = useTranslation();
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
   const renamePerson = useAppStore((state) => state.renamePerson);
@@ -81,7 +81,7 @@ export function PersonRow({ person }: PersonRowProps) {
   const handleAbsent = () => {
     if (person.isAbsent) {
       togglePersonAbsence(person.id);
-      announce(t('a11y.clearedAbsent', { name: person.name }));
+      announceA11y('a11y.clearedAbsent', { name: person.name });
       return;
     }
 
@@ -90,7 +90,12 @@ export function PersonRow({ person }: PersonRowProps) {
 
   const handleMarkAbsent = () => {
     togglePersonAbsence(person.id);
-    announce(t('a11y.markedAbsent', { name: person.name }));
+    announceA11y('a11y.markedAbsent', { name: person.name });
+  };
+
+  const handleDeletePerson = (mode: DeletePersonMode) => {
+    deletePerson(person.id, mode);
+    announceA11y('a11y.deletedPerformer', { name: person.name });
   };
 
   return (
@@ -245,14 +250,8 @@ export function PersonRow({ person }: PersonRowProps) {
         onOpenChange={setDeleteOpen}
         personName={person.name}
         hasSceneAssignments={hasSceneAssignments}
-        onHardDelete={() => {
-          deletePerson(person.id, 'clearScenes');
-          announce(t('a11y.deletedPerformer', { name: person.name }));
-        }}
-        onDeleteWithMode={(mode) => {
-          deletePerson(person.id, mode);
-          announce(t('a11y.deletedPerformer', { name: person.name }));
-        }}
+        onHardDelete={() => handleDeletePerson('clearScenes')}
+        onDeleteWithMode={handleDeletePerson}
       />
     </>
   );

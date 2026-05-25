@@ -7,15 +7,17 @@ import { PersonSlotSelect } from '@/components/running-order/PersonSlotSelect';
 import { CastSlot } from '@/components/shared/CastSlot';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
+import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
+import { announceCastPersonInScene } from '@/lib/cast-a11y';
+import { castDropSurfaceClasses } from '@/lib/cast-role-styles';
+import { cn } from '@/lib/utils';
 import {
-  getPersonById,
   resolveSlotDisplay,
   selectCastablePersons,
   selectPersonsForSlot,
   selectScenePlayerIds,
 } from '@/store/selectors';
-import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import { useTranslation } from '@/i18n';
 import type { PersonId, Scene } from '@/types/app';
@@ -26,7 +28,7 @@ type PlayersCastControlProps = {
 
 export function PlayersCastControl({ scene }: PlayersCastControlProps) {
   const { t } = useTranslation();
-  const announce = useA11yAnnounceStore((state) => state.announce);
+  const announceA11y = useA11yAnnounce();
   const persons = useAppStore((state) => state.persons);
   const addPlayer = useAppStore((state) => state.addPlayer);
   const replacePlayer = useAppStore((state) => state.replacePlayer);
@@ -36,46 +38,42 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
   const castablePersons = selectCastablePersons(persons);
   const sortedPlayerIds = selectScenePlayerIds(persons, scene.playerIds);
 
-  const announcePlayerAdded = (personId: PersonId) => {
-    const person = getPersonById(persons, personId);
-    announce(
-      t('a11y.addedPlayer', {
-        name: person?.name ?? t('fallback.performer'),
-        scene: scene.name,
-      }),
-    );
-  };
-
   const handleAddPlayer = (personId: PersonId) => {
     addPlayer(scene.id, personId);
-    announcePlayerAdded(personId);
+    announceCastPersonInScene(
+      announceA11y,
+      persons,
+      personId,
+      scene.name,
+      'a11y.addedPlayer',
+      t,
+    );
   };
 
   const handleReplacePlayer = (playerId: PersonId, newPersonId: PersonId) => {
     replacePlayer(scene.id, playerId, newPersonId);
-    const person = getPersonById(persons, newPersonId);
-    announce(
-      t('a11y.replacedPlayer', {
-        name: person?.name ?? t('fallback.performer'),
-        scene: scene.name,
-      }),
+    announceCastPersonInScene(
+      announceA11y,
+      persons,
+      newPersonId,
+      scene.name,
+      'a11y.replacedPlayer',
+      t,
     );
   };
 
   const handleRemovePlayer = (playerId: PersonId) => {
     const slot = resolveSlotDisplay(persons, playerId);
     removePlayer(scene.id, playerId);
-    announce(
-      t('a11y.removedPlayer', {
-        name: slot.name,
-        scene: scene.name,
-      }),
-    );
+    announceA11y('a11y.removedPlayer', {
+      name: slot.name,
+      scene: scene.name,
+    });
   };
 
   const handleRemoveAllPlay = () => {
     setAllPlay(scene.id, false);
-    announce(t('a11y.removedAllPlay', { scene: scene.name }));
+    announceA11y('a11y.removedAllPlay', { scene: scene.name });
   };
 
   const playerControls = scene.isAllPlay ? (
@@ -111,7 +109,12 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
 
   return (
     <>
-      <div className="min-w-0 flex-1 space-y-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
+      <div
+        className={cn(
+          castDropSurfaceClasses,
+          'min-w-0 flex-1 space-y-2 md:hidden',
+        )}
+      >
         {scene.isAllPlay ? (
           <AllPlaySlot sceneId={scene.id} onRemove={handleRemoveAllPlay} />
         ) : (
@@ -165,7 +168,10 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
         sceneId={scene.id}
         zone="players"
         ariaLabel={t('lineup.dropPlayersZone', { name: scene.name })}
-        className="hidden min-w-0 flex-1 flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:flex"
+        className={cn(
+          castDropSurfaceClasses,
+          'hidden min-w-0 flex-1 flex-wrap items-center gap-2 md:flex',
+        )}
       >
         {playerControls}
       </CastDropZone>
