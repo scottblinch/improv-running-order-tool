@@ -32,8 +32,10 @@
     "audit": "pnpm audit --audit-level moderate",
     "generate:pwa-assets": "pwa-assets-generator --config pwa-assets.config.ts",
     "check": "pnpm lint && pnpm format:check && pnpm audit && pnpm test && pnpm build",
+    "check:precommit": "pnpm lint && pnpm format:check && pnpm test",
     "preview": "vite preview",
-    "preview:pages": "pnpm build:pages && vite preview --base /improv-running-order-tool/"
+    "preview:pages": "pnpm build:pages && vite preview --base /improv-running-order-tool/",
+    "prepare": "husky"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -81,6 +83,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "lightningcss": "^1.32.0",
     "prettier": "^3.8.3",
