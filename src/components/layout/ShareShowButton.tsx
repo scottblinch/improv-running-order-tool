@@ -1,5 +1,6 @@
 import { Share2 } from 'lucide-react';
 import { useId, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   AlertDialog,
@@ -33,7 +34,6 @@ export function ShareShowButton() {
   const skipCheckboxId = useId();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [skipNextTime, setSkipNextTime] = useState(false);
-  const [feedback, setFeedback] = useState<'copied' | 'shared' | null>(null);
   const [error, setError] = useState<ShareError | null>(null);
 
   const shareLabel = formatShowDisplayName(showName);
@@ -66,8 +66,9 @@ export function ShareShowButton() {
       return;
     }
 
-    setFeedback(outcome);
-    window.setTimeout(() => setFeedback(null), 2000);
+    toast.success(
+      outcome === 'shared' ? t('share.shared') : t('share.copied'),
+    );
   };
 
   const handleShareClick = () => {
@@ -89,13 +90,6 @@ export function ShareShowButton() {
     void performShare();
   };
 
-  const ariaLabel =
-    feedback === 'copied'
-      ? t('share.copied')
-      : feedback === 'shared'
-        ? t('share.shared')
-        : t('share.copyLink');
-
   return (
     <>
       <Button
@@ -103,7 +97,7 @@ export function ShareShowButton() {
         variant="outline"
         size="icon"
         className="shrink-0"
-        aria-label={ariaLabel}
+        aria-label={t('share.copyLink')}
         onClick={handleShareClick}
       >
         <Share2 aria-hidden className="size-4" />
