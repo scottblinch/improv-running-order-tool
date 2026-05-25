@@ -10,6 +10,9 @@ const LEGACY_SHARE_VERSION = 1;
 /** Keep share links paste-friendly in chat apps and email. */
 export const MAX_SHARE_PARAM_LENGTH = 8_000;
 
+/** Reject decompression bombs before JSON.parse. */
+export const MAX_INFLATED_BYTES = 256 * 1024;
+
 /** v2 compact wire format — indices instead of UUIDs. */
 type CompactPerson = [string] | [string, number];
 type CompactScene =
@@ -65,6 +68,33 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function parseJsonBytes(bytes: Uint8Array): unknown {
   return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+type InflateResult =
+  | { ok: true; data: Uint8Array }
+  | { ok: false; reason: 'error' | 'too_large' };
+
+function safeInflate(bytes: Uint8Array): InflateResult {
+  try {
+    const inflated = inflateSync(bytes);
+    if (inflated.length > MAX_INFLATED_BYTES) {
+      return { ok: false, reason: 'too_large' };
+    }
+
+    return { ok: true, data: inflated };
+  } catch {
+    return { ok: false, reason: 'error' };
+  }
+}
+
+function safeParseJsonBytes(bytes: Uint8Array): unknown | null {
+  if (bytes.length > MAX_INFLATED_BYTES) return null;
+
+  try {
+    return parseJsonBytes(bytes);
+  } catch {
+    return null;
+  }
 }
 
 function personFlags(person: Person): number {
@@ -249,22 +279,26 @@ export function buildShareUrl(param: string): string {
 }
 
 export function decodeShowShareParam(param: string): PersistedState | null {
+  if (param.length > MAX_SHARE_PARAM_LENGTH) return null;
+
   const bytes = base64UrlDecode(param);
   if (!bytes) return null;
 
-  try {
-    const inflated = inflateSync(bytes);
-    const fromCompressed = decodePayload(parseJsonBytes(inflated));
-    if (fromCompressed) return fromCompressed;
-  } catch {
-    // Uncompressed legacy v1 links fall through.
-  }
-
-  try {
-    return decodePayload(parseJsonBytes(bytes));
-  } catch {
+  const inflation = safeInflate(bytes);
+  if (inflation.ok) {
+    const parsed = safeParseJsonBytes(inflation.data);
+    if (parsed) {
+      const fromCompressed = decodePayload(parsed);
+      if (fromCompressed) return fromCompressed;
+    }
+  } else if (inflation.reason === 'too_large') {
     return null;
   }
+
+  const parsed = safeParseJsonBytes(bytes);
+  if (!parsed) return null;
+
+  return decodePayload(parsed);
 }
 
 /** Regenerate entity IDs and sanitize before importing legacy v1 payloads. */

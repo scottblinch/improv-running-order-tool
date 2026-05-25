@@ -28,8 +28,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "fix": "pnpm lint:fix && pnpm format",
+    "test": "vitest run",
     "generate:pwa-assets": "pwa-assets-generator --config pwa-assets.config.ts",
-    "check": "pnpm lint && pnpm format:check && pnpm build",
+    "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build",
     "preview": "vite preview",
     "preview:pages": "pnpm build:pages && vite preview --base /improv-running-order-tool/"
   },
@@ -40,7 +41,7 @@
     "@fontsource-variable/geist": "^5.2.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "date-fns": "^4.3.0",
+    "date-fns": "^4.2.0",
     "fflate": "^0.8.3",
     "i18next": "^26.2.0",
     "i18next-icu": "^2.4.3",
@@ -82,6 +83,8 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.7",
+    "workbox-window": "^7.4.1"
   }
 }

@@ -3,13 +3,41 @@ import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import browserslist from 'browserslist';
 import browserslistToEsbuild from 'browserslist-to-esbuild';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vitest/config';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import babel from '@rolldown/plugin-babel';
 import { browserslistToTargets } from 'lightningcss';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const productionContentSecurityPolicy = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "worker-src 'self'",
+  "manifest-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+].join('; ');
+
+function productionCspPlugin(): Plugin {
+  return {
+    name: 'production-csp',
+    apply: 'build',
+    transformIndexHtml(html) {
+      return html.replace(
+        '<head>',
+        `<head>\n    <meta http-equiv="Content-Security-Policy" content="${productionContentSecurityPolicy}" />`,
+      );
+    },
+  };
+}
 
 const repositoryName = 'improv-running-order-tool';
 const githubPagesBase = `/${repositoryName}/`;
@@ -55,6 +83,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] }),
+    productionCspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
@@ -98,5 +127,9 @@ export default defineConfig({
     lightningcss: {
       targets: browserslistToTargets(supportedBrowsers),
     },
+  },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
   },
 });
