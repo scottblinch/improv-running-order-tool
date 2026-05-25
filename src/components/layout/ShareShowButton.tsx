@@ -1,50 +1,15 @@
 import { Share2 } from 'lucide-react';
-import { useId, useState } from 'react';
-import { toast } from 'sonner';
+import { useState } from 'react';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { ShareConfirmDialog } from '@/components/layout/ShareConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { useTranslation } from '@/i18n';
 import { formatShowDisplayName } from '@/lib/show-date';
-import {
-  hasSkippedSharePrivacy,
-  setSkippedSharePrivacy,
-  shareShowUrl,
-} from '@/lib/share-show-action';
+import { showShareError, showShareSuccess } from '@/lib/show-share-feedback';
+import { hasSkippedSharePrivacy, shareShowUrl } from '@/lib/share-show-action';
 import { encodeShowShareParam } from '@/lib/show-share';
 import { useAppStore } from '@/store/useAppStore';
-
-type ShareError = 'too_large' | 'encode_failed' | 'copy_failed';
-
-function showShareError(error: ShareError, t: (key: string) => string): void {
-  if (error === 'too_large') {
-    toast.error(t('share.tooLargeTitle'), {
-      description: t('share.tooLargeDescription'),
-    });
-    return;
-  }
-
-  if (error === 'copy_failed') {
-    toast.error(t('share.copyFailedTitle'), {
-      description: t('share.copyFailedDescription'),
-    });
-    return;
-  }
-
-  toast.error(t('share.encodeFailedTitle'), {
-    description: t('share.encodeFailedDescription'),
-  });
-}
 
 export function ShareShowButton() {
   const { t } = useTranslation();
@@ -52,9 +17,7 @@ export function ShareShowButton() {
   const showDate = useAppStore((state) => state.showDate);
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
-  const skipCheckboxId = useId();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [skipNextTime, setSkipNextTime] = useState(false);
 
   const shareLabel = formatShowDisplayName(showName);
 
@@ -86,7 +49,7 @@ export function ShareShowButton() {
       return;
     }
 
-    toast.success(outcome === 'shared' ? t('share.shared') : t('share.copied'));
+    showShareSuccess(outcome, t);
   };
 
   const handleShareClick = () => {
@@ -95,17 +58,7 @@ export function ShareShowButton() {
       return;
     }
 
-    setSkipNextTime(false);
     setConfirmOpen(true);
-  };
-
-  const handleConfirmShare = () => {
-    if (skipNextTime) {
-      setSkippedSharePrivacy();
-    }
-
-    setConfirmOpen(false);
-    void performShare();
   };
 
   return (
@@ -123,43 +76,11 @@ export function ShareShowButton() {
         </Button>
       </IconButtonTooltip>
 
-      <AlertDialog
+      <ShareConfirmDialog
         open={confirmOpen}
-        onOpenChange={(open) => {
-          setConfirmOpen(open);
-          if (!open) setSkipNextTime(false);
-        }}
-      >
-        <AlertDialogContent className="sm:max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('share.confirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('share.confirmDescription')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="flex items-start gap-2">
-            <input
-              id={skipCheckboxId}
-              type="checkbox"
-              checked={skipNextTime}
-              onChange={(event) => setSkipNextTime(event.target.checked)}
-              className="mt-0.5 size-4 shrink-0 accent-primary"
-            />
-            <label
-              htmlFor={skipCheckboxId}
-              className="text-sm text-muted-foreground"
-            >
-              {t('share.confirmSkip')}
-            </label>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmShare}>
-              {t('share.confirmAction')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onOpenChange={setConfirmOpen}
+        onConfirm={() => void performShare()}
+      />
     </>
   );
 }

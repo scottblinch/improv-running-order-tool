@@ -6,16 +6,25 @@ Roadmap for building the Improv Show app. Product behavior and data rules live i
 
 Layered folders under `src/components/` — **no barrel `index.ts` files**; import from the module path.
 
-| Layer       | Path                                              | Role                                                                                            |
-| ----------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed)                                                           |
-| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, loading, panel wrapper, show switcher, date picker, dialogs |
-| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `AllPlaySlot`)                                      |
-| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                                 |
-| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                                    |
-| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                                 |
+| Layer       | Path                                              | Role                                                                                    |
+| ----------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed): `button`, `alert-dialog`, `tooltip`, `sonner`, … |
+| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, share/import dialogs, show switcher, date picker    |
+| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `RenameDialog`, `IconButtonTooltip`)        |
+| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                         |
+| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                            |
+| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                         |
 
-**Composition flow:** `App.tsx` → `AppShell` (header + content + footer) → feature panels → list/item → `ui` + `shared`.
+Supporting folders (not under `components/`):
+
+| Path         | Role                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| `src/lib/`   | Pure logic — share encode/decode, import bootstrap, print fit, dates |
+| `src/store/` | Zustand stores and selectors                                         |
+| `src/hooks/` | Cross-cutting React hooks (`useDocumentTitle`, print fit scale)      |
+| `src/pwa/`   | Service worker registration and update toasts                        |
+
+**Composition flow:** `App.tsx` → providers (`TooltipProvider`, `Toaster`) → `AppShell` (header + content + footer) → feature panels → list/item → `ui` + `shared`.
 
 **Conventions:**
 
@@ -43,6 +52,12 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 | 14   | i18n (i18next + ICU)                   | Done   |
 | 15   | Input sanitization + persist hydration | Done   |
 | 16   | App footer                             | Done   |
+| 17   | Show sharing (URL + import)            | Done   |
+| 18   | PWA (installable + offline shell)      | Done   |
+| 19   | Privacy (share confirm + footer note)  | Done   |
+| 20   | Sonner toasts (share, import, PWA)     | Done   |
+| 21   | Tooltips on icon-only buttons          | Done   |
+| 22   | Shared rename dialog + document title  | Done   |
 
 ---
 
@@ -58,7 +73,7 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 
 - [x] Tailwind CSS 4 + `@tailwindcss/vite`
 - [x] shadcn/ui (`radix-nova`, Lucide, Geist)
-- [x] Components: `button`, `input`, `card`, `badge`, `alert-dialog`, `dropdown-menu`, `select`, `popover`, `calendar`, `spinner`, `empty`
+- [x] Components: `button`, `input`, `card`, `badge`, `alert-dialog`, `dropdown-menu`, `select`, `popover`, `calendar`, `spinner`, `empty`, `tooltip`, `sonner`
 - [x] `ThemeProvider` — light / dark / system toggle in header
 
 ---
@@ -177,7 +192,58 @@ Layered folders under `src/components/` — **no barrel `index.ts` files**; impo
 ## 16. App footer — Done
 
 - [x] Author credit, GitHub issues link, GPL-2.0 summary with license link
-- [x] `Trans` for inline links; hidden when printing
+- [x] `Trans` for inline links; hidden when printing and in print preview mode
+- [x] `PrivacyDialog` — local storage, share links, GitHub Pages hosting note
+
+---
+
+## 17. Show sharing — Done
+
+- [x] `lib/show-share.ts` — compact v2 payload, deflate + base64url, `?show=` query param; legacy v1 fallback
+- [x] `lib/share-show-action.ts` — Web Share API with clipboard fallback; privacy skip preference in `localStorage`
+- [x] `lib/import-shared-show.ts` — bootstrap import from URL on load
+- [x] `lib/show-share-feedback.ts` — Sonner success/error toasts for share flows
+- [x] `ShareShowButton`, `ShareConfirmDialog`, `ImportSharedShowDialog` in `layout/`
+- [x] `shareKey` on `ShowRecord` — dedupe re-opened links (`importSharedShow` → `'imported' | 'existing' | 'full'`)
+- [x] Max share param length guard; invalid/full workspace → error dialog; success → toast
+
+---
+
+## 18. PWA — Done
+
+- [x] `vite-plugin-pwa` — manifest, Workbox, `registerType: 'autoUpdate'`
+- [x] `src/pwa/register-service-worker.ts` — prod registration; update-available toast with Refresh action
+- [x] Icons via `npm run generate:pwa-assets`; GitHub Pages uses `npm run build:pages`
+
+---
+
+## 19. Privacy — Done
+
+- [x] Share confirmation dialog before first share (optional “Don’t show again”)
+- [x] Footer **Privacy** link → `PrivacyDialog` with plain-language notes
+
+---
+
+## 20. Sonner toasts — Done
+
+- [x] `Toaster` in `App.tsx` (bottom-center)
+- [x] Share success (copied / native shared), share errors, import success, PWA update prompt
+- [x] Import/encode failures stay as dialogs when they need longer copy
+
+---
+
+## 21. Tooltips — Done
+
+- [x] `TooltipProvider` in `App.tsx`
+- [x] `IconButtonTooltip` in `shared/` — all icon-only buttons (header, roster, lineup, cast slots)
+- [x] Dropdown triggers (theme, actions menus) use nested tooltip + menu pattern
+
+---
+
+## 22. Shared rename + document title — Done
+
+- [x] `RenameDialog` in `shared/` — focus + select-all; wrappers for person, scene, show
+- [x] `lib/document-title.ts` + `useDocumentTitle` — `"[name] - [date] - Scott's Improv Running Order Tool"` when named
 
 ---
 

@@ -9,9 +9,11 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 - **Multi-show workspace** — create, switch, and delete saved shows in `localStorage` (grouped upcoming vs past by date)
 - **Roster** — add, rename, mark absent, soft-delete with assignment choices; alphabetized list (present first, then absent)
 - **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile
+- **Share** — copy or native-share a link to the current show; open a link to import (deduped by content fingerprint)
 - **Print** — show title and date on the cast sheet; on-screen print preview; fit-to-page scaling
 - **Theme** — light, dark, or system
-- **PWA** — installable; works offline after first load (show data stays in `localStorage`)
+- **PWA** — installable; works offline after first load (show data stays in `localStorage`); update toast after deploys
+- **Privacy** — share confirmation and footer privacy note (local storage, share URLs, hosting)
 - **i18n** — UI strings in `src/locales/en.json` (i18next + ICU; English only for now)
 
 ## Requirements

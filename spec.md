@@ -21,6 +21,9 @@ A purely client-side React single-page application (SPA) for building and managi
 - **Icons:** `lucide-react`
 - **i18n:** `i18next`, `i18next-icu`, `react-i18next` — strings in `src/locales/en.json`
 - **Dates:** `date-fns`, `react-day-picker` (show date picker)
+- **Share encoding:** `fflate` (deflate/inflate for compact URL payloads)
+- **PWA:** `vite-plugin-pwa` (manifest + service worker)
+- **Toasts:** Sonner via shadcn `sonner` component
 - **IDs:** `crypto.randomUUID()` at runtime
 
 ## 3. Data Models (TypeScript Interfaces)
@@ -59,6 +62,7 @@ export interface PersistedState {
 export interface ShowRecord extends PersistedState {
   id: ShowId;
   updatedAt: string; // ISO timestamp
+  shareKey?: string; // Content fingerprint for deduplicating shared-link imports
 }
 
 export interface WorkspacePersistedState {
@@ -67,7 +71,7 @@ export interface WorkspacePersistedState {
 }
 ```
 
-Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowName`, `setShowDate`, `createShow`, `switchShow`, and `deleteShow`.
+Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowName`, `setShowDate`, `createShow`, `switchShow`, `deleteShow`, and `importSharedShow`.
 
 ### ID generation & deduping
 
@@ -91,8 +95,10 @@ Desktop: two-column layout with header and footer. Mobile: stacked columns; assi
 - **Show switcher** — dropdown of saved shows (upcoming vs past sections); create and delete shows
 - **Rename show** — dialog for `showName` (default: "Untitled Show")
 - **Show date** — calendar picker for `showDate`
+- **Share show** — copy or native-share a URL encoding the current show (`?show=`); privacy confirmation on first use
 - **Theme toggle** — light / dark / system (separate `localStorage` key)
 - **Print preview** — on-screen WYSIWYG before printing
+- **Tooltips** — on icon-only controls (hover/focus labels)
 
 ### Left Column: The Roster
 
@@ -110,7 +116,13 @@ Desktop: two-column layout with header and footer. Mobile: stacked columns; assi
 
 ### Footer
 
-- Author credit, GitHub feedback link, short GPL-2.0 summary (hidden when printing).
+- Author credit, GitHub feedback link, short GPL-2.0 summary, **Privacy** link
+- Hidden when printing and in print preview mode
+
+### App-level providers
+
+- `TooltipProvider` — icon button tooltips
+- `Toaster` (Sonner) — ephemeral feedback for share, import, and PWA update
 
 ### Mobile
 
@@ -165,6 +177,21 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 - Delete show is confirmed; cannot delete the last remaining show.
 - Show switcher lists upcoming shows (date ≥ today) and past shows separately, sorted by date then name.
 
+### Show sharing
+
+- **Export:** encode show data (names, date, roster, lineup) into a `?show=` query param on the app URL (compressed v2 format; legacy uncompressed v1 still readable).
+- **Import:** opening a share link on load imports the show into the workspace (or switches to an existing show with the same content fingerprint).
+- **Dedup:** `shareKey` (16-char hex hash of canonical show content) prevents duplicate imports when the same link is opened again.
+- **Limits:** share param max length; workspace max 32 shows — failures surface via dialog or toast.
+- **Privacy:** confirmation before first share explains that performer names are in the URL; optional “Don’t show again”. Footer **Privacy** dialog describes local storage, share links, and GitHub Pages hosting logs.
+- **Feedback:** Sonner toast on successful share/copy/import; errors via toast (share) or dialog (invalid link, workspace full).
+
+### PWA
+
+- Installable; static assets cached after first load via service worker.
+- Show data remains in `localStorage` only (not uploaded).
+- When a new app version is deployed, a toast offers **Refresh** to activate the updated service worker.
+
 ### Confirmations
 
 Use shadcn `AlertDialog` for:
@@ -174,6 +201,7 @@ Use shadcn `AlertDialog` for:
 - Delete show
 - Mark person absent
 - Switch scene to all play (when players are assigned)
+- Share show (first time only; skippable via `localStorage`)
 
 No confirmation for: clearing absent, removing a slot (`X`), rename.
 
@@ -181,7 +209,7 @@ No confirmation for: clearing absent, removing a slot (`X`), rename.
 
 No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rules.
 
-- **Hide:** roster column, inputs, drag handles, remove buttons, header/footer chrome, dialogs.
+- **Hide:** roster column, inputs, drag handles, remove buttons, header/footer chrome, dialogs, toasts, tooltips.
 - **Show:** lineup full width, ink-friendly black on white.
 - **Print header:** show title (uppercase) and formatted date, centered above the scene list.
 - **Print preview:** screen-only mode that mirrors print layout before invoking the browser print dialog.
@@ -197,6 +225,7 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 - **Persisted shape:** `{ activeShowId, shows[] }` — not the flat single-show shape
 - **Hydration:** `hydrate-persisted-state.ts` normalizes and sanitizes on load; invalid data falls back to one empty show
 - **Input limits:** caps on persons, scenes, shows, name lengths, and IDs; sanitization strips control characters and drops invalid cross-references (defense against hand-edited `localStorage`)
+- **Share links:** user-initiated; data is encoded in the URL, not stored on a server by this app. GitHub Pages may log HTTP access metadata.
 
 ## 8. Development Guidelines
 
@@ -229,7 +258,10 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 | Persistence               | `localStorage` workspace                      |
 | Theme                     | Light / dark / system                         |
 | i18n                      | i18next + ICU; English only                   |
-| Export / import           | Post-MVP                                      |
+| Share                     | URL query param; import on load; dedup        |
+| PWA                       | Installable; offline shell; update toast      |
+| Privacy                   | Share confirm + footer dialog                 |
+| Export / import JSON      | Post-MVP                                      |
 | Mobile                    | Dropdowns/selects for slots                   |
 | Back-to-back cast warning | Post-MVP                                      |
 | Venue on print            | Post-MVP                                      |
