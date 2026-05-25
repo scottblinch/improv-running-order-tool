@@ -10,6 +10,7 @@ export function RosterQuickAdd() {
   const { t } = useTranslation();
   const addPerson = useAppStore((state) => state.addPerson);
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
   const errorId = useId();
   const [error, setError] = useState<string | null>(null);
   const requiredMessage = t('roster.performerNameRequired');
@@ -39,11 +40,14 @@ export function RosterQuickAdd() {
   return (
     <form className="flex flex-col gap-1" noValidate onSubmit={handleSubmit}>
       <div className="flex items-center gap-2">
+        <label htmlFor={inputId} className="sr-only">
+          {t('roster.performerName')}
+        </label>
         <Input
           ref={inputRef}
+          id={inputId}
           name="performerName"
           autoComplete="off"
-          aria-label={t('roster.performerName')}
           aria-required
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}

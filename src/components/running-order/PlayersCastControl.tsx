@@ -9,14 +9,16 @@ import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import {
+  getPersonById,
   resolveSlotDisplay,
   selectCastablePersons,
   selectPersonsForSlot,
   selectScenePlayerIds,
 } from '@/store/selectors';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import { useTranslation } from '@/i18n';
-import type { Scene } from '@/types/app';
+import type { PersonId, Scene } from '@/types/app';
 
 type PlayersCastControlProps = {
   scene: Scene;
@@ -24,6 +26,7 @@ type PlayersCastControlProps = {
 
 export function PlayersCastControl({ scene }: PlayersCastControlProps) {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const persons = useAppStore((state) => state.persons);
   const addPlayer = useAppStore((state) => state.addPlayer);
   const replacePlayer = useAppStore((state) => state.replacePlayer);
@@ -32,6 +35,32 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
 
   const castablePersons = selectCastablePersons(persons);
   const sortedPlayerIds = selectScenePlayerIds(persons, scene.playerIds);
+
+  const announcePlayerAdded = (personId: PersonId) => {
+    const person = getPersonById(persons, personId);
+    announce(
+      t('a11y.addedPlayer', {
+        name: person?.name ?? t('fallback.performer'),
+        scene: scene.name,
+      }),
+    );
+  };
+
+  const handleAddPlayer = (personId: PersonId) => {
+    addPlayer(scene.id, personId);
+    announcePlayerAdded(personId);
+  };
+
+  const handleReplacePlayer = (playerId: PersonId, newPersonId: PersonId) => {
+    replacePlayer(scene.id, playerId, newPersonId);
+    const person = getPersonById(persons, newPersonId);
+    announce(
+      t('a11y.replacedPlayer', {
+        name: person?.name ?? t('fallback.performer'),
+        scene: scene.name,
+      }),
+    );
+  };
 
   const playerControls = scene.isAllPlay ? (
     <AllPlaySlot
@@ -63,7 +92,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
         persons={castablePersons}
         excludedPersonIds={scene.playerIds}
         describedBy={ROSTER_CASTING_HELP_ID}
-        onAssign={(personId) => addPlayer(scene.id, personId)}
+        onAssign={handleAddPlayer}
       />
     </>
   );
@@ -89,7 +118,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
                     persons={selectPersonsForSlot(persons, playerId)}
                     describedBy={ROSTER_CASTING_HELP_ID}
                     onValueChange={(newPersonId) =>
-                      replacePlayer(scene.id, playerId, newPersonId)
+                      handleReplacePlayer(playerId, newPersonId)
                     }
                     className="min-w-0 flex-1"
                   />
@@ -117,7 +146,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               persons={castablePersons}
               excludedPersonIds={scene.playerIds}
               describedBy={ROSTER_CASTING_HELP_ID}
-              onAssign={(personId) => addPlayer(scene.id, personId)}
+              onAssign={handleAddPlayer}
             />
           </>
         )}

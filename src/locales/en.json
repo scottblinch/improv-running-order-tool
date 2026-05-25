@@ -32,6 +32,11 @@
     "movedSceneDown": "Moved {name} down",
     "dragCancelled": "Drag cancelled",
     "dropFailed": "Drop not allowed here",
+    "sceneOrderUnchanged": "Scene order unchanged",
+    "replacedPlayer": "{name} replaced in {scene}",
+    "closeToast": "Close notification",
+    "scrollUp": "Scroll up",
+    "scrollDown": "Scroll down",
     "notifications": "Notifications"
   },
   "theme": {

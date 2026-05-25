@@ -39,7 +39,7 @@ export function Toaster(props: ToasterProps) {
         classNames: {
           toast: 'cn-toast',
         },
-        closeButtonAriaLabel: t('privacy.close'),
+        closeButtonAriaLabel: t('a11y.closeToast'),
       }}
       {...props}
     />

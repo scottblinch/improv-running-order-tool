@@ -7,5 +7,8 @@ type A11yAnnounceState = {
 
 export const useA11yAnnounceStore = create<A11yAnnounceState>((set) => ({
   message: '',
-  announce: (message) => set({ message }),
+  announce: (message) => {
+    set({ message: '' });
+    queueMicrotask(() => set({ message }));
+  },
 }));

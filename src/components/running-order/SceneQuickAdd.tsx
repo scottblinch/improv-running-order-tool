@@ -10,6 +10,7 @@ export function SceneQuickAdd() {
   const { t } = useTranslation();
   const addScene = useAppStore((state) => state.addScene);
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
   const errorId = useId();
   const [error, setError] = useState<string | null>(null);
   const requiredMessage = t('lineup.sceneNameRequired');
@@ -39,11 +40,14 @@ export function SceneQuickAdd() {
   return (
     <form className="flex flex-col gap-1" noValidate onSubmit={handleSubmit}>
       <div className="flex items-center gap-2">
+        <label htmlFor={inputId} className="sr-only">
+          {t('lineup.sceneName')}
+        </label>
         <Input
           ref={inputRef}
+          id={inputId}
           name="sceneName"
           autoComplete="off"
-          aria-label={t('lineup.sceneName')}
           aria-required
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}

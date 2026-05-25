@@ -4,13 +4,15 @@ import { PersonSlotSelect } from '@/components/running-order/PersonSlotSelect';
 import { CastSlot } from '@/components/shared/CastSlot';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import {
+  getPersonById,
   resolveSlotDisplay,
   selectCastablePersons,
   selectPersonsForSlot,
 } from '@/store/selectors';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import { useTranslation } from '@/i18n';
-import type { Scene } from '@/types/app';
+import type { PersonId, Scene } from '@/types/app';
 
 type HostCastControlProps = {
   scene: Scene;
@@ -18,6 +20,7 @@ type HostCastControlProps = {
 
 export function HostCastControl({ scene }: HostCastControlProps) {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const persons = useAppStore((state) => state.persons);
   const assignHost = useAppStore((state) => state.assignHost);
   const removeHost = useAppStore((state) => state.removeHost);
@@ -28,6 +31,21 @@ export function HostCastControl({ scene }: HostCastControlProps) {
     : null;
   const slotPersons = selectPersonsForSlot(persons, scene.hostId);
 
+  const announceHostAssigned = (personId: PersonId) => {
+    const person = getPersonById(persons, personId);
+    announce(
+      t('a11y.assignedHost', {
+        name: person?.name ?? t('fallback.performer'),
+        scene: scene.name,
+      }),
+    );
+  };
+
+  const handleAssignHost = (personId: PersonId) => {
+    assignHost(scene.id, personId);
+    announceHostAssigned(personId);
+  };
+
   return (
     <>
       <div className="min-w-0 flex-1 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
@@ -36,7 +54,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
           value={scene.hostId}
           persons={slotPersons}
           describedBy={ROSTER_CASTING_HELP_ID}
-          onValueChange={(personId) => assignHost(scene.id, personId)}
+          onValueChange={handleAssignHost}
           onClear={() => removeHost(scene.id)}
         />
       </div>
@@ -63,7 +81,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
             label={t('lineup.assignHost')}
             persons={castablePersons}
             describedBy={ROSTER_CASTING_HELP_ID}
-            onAssign={(personId) => assignHost(scene.id, personId)}
+            onAssign={handleAssignHost}
           />
         )}
       </CastDropZone>

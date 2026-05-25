@@ -179,6 +179,8 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
             name: scene?.name ?? t('fallback.scene'),
           }),
         );
+      } else {
+        announce(t('a11y.sceneOrderUnchanged'));
       }
     }
   };
