@@ -10,20 +10,46 @@ import { axe } from 'vitest-axe';
 import * as axeMatchers from 'vitest-axe/matchers';
 import { describe, expect, it } from 'vitest';
 
+import { DeletePersonDialog } from '@/components/roster/DeletePersonDialog';
 import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
+import { ShareConfirmDialog } from '@/components/layout/ShareConfirmDialog';
 import { SkipLink } from '@/components/layout/SkipLink';
+import { DesktopDndProvider } from '@/components/dnd/desktop-dnd-context';
 import { DragPreviewChip } from '@/components/dnd/DragPreviewChip';
+import { PersonRow } from '@/components/roster/PersonRow';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
+import { PersonAssignSelect } from '@/components/running-order/PersonAssignSelect';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { CastSlot } from '@/components/shared/CastSlot';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { RenameDialog } from '@/components/shared/RenameDialog';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { useAppStore } from '@/store/useAppStore';
+import type { Person } from '@/types/app';
 
 expect.extend(axeMatchers);
 
+const testPerson: Person = {
+  id: 'person-test',
+  name: 'Alex',
+  isAbsent: false,
+  isDeleted: false,
+};
+
 function renderWithUiProviders(ui: React.ReactNode) {
   return render(<TooltipProvider>{ui}</TooltipProvider>);
+}
+
+function renderPersonRow(person: Person = testPerson) {
+  useAppStore.setState({ persons: [person], scenes: [] });
+
+  return renderWithUiProviders(
+    <DesktopDndProvider value={false}>
+      <ul>
+        <PersonRow person={person} />
+      </ul>
+    </DesktopDndProvider>,
+  );
 }
 
 describe('accessibility smoke tests', () => {
@@ -79,6 +105,47 @@ describe('accessibility smoke tests', () => {
         onConfirm={() => undefined}
       />,
     );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('DeletePersonDialog has no axe violations when open', async () => {
+    const { container } = render(
+      <DeletePersonDialog
+        open
+        onOpenChange={() => undefined}
+        personName="Alex"
+        hasSceneAssignments
+        onHardDelete={() => undefined}
+        onDeleteWithMode={() => undefined}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('ShareConfirmDialog has no axe violations when open', async () => {
+    const { container } = render(
+      <ShareConfirmDialog
+        open
+        onOpenChange={() => undefined}
+        onConfirm={() => undefined}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('PersonAssignSelect has no axe violations', async () => {
+    const { container } = renderWithUiProviders(
+      <PersonAssignSelect
+        label="Assign host"
+        persons={[testPerson]}
+        onAssign={() => undefined}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('PersonRow has no axe violations', async () => {
+    const { container } = renderPersonRow();
     expect(await axe(container)).toHaveNoViolations();
   });
 

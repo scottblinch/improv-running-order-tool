@@ -131,5 +131,6 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.test.{ts,tsx}'],
     environmentMatchGlobs: [['**/*.test.tsx', 'jsdom']],
+    setupFiles: ['./src/test/setup.ts'],
   },
 });

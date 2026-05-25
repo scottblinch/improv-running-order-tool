@@ -245,8 +245,14 @@ export function PersonRow({ person }: PersonRowProps) {
         onOpenChange={setDeleteOpen}
         personName={person.name}
         hasSceneAssignments={hasSceneAssignments}
-        onHardDelete={() => deletePerson(person.id, 'clearScenes')}
-        onDeleteWithMode={(mode) => deletePerson(person.id, mode)}
+        onHardDelete={() => {
+          deletePerson(person.id, 'clearScenes');
+          announce(t('a11y.deletedPerformer', { name: person.name }));
+        }}
+        onDeleteWithMode={(mode) => {
+          deletePerson(person.id, mode);
+          announce(t('a11y.deletedPerformer', { name: person.name }));
+        }}
       />
     </>
   );

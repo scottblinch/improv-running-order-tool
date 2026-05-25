@@ -140,7 +140,10 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
 
     if (activeData?.type === 'roster-person') {
       const person = getPersonById(persons, activeData.personId);
-      if (!person || person.isAbsent || person.isDeleted) return;
+      if (!person || person.isAbsent || person.isDeleted) {
+        announce(t('a11y.dropFailed'));
+        return;
+      }
 
       const scene = overData
         ? scenes.find((item) => item.id === overData.sceneId)

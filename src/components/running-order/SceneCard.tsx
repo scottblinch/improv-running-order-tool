@@ -30,6 +30,7 @@ import { castRoleLabelClasses } from '@/lib/cast-role-styles';
 import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/i18n';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
 
@@ -41,6 +42,7 @@ type SceneCardProps = {
 
 export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const renameScene = useAppStore((state) => state.renameScene);
   const removeScene = useAppStore((state) => state.removeScene);
   const setAllPlay = useAppStore((state) => state.setAllPlay);
@@ -50,7 +52,10 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
   const [allPlayConfirmOpen, setAllPlayConfirmOpen] = useState(false);
   const desktopDndEnabled = useDesktopDndEnabled();
 
-  const enableAllPlay = () => setAllPlay(scene.id, true);
+  const enableAllPlay = () => {
+    setAllPlay(scene.id, true);
+    announce(t('a11y.enabledAllPlay', { scene: scene.name }));
+  };
 
   const handleAllPlaySelect = () => {
     if (scene.playerIds.length > 0) {
@@ -223,7 +228,10 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
         open={removeOpen}
         onOpenChange={setRemoveOpen}
         sceneName={scene.name}
-        onConfirm={() => removeScene(scene.id)}
+        onConfirm={() => {
+          removeScene(scene.id);
+          announce(t('a11y.removedScene', { name: scene.name }));
+        }}
       />
 
       <SetAllPlayDialog

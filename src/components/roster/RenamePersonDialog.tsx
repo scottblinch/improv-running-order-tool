@@ -1,6 +1,7 @@
 import { RenameDialog } from '@/components/shared/RenameDialog';
 import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 
 type RenamePersonDialogProps = {
   open: boolean;
@@ -9,12 +10,20 @@ type RenamePersonDialogProps = {
   onConfirm: (name: string) => void;
 };
 
-export function RenamePersonDialog(props: RenamePersonDialogProps) {
+export function RenamePersonDialog({
+  onConfirm,
+  ...props
+}: RenamePersonDialogProps) {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
 
   return (
     <RenameDialog
       {...props}
+      onConfirm={(name) => {
+        onConfirm(name);
+        announce(t('a11y.renamedPerformer', { name }));
+      }}
       title={t('roster.renameTitle')}
       description={t('roster.renameDescription')}
       inputLabel={t('roster.performerName')}
