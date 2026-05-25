@@ -58,12 +58,18 @@ export function PersonSlotSelect({
           onValueChange(selected);
         }}
       >
-        <SelectTrigger id={triggerId} className="w-full" aria-describedby={describedBy}>
+        <SelectTrigger
+          id={triggerId}
+          className="w-full"
+          aria-describedby={describedBy}
+        >
           <SelectValue placeholder={label} />
         </SelectTrigger>
         <SelectContent>
           {onClear && value ? (
-            <SelectItem value={CLEAR_VALUE}>{t('lineup.unassigned')}</SelectItem>
+            <SelectItem value={CLEAR_VALUE}>
+              {t('lineup.unassigned')}
+            </SelectItem>
           ) : null}
           {persons.map((person) => {
             const isWarning = person.isAbsent || person.isDeleted;

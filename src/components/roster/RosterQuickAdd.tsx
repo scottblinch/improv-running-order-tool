@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 
 export function RosterQuickAdd() {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const addPerson = useAppStore((state) => state.addPerson);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
@@ -33,6 +35,7 @@ export function RosterQuickAdd() {
 
     setError(null);
     addPerson(trimmed);
+    announce(t('a11y.addedPerformer', { name: trimmed }));
     event.currentTarget.reset();
     input.focus();
   };

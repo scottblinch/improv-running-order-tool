@@ -79,11 +79,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
   };
 
   const playerControls = scene.isAllPlay ? (
-    <AllPlaySlot
-      sceneId={scene.id}
-      inline
-      onRemove={handleRemoveAllPlay}
-    />
+    <AllPlaySlot sceneId={scene.id} inline onRemove={handleRemoveAllPlay} />
   ) : (
     <>
       {sortedPlayerIds.map((playerId) => {

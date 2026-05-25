@@ -10,7 +10,9 @@ import { axe } from 'vitest-axe';
 import * as axeMatchers from 'vitest-axe/matchers';
 import { describe, expect, it } from 'vitest';
 
+import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
 import { SkipLink } from '@/components/layout/SkipLink';
+import { DragPreviewChip } from '@/components/dnd/DragPreviewChip';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { CastSlot } from '@/components/shared/CastSlot';
@@ -68,24 +70,43 @@ describe('accessibility smoke tests', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it('CastSlot host has no axe violations in light and dark themes', async () => {
-    const slot = (
-      <CastSlot
-        personId="person-1"
-        name="Alex"
-        castRole="host"
-        isWarning={false}
-        inline
-        onRemove={() => undefined}
-      />
+  it('DeleteShowDialog has no axe violations when open', async () => {
+    const { container } = render(
+      <DeleteShowDialog
+        open
+        onOpenChange={() => undefined}
+        label="Friday Show"
+        onConfirm={() => undefined}
+      />,
     );
+    expect(await axe(container)).toHaveNoViolations();
+  });
 
-    const { container: lightContainer } = renderWithUiProviders(slot);
-    expect(await axe(lightContainer)).toHaveNoViolations();
+  it('DragPreviewChip has no axe violations', async () => {
+    const { container } = render(<DragPreviewChip label="Alex" />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
 
-    const { container: darkContainer } = renderWithUiProviders(
-      <div className="dark">{slot}</div>,
-    );
-    expect(await axe(darkContainer)).toHaveNoViolations();
+  it('CastSlot has no axe violations in light and dark themes', async () => {
+    for (const castRole of ['host', 'player'] as const) {
+      const slot = (
+        <CastSlot
+          personId="person-1"
+          name="Alex"
+          castRole={castRole}
+          isWarning={false}
+          inline
+          onRemove={() => undefined}
+        />
+      );
+
+      const { container: lightContainer } = renderWithUiProviders(slot);
+      expect(await axe(lightContainer)).toHaveNoViolations();
+
+      const { container: darkContainer } = renderWithUiProviders(
+        <div className="dark">{slot}</div>,
+      );
+      expect(await axe(darkContainer)).toHaveNoViolations();
+    }
   });
 });

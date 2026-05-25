@@ -149,7 +149,9 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
 
       if (overData?.type === 'host-zone') {
         assignHost(overData.sceneId, activeData.personId);
-        announce(t('a11y.assignedHost', { name: person.name, scene: sceneName }));
+        announce(
+          t('a11y.assignedHost', { name: person.name, scene: sceneName }),
+        );
         return;
       }
 
@@ -214,7 +216,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
         >
           {children}
         </SortableContext>
-        <DragOverlay className="print:hidden" dropAnimation={null}>
+        <DragOverlay aria-hidden className="print:hidden" dropAnimation={null}>
           {activeDrag ? (
             activeDrag.type === 'scene' ? (
               <DragPreviewChip

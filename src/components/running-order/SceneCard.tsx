@@ -177,17 +177,16 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-host-label`} className="sr-only">
               {t('common.host')}
             </span>
-            <IconButtonTooltip label={t('common.host')}>
-              <span
-                aria-hidden
-                className={cn(
-                  'w-4 shrink-0 text-xs font-medium',
-                  castRoleLabelClasses('host'),
-                )}
-              >
-                H:
-              </span>
-            </IconButtonTooltip>
+            <span
+              aria-hidden
+              title={t('common.host')}
+              className={cn(
+                'w-4 shrink-0 text-xs font-medium',
+                castRoleLabelClasses('host'),
+              )}
+            >
+              H:
+            </span>
             <HostCastControl scene={scene} />
           </div>
 
@@ -198,17 +197,16 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-players-label`} className="sr-only">
               {t('common.players')}
             </span>
-            <IconButtonTooltip label={t('common.players')}>
-              <span
-                aria-hidden
-                className={cn(
-                  'w-4 shrink-0 text-xs font-medium',
-                  castRoleLabelClasses('player'),
-                )}
-              >
-                P:
-              </span>
-            </IconButtonTooltip>
+            <span
+              aria-hidden
+              title={t('common.players')}
+              className={cn(
+                'w-4 shrink-0 text-xs font-medium',
+                castRoleLabelClasses('player'),
+              )}
+            >
+              P:
+            </span>
             <PlayersCastControl scene={scene} />
           </div>
         </div>

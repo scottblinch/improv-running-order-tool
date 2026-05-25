@@ -20,9 +20,7 @@ export function PrintPreviewToggle() {
   const handleToggle = () => {
     const entering = !enabled;
     toggle();
-    announce(
-      entering ? t('a11y.printPreviewOn') : t('a11y.printPreviewOff'),
-    );
+    announce(entering ? t('a11y.printPreviewOn') : t('a11y.printPreviewOff'));
 
     requestAnimationFrame(() => {
       if (entering) {

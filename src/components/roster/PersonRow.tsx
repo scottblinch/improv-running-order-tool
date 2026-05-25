@@ -37,6 +37,7 @@ import {
 } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 import { useHoverStore } from '@/store/useHoverStore';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useTranslation } from '@/i18n';
 import type { Person } from '@/types/app';
 
@@ -46,6 +47,7 @@ type PersonRowProps = {
 
 export function PersonRow({ person }: PersonRowProps) {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
   const renamePerson = useAppStore((state) => state.renamePerson);
@@ -79,10 +81,16 @@ export function PersonRow({ person }: PersonRowProps) {
   const handleAbsent = () => {
     if (person.isAbsent) {
       togglePersonAbsence(person.id);
+      announce(t('a11y.clearedAbsent', { name: person.name }));
       return;
     }
 
     setAbsentOpen(true);
+  };
+
+  const handleMarkAbsent = () => {
+    togglePersonAbsence(person.id);
+    announce(t('a11y.markedAbsent', { name: person.name }));
   };
 
   return (
@@ -229,7 +237,7 @@ export function PersonRow({ person }: PersonRowProps) {
         open={absentOpen}
         onOpenChange={setAbsentOpen}
         personName={person.name}
-        onConfirm={() => togglePersonAbsence(person.id)}
+        onConfirm={handleMarkAbsent}
       />
 
       <DeletePersonDialog

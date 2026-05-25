@@ -117,6 +117,16 @@ export function ShowSwitcher() {
     }
   };
 
+  const handleCreateShow = () => {
+    createShow();
+    const { showName: nextName, showDate: nextDate } = useAppStore.getState();
+    announce(
+      t('a11y.createdShow', {
+        label: formatShowMenuLabel(nextName, nextDate),
+      }),
+    );
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -168,7 +178,7 @@ export function ShowSwitcher() {
             disabled={!canCreate}
             title={t('workspace.newShowItemTitle')}
             aria-describedby={!canCreate ? maxShowsHintId : undefined}
-            onSelect={() => createShow()}
+            onSelect={handleCreateShow}
           >
             <Plus aria-hidden className="size-4" />
             {t('workspace.newShow')}
@@ -176,7 +186,9 @@ export function ShowSwitcher() {
               <>
                 {` (${INPUT_LIMITS.maxShows})`}
                 <span id={maxShowsHintId} className="sr-only">
-                  {t('workspace.newShowMaxShows', { max: INPUT_LIMITS.maxShows })}
+                  {t('workspace.newShowMaxShows', {
+                    max: INPUT_LIMITS.maxShows,
+                  })}
                 </span>
               </>
             ) : null}
@@ -193,7 +205,9 @@ export function ShowSwitcher() {
         onConfirm={() => {
           if (!deleteTarget) return;
 
+          const { label } = deleteTarget;
           deleteShow(deleteTarget.id);
+          announce(t('a11y.deletedShow', { label }));
           setDeleteTarget(null);
         }}
       />

@@ -8,6 +8,7 @@ type DragPreviewChipProps = {
 export function DragPreviewChip({ label, className }: DragPreviewChipProps) {
   return (
     <div
+      aria-hidden
       className={cn(
         'inline-flex max-w-xs items-center rounded-lg border border-primary bg-primary/10 px-3 py-1.5 text-sm font-medium shadow-md ring-2 ring-primary/40',
         className,
