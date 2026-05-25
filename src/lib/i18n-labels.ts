@@ -9,6 +9,16 @@ export function formatRoleCountLabel(
   return i18n.t(key, { count });
 }
 
+export function formatRoleBadgeTooltip(
+  role: 'host' | 'player',
+  name: string,
+  count: number,
+): string {
+  const key =
+    role === 'host' ? 'roster.hostBadgeTooltip' : 'roster.playerBadgeTooltip';
+  return i18n.t(key, { name, count });
+}
+
 export function formatPersonRowLabel(
   name: string,
   isAbsent: boolean,

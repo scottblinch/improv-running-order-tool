@@ -2,6 +2,10 @@ import { Users, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
+import {
+  castRoleLabelClasses,
+  castRoleSurfaceClasses,
+} from '@/lib/cast-role-styles';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/i18n';
 import { personPlaysInScene } from '@/store/selectors';
@@ -34,14 +38,20 @@ export function AllPlaySlot({
   return (
     <div
       className={cn(
-        'items-center gap-2 rounded-lg border border-border bg-muted/50 px-2 py-1.5 transition-colors select-none',
+        'items-center gap-2 rounded-lg border px-2 py-1.5 transition-colors select-none',
+        castRoleSurfaceClasses('player'),
         inline ? 'inline-flex max-w-full shrink-0' : 'flex w-full',
         isHighlighted &&
-          'border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-1 ring-offset-background',
+          'ring-2 ring-primary/40 ring-offset-1 ring-offset-background',
       )}
     >
-      <Users aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-      <span className="text-sm font-medium">{t('common.allPlay')}</span>
+      <Users
+        aria-hidden
+        className={cn('size-3.5 shrink-0', castRoleLabelClasses('player'))}
+      />
+      <span className={cn('text-sm font-medium', castRoleLabelClasses('player'))}>
+        {t('common.allPlay')}
+      </span>
       {onRemove ? (
         <IconButtonTooltip label={t('lineup.removeAllPlay')}>
           <Button

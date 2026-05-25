@@ -50,15 +50,15 @@ export function ThemeToggle() {
           value={theme}
           onValueChange={(value) => setTheme(value as Theme)}
         >
-          <DropdownMenuRadioItem value="light">
+          <DropdownMenuRadioItem value="light" title={t('theme.lightItemTitle')}>
             <Sun aria-hidden className="size-4" />
             {t('theme.light')}
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="dark">
+          <DropdownMenuRadioItem value="dark" title={t('theme.darkItemTitle')}>
             <Moon aria-hidden className="size-4" />
             {t('theme.dark')}
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="system">
+          <DropdownMenuRadioItem value="system" title={t('theme.systemItemTitle')}>
             <Monitor aria-hidden className="size-4" />
             {t('theme.system')}
           </DropdownMenuRadioItem>

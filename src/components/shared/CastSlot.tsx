@@ -4,14 +4,19 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { cn } from '@/lib/utils';
+import { castRoleSurfaceClasses } from '@/lib/cast-role-styles';
+import type { CastSlotRole } from '@/lib/cast-role-styles';
 import { formatWarningLabel } from '@/lib/i18n-labels';
 import { useHoverStore } from '@/store/useHoverStore';
 import { useTranslation } from '@/i18n';
 import type { PersonId } from '@/types/app';
 
+export type { CastSlotRole };
+
 type CastSlotProps = {
   personId: PersonId;
   name: string;
+  role: CastSlotRole;
   isWarning: boolean;
   warningLabel?: 'Absent' | 'Removed';
   inline?: boolean;
@@ -21,6 +26,7 @@ type CastSlotProps = {
 export function CastSlot({
   personId,
   name,
+  role,
   isWarning,
   warningLabel,
   inline = false,
@@ -39,9 +45,9 @@ export function CastSlot({
         inline ? 'inline-flex max-w-full shrink-0' : 'flex w-full',
         isWarning
           ? 'border-destructive/50 bg-destructive/5'
-          : 'border-border bg-muted/50',
+          : castRoleSurfaceClasses(role),
         isHighlighted &&
-          'border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-1 ring-offset-background',
+          'ring-2 ring-primary/40 ring-offset-1 ring-offset-background',
       )}
     >
       <span

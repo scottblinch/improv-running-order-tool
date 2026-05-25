@@ -1,4 +1,4 @@
-import { Share2 } from 'lucide-react';
+import { Copy, Share2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { ShareConfirmDialog } from '@/components/layout/ShareConfirmDialog';
@@ -6,8 +6,12 @@ import { Button } from '@/components/ui/button';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { useTranslation } from '@/i18n';
 import { formatShowDisplayName } from '@/lib/show-date';
-import { showShareError, showShareSuccess } from '@/lib/show-share-feedback';
-import { hasSkippedSharePrivacy, shareShowUrl } from '@/lib/share-show-action';
+import { showShareCopied, showShareError } from '@/lib/show-share-feedback';
+import {
+  hasSkippedSharePrivacy,
+  shouldUseNativeShare,
+  shareShowUrl,
+} from '@/lib/share-show-action';
 import { encodeShowShareParam } from '@/lib/show-share';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -19,6 +23,8 @@ export function ShareShowButton() {
   const scenes = useAppStore((state) => state.scenes);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  const useNativeShare = shouldUseNativeShare();
+  const actionLabel = t(useNativeShare ? 'share.shareLink' : 'share.copyLink');
   const shareLabel = formatShowDisplayName(showName);
 
   const performShare = async () => {
@@ -49,7 +55,9 @@ export function ShareShowButton() {
       return;
     }
 
-    showShareSuccess(outcome, t);
+    if (outcome === 'copied') {
+      showShareCopied(t);
+    }
   };
 
   const handleShareClick = () => {
@@ -63,16 +71,20 @@ export function ShareShowButton() {
 
   return (
     <>
-      <IconButtonTooltip label={t('share.copyLink')}>
+      <IconButtonTooltip label={actionLabel}>
         <Button
           type="button"
           variant="outline"
           size="icon"
           className="shrink-0"
-          aria-label={t('share.copyLink')}
+          aria-label={actionLabel}
           onClick={handleShareClick}
         >
-          <Share2 aria-hidden className="size-4" />
+          {useNativeShare ? (
+            <Share2 aria-hidden className="size-4" />
+          ) : (
+            <Copy aria-hidden className="size-4" />
+          )}
         </Button>
       </IconButtonTooltip>
 

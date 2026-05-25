@@ -47,6 +47,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
           <CastSlot
             key={playerId}
             inline
+            role="player"
             personId={slot.personId}
             name={slot.name}
             isWarning={slot.isWarning}

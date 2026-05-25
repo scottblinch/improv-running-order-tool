@@ -27,7 +27,7 @@ import {
 import { cn } from '@/lib/utils';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { rosterPersonDragId } from '@/lib/dnd-ids';
-import { formatPersonRowLabel, formatRoleCountLabel } from '@/lib/i18n-labels';
+import { formatPersonRowLabel, formatRoleBadgeTooltip, formatRoleCountLabel } from '@/lib/i18n-labels';
 import {
   countPersonSceneRoles,
   personHasSceneAssignments,
@@ -137,23 +137,35 @@ export function PersonRow({ person }: PersonRowProps) {
             >
               {person.name}
             </span>
-            <Badge
-              variant="secondary"
-              className="shrink-0"
-              aria-label={formatRoleCountLabel('host', hostCount)}
+            <IconButtonTooltip
+              label={formatRoleBadgeTooltip('host', person.name, hostCount)}
             >
-              H: {hostCount}
-            </Badge>
-            <Badge
-              variant="outline"
-              className="shrink-0"
-              aria-label={formatRoleCountLabel('player', playerCount)}
+              <Badge
+                variant="host"
+                className="shrink-0"
+                aria-label={formatRoleCountLabel('host', hostCount)}
+              >
+                H: {hostCount}
+              </Badge>
+            </IconButtonTooltip>
+            <IconButtonTooltip
+              label={formatRoleBadgeTooltip(
+                'player',
+                person.name,
+                playerCount,
+              )}
             >
-              {playerCount === 0 ? (
-                <TriangleAlert aria-hidden className="size-3" />
-              ) : null}
-              P: {playerCount}
-            </Badge>
+              <Badge
+                variant="player"
+                className="shrink-0"
+                aria-label={formatRoleCountLabel('player', playerCount)}
+              >
+                {playerCount === 0 ? (
+                  <TriangleAlert aria-hidden className="size-3" />
+                ) : null}
+                P: {playerCount}
+              </Badge>
+            </IconButtonTooltip>
             {person.isAbsent ? (
               <Badge variant="destructive" className="shrink-0">
                 {t('roster.absent')}
@@ -179,6 +191,7 @@ export function PersonRow({ person }: PersonRowProps) {
           </IconButtonTooltip>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
+              title={t('roster.renameItemTitle', { name: person.name })}
               onSelect={(event) => {
                 event.preventDefault();
                 setRenameOpen(true);
@@ -187,7 +200,14 @@ export function PersonRow({ person }: PersonRowProps) {
               <Pencil aria-hidden className="size-4" />
               {t('common.rename')}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={handleAbsent}>
+            <DropdownMenuItem
+              title={
+                person.isAbsent
+                  ? t('roster.clearAbsentItemTitle', { name: person.name })
+                  : t('roster.markAbsentItemTitle', { name: person.name })
+              }
+              onSelect={handleAbsent}
+            >
               {person.isAbsent ? (
                 <>
                   <UserCheck aria-hidden className="size-4" />
@@ -203,6 +223,7 @@ export function PersonRow({ person }: PersonRowProps) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
+              title={t('roster.deleteItemTitle', { name: person.name })}
               onSelect={() => setDeleteOpen(true)}
             >
               <Trash2 aria-hidden className="size-4" />

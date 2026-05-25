@@ -24,6 +24,37 @@ type ShareShowUrlOptions = {
   text: string;
 };
 
+/** Native share is best on phones; desktop (incl. macOS) and tablets use clipboard. */
+export function shouldUseNativeShare(): boolean {
+  if (typeof navigator.share !== 'function') return false;
+
+  const isTouchPrimary = window.matchMedia(
+    '(hover: none) and (pointer: coarse)',
+  ).matches;
+
+  if (!isTouchPrimary || isTabletDevice()) return false;
+
+  return isMobilePhoneUserAgent();
+}
+
+function isTabletDevice(): boolean {
+  const ua = navigator.userAgent;
+
+  if (/iPad/i.test(ua)) return true;
+
+  // iPadOS 13+ may report as Mac with touch.
+  return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+}
+
+function isMobilePhoneUserAgent(): boolean {
+  const ua = navigator.userAgent;
+
+  if (/iPhone|iPod/i.test(ua)) return true;
+  if (/Android/i.test(ua) && /Mobile/i.test(ua)) return true;
+
+  return false;
+}
+
 export async function shareShowUrl({
   url,
   title,
@@ -32,7 +63,7 @@ export async function shareShowUrl({
   const shareData = { url, title, text };
 
   if (
-    typeof navigator.share === 'function' &&
+    shouldUseNativeShare() &&
     (typeof navigator.canShare !== 'function' || navigator.canShare(shareData))
   ) {
     try {

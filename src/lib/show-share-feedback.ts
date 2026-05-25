@@ -25,11 +25,8 @@ export function showShareError(
   });
 }
 
-export function showShareSuccess(
-  outcome: 'shared' | 'copied',
-  t: (key: string) => string,
-): void {
-  toast.success(outcome === 'shared' ? t('share.shared') : t('share.copied'));
+export function showShareCopied(t: (key: string) => string): void {
+  toast.success(t('share.copied'));
 }
 
 export function showShareImportSuccess(

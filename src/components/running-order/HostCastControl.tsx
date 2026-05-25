@@ -47,6 +47,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
         {hostSlot ? (
           <CastSlot
             inline
+            role="host"
             personId={hostSlot.personId}
             name={hostSlot.name}
             isWarning={hostSlot.isWarning}

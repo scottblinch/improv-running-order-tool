@@ -43,6 +43,7 @@ function ShowMenuItem({
   return (
     <DropdownMenuItem
       className="flex items-center gap-2"
+      title={t('workspace.switchShowItemTitle', { label })}
       onSelect={() => {
         if (!isActive) {
           onSwitch(show.id);
@@ -55,13 +56,14 @@ function ShowMenuItem({
       />
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {canDelete ? (
-        <IconButtonTooltip label={t('workspace.deleteShow')}>
+        <IconButtonTooltip label={t('workspace.deleteShowItemTitle', { label })}>
           <Button
             type="button"
             variant="ghost"
             size="icon-sm"
             className="size-7 shrink-0"
-            aria-label={t('workspace.deleteShow')}
+            title={t('workspace.deleteShowItemTitle', { label })}
+            aria-label={t('workspace.deleteShowItemTitle', { label })}
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -146,7 +148,11 @@ export function ShowSwitcher() {
             </>
           ) : null}
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled={!canCreate} onSelect={() => createShow()}>
+          <DropdownMenuItem
+            disabled={!canCreate}
+            title={t('workspace.newShowItemTitle')}
+            onSelect={() => createShow()}
+          >
             <Plus aria-hidden className="size-4" />
             {t('workspace.newShow')}
             {!canCreate ? ` (${INPUT_LIMITS.maxShows})` : null}

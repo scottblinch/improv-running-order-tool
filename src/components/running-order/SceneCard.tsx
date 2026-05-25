@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { sceneDragId } from '@/lib/dnd-ids';
+import { castRoleLabelClasses } from '@/lib/cast-role-styles';
 import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/i18n';
@@ -142,12 +143,18 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               </DropdownMenuTrigger>
             </IconButtonTooltip>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
+              <DropdownMenuItem
+                title={t('lineup.renameSceneItemTitle', { name: scene.name })}
+                onSelect={() => setRenameOpen(true)}
+              >
                 <Pencil aria-hidden className="size-4" />
                 {t('common.rename')}
               </DropdownMenuItem>
               {!scene.isAllPlay ? (
-                <DropdownMenuItem onSelect={handleAllPlaySelect}>
+                <DropdownMenuItem
+                  title={t('lineup.allPlayItemTitle', { name: scene.name })}
+                  onSelect={handleAllPlaySelect}
+                >
                   <Users aria-hidden className="size-4" />
                   {t('common.allPlay')}
                 </DropdownMenuItem>
@@ -155,10 +162,11 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
+                title={t('lineup.removeSceneItemTitle', { name: scene.name })}
                 onSelect={() => setRemoveOpen(true)}
               >
                 <Trash2 aria-hidden className="size-4" />
-                {t('lineup.removeScene')}
+                {t('common.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -172,12 +180,17 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-host-label`} className="sr-only">
               {t('common.host')}
             </span>
-            <span
-              aria-hidden
-              className="w-4 shrink-0 text-xs font-medium text-muted-foreground"
-            >
-              H:
-            </span>
+            <IconButtonTooltip label={t('common.host')}>
+              <span
+                aria-hidden
+                className={cn(
+                  'w-4 shrink-0 text-xs font-medium',
+                  castRoleLabelClasses('host'),
+                )}
+              >
+                H:
+              </span>
+            </IconButtonTooltip>
             <HostCastControl scene={scene} />
           </div>
 
@@ -188,12 +201,17 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-players-label`} className="sr-only">
               {t('common.players')}
             </span>
-            <span
-              aria-hidden
-              className="w-4 shrink-0 text-xs font-medium text-muted-foreground"
-            >
-              P:
-            </span>
+            <IconButtonTooltip label={t('common.players')}>
+              <span
+                aria-hidden
+                className={cn(
+                  'w-4 shrink-0 text-xs font-medium',
+                  castRoleLabelClasses('player'),
+                )}
+              >
+                P:
+              </span>
+            </IconButtonTooltip>
             <PlayersCastControl scene={scene} />
           </div>
         </div>
