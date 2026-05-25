@@ -49,7 +49,9 @@ export function AllPlaySlot({
         aria-hidden
         className={cn('size-3.5 shrink-0', castRoleLabelClasses('player'))}
       />
-      <span className={cn('text-sm font-medium', castRoleLabelClasses('player'))}>
+      <span
+        className={cn('text-sm font-medium', castRoleLabelClasses('player'))}
+      >
         {t('common.allPlay')}
       </span>
       {onRemove ? (

@@ -27,7 +27,11 @@ import {
 import { cn } from '@/lib/utils';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { rosterPersonDragId } from '@/lib/dnd-ids';
-import { formatPersonRowLabel, formatRoleBadgeTooltip, formatRoleCountLabel } from '@/lib/i18n-labels';
+import {
+  formatPersonRowLabel,
+  formatRoleBadgeTooltip,
+  formatRoleCountLabel,
+} from '@/lib/i18n-labels';
 import {
   countPersonSceneRoles,
   personHasSceneAssignments,
@@ -149,11 +153,7 @@ export function PersonRow({ person }: PersonRowProps) {
               </Badge>
             </IconButtonTooltip>
             <IconButtonTooltip
-              label={formatRoleBadgeTooltip(
-                'player',
-                person.name,
-                playerCount,
-              )}
+              label={formatRoleBadgeTooltip('player', person.name, playerCount)}
             >
               <Badge
                 variant="player"

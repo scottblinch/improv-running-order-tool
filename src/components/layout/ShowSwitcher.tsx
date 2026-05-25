@@ -56,7 +56,9 @@ function ShowMenuItem({
       />
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {canDelete ? (
-        <IconButtonTooltip label={t('workspace.deleteShowItemTitle', { label })}>
+        <IconButtonTooltip
+          label={t('workspace.deleteShowItemTitle', { label })}
+        >
           <Button
             type="button"
             variant="ghost"
