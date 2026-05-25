@@ -129,6 +129,9 @@ function normalizeShowRecord(raw: unknown): ShowRecord | null {
     id: raw.id,
     ...slice,
     updatedAt: normalizeUpdatedAt(raw.updatedAt),
+    ...(typeof raw.shareKey === 'string' && /^[\da-f]{16}$/.test(raw.shareKey)
+      ? { shareKey: raw.shareKey }
+      : {}),
   };
 }
 

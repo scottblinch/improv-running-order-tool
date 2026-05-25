@@ -125,7 +125,10 @@ export interface AppActions {
   createShow: () => void;
   switchShow: (id: ShowId) => void;
   deleteShow: (id: ShowId) => void;
-  importSharedShow: (payload: PersistedState) => boolean;
+  importSharedShow: (
+    payload: PersistedState,
+    shareKey: string,
+  ) => 'imported' | 'existing' | 'full';
 }
 
 export type AppStore = WorkspaceSlice & AppActions;
@@ -542,21 +545,44 @@ export const useAppStore = create<AppStore>()(
         });
       },
 
-      importSharedShow: (payload) => {
-        let imported = false;
+      importSharedShow: (payload, shareKey) => {
+        let outcome: 'imported' | 'existing' | 'full' = 'full';
 
         set((state) => {
-          if (!canAddShow(state.shows.length)) return state;
-
           const flushed = patchActiveShow(state, {});
+          const existing = flushed.shows.find(
+            (show) => show.shareKey === shareKey,
+          );
+
+          if (existing) {
+            outcome = 'existing';
+
+            if (existing.id === flushed.activeShowId) {
+              return flushed;
+            }
+
+            const sanitized = sanitizePersistedState(existing);
+
+            return {
+              ...flushed,
+              activeShowId: existing.id,
+              ...sanitized,
+            };
+          }
+
+          if (!canAddShow(flushed.shows.length)) {
+            return flushed;
+          }
+
           const sanitized = sanitizePersistedState(payload);
           const newShow = {
             id: createShowId(),
             ...sanitized,
+            shareKey,
             updatedAt: new Date().toISOString(),
           };
 
-          imported = true;
+          outcome = 'imported';
 
           return {
             ...flushed,
@@ -566,7 +592,7 @@ export const useAppStore = create<AppStore>()(
           };
         });
 
-        return imported;
+        return outcome;
       },
     }),
     {
@@ -577,13 +603,22 @@ export const useAppStore = create<AppStore>()(
       partialize: (state) => ({
         activeShowId: state.activeShowId,
         shows: state.shows.map(
-          ({ id, persons, scenes, showName, showDate, updatedAt }) => ({
+          ({
             id,
             persons,
             scenes,
             showName,
             showDate,
             updatedAt,
+            shareKey,
+          }) => ({
+            id,
+            persons,
+            scenes,
+            showName,
+            showDate,
+            updatedAt,
+            ...(shareKey ? { shareKey } : {}),
           }),
         ),
       }),

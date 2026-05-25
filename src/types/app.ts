@@ -29,6 +29,8 @@ export interface PersistedState {
 export interface ShowRecord extends PersistedState {
   id: ShowId;
   updatedAt: string;
+  /** Fingerprint of a shared import — prevents duplicate imports from the same link. */
+  shareKey?: string;
 }
 
 export interface WorkspacePersistedState {

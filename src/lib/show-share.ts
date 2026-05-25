@@ -102,6 +102,27 @@ function toCompactPayload(state: PersistedState): CompactSharedShowPayload {
   };
 }
 
+/** Stable fingerprint for deduplicating shared imports of the same show. */
+export function computeShareKey(state: PersistedState): string {
+  const json = JSON.stringify(toCompactPayload(sanitizePersistedState(state)));
+  return hashString(json);
+}
+
+function hashString(value: string): string {
+  let h1 = 0x811c9dc5;
+  let h2 = 0x811c9dc5;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    h1 ^= code;
+    h1 = Math.imul(h1, 0x01000193);
+    h2 ^= code;
+    h2 = Math.imul(h2, 0x01000193) ^ index;
+  }
+
+  return `${(h1 >>> 0).toString(16).padStart(8, '0')}${(h2 >>> 0).toString(16).padStart(8, '0')}`;
+}
+
 function decodeCompactPerson(entry: unknown): Person | null {
   if (!Array.isArray(entry) || typeof entry[0] !== 'string') {
     return null;

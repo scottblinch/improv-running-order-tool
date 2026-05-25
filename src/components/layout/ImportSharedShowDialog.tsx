@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import {
   clearShareParamFromLocation,
+  computeShareKey,
   decodeShowShareParam,
   readShareParamFromLocation,
 } from '@/lib/show-share';
@@ -28,7 +29,11 @@ function resolveImportError(): ImportSharedShowError | null {
   const payload = decodeShowShareParam(param);
   if (!payload) return 'invalid';
 
-  if (!useAppStore.getState().importSharedShow(payload)) {
+  const result = useAppStore
+    .getState()
+    .importSharedShow(payload, computeShareKey(payload));
+
+  if (result === 'full') {
     return 'full';
   }
 
