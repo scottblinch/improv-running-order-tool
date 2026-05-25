@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   AlertDialog,
@@ -20,39 +21,58 @@ import { useAppStore } from '@/store/useAppStore';
 
 type ImportSharedShowError = 'invalid' | 'full';
 
-function resolveImportError(): ImportSharedShowError | null {
+type ShareImportResult =
+  | { kind: 'none' }
+  | { kind: 'error'; error: ImportSharedShowError }
+  | { kind: 'success'; outcome: 'imported' | 'existing' };
+
+function processShareImport(): ShareImportResult {
   const param = readShareParamFromLocation();
-  if (!param) return null;
+  if (!param) return { kind: 'none' };
 
   clearShareParamFromLocation();
 
   const payload = decodeShowShareParam(param);
-  if (!payload) return 'invalid';
+  if (!payload) {
+    return { kind: 'error', error: 'invalid' };
+  }
 
-  const result = useAppStore
+  const outcome = useAppStore
     .getState()
     .importSharedShow(payload, computeShareKey(payload));
 
-  if (result === 'full') {
-    return 'full';
+  if (outcome === 'full') {
+    return { kind: 'error', error: 'full' };
   }
 
-  return null;
+  return { kind: 'success', outcome };
 }
 
 export function ImportSharedShowDialog() {
   const { t } = useTranslation();
-  const [error, setError] = useState<ImportSharedShowError | null>(
-    resolveImportError,
+  const [importResult] = useState(processShareImport);
+  const [errorOpen, setErrorOpen] = useState(
+    () => importResult.kind === 'error',
   );
 
+  useEffect(() => {
+    if (importResult.kind !== 'success') return;
+
+    toast.success(
+      importResult.outcome === 'imported'
+        ? t('share.imported')
+        : t('share.openedExisting'),
+    );
+  }, [importResult, t]);
+
+  if (importResult.kind !== 'error') {
+    return null;
+  }
+
+  const { error } = importResult;
+
   return (
-    <AlertDialog
-      open={error !== null}
-      onOpenChange={(open) => {
-        if (!open) setError(null);
-      }}
-    >
+    <AlertDialog open={errorOpen} onOpenChange={setErrorOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

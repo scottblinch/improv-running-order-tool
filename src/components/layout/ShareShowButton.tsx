@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/i18n';
 import { formatShowDisplayName } from '@/lib/show-date';
 import {
   hasSkippedSharePrivacy,
@@ -20,10 +21,29 @@ import {
   shareShowUrl,
 } from '@/lib/share-show-action';
 import { encodeShowShareParam } from '@/lib/show-share';
-import { useTranslation } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 
 type ShareError = 'too_large' | 'encode_failed' | 'copy_failed';
+
+function showShareError(error: ShareError, t: (key: string) => string): void {
+  if (error === 'too_large') {
+    toast.error(t('share.tooLargeTitle'), {
+      description: t('share.tooLargeDescription'),
+    });
+    return;
+  }
+
+  if (error === 'copy_failed') {
+    toast.error(t('share.copyFailedTitle'), {
+      description: t('share.copyFailedDescription'),
+    });
+    return;
+  }
+
+  toast.error(t('share.encodeFailedTitle'), {
+    description: t('share.encodeFailedDescription'),
+  });
+}
 
 export function ShareShowButton() {
   const { t } = useTranslation();
@@ -34,7 +54,6 @@ export function ShareShowButton() {
   const skipCheckboxId = useId();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [skipNextTime, setSkipNextTime] = useState(false);
-  const [error, setError] = useState<ShareError | null>(null);
 
   const shareLabel = formatShowDisplayName(showName);
 
@@ -47,7 +66,7 @@ export function ShareShowButton() {
     });
 
     if ('error' in result) {
-      setError(result.error);
+      showShareError(result.error, t);
       return;
     }
 
@@ -62,13 +81,11 @@ export function ShareShowButton() {
     }
 
     if (outcome === 'failed') {
-      setError('copy_failed');
+      showShareError('copy_failed', t);
       return;
     }
 
-    toast.success(
-      outcome === 'shared' ? t('share.shared') : t('share.copied'),
-    );
+    toast.success(outcome === 'shared' ? t('share.shared') : t('share.copied'));
   };
 
   const handleShareClick = () => {
@@ -137,35 +154,6 @@ export function ShareShowButton() {
             <AlertDialogAction onClick={handleConfirmShare}>
               {t('share.confirmAction')}
             </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog
-        open={error !== null}
-        onOpenChange={(open) => {
-          if (!open) setError(null);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {error === 'too_large'
-                ? t('share.tooLargeTitle')
-                : error === 'copy_failed'
-                  ? t('share.copyFailedTitle')
-                  : t('share.encodeFailedTitle')}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {error === 'too_large'
-                ? t('share.tooLargeDescription')
-                : error === 'copy_failed'
-                  ? t('share.copyFailedDescription')
-                  : t('share.encodeFailedDescription')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction>{t('share.importOk')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

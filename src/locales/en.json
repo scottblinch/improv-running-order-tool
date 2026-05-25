@@ -24,6 +24,11 @@
     "dark": "Dark",
     "system": "System"
   },
+  "pwa": {
+    "updateTitle": "Update available",
+    "updateDescription": "A new version of the app is ready.",
+    "updateAction": "Refresh"
+  },
   "print": {
     "view": "Print view",
     "exitView": "Exit print view",
@@ -49,6 +54,8 @@
     "confirmAction": "Share",
     "confirmSkip": "Don't show this again",
     "importOk": "OK",
+    "imported": "Imported shared show",
+    "openedExisting": "Opened existing show",
     "importInvalidTitle": "Could not open shared show",
     "importInvalidDescription": "This share link is invalid or out of date.",
     "importFullTitle": "Cannot import shared show",
