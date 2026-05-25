@@ -1,6 +1,8 @@
 # 3 days = 4320 minutes
 minimumReleaseAge: 4320
 minimumReleaseAgeStrict: true
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 4320
 
 allowBuilds:
   esbuild: true

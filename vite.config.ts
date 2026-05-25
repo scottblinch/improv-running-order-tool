@@ -22,7 +22,6 @@ const productionContentSecurityPolicy = [
   "manifest-src 'self'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'",
   "object-src 'none'",
 ].join('; ');
 
