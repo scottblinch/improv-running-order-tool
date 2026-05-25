@@ -62,11 +62,27 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
     );
   };
 
+  const handleRemovePlayer = (playerId: PersonId) => {
+    const slot = resolveSlotDisplay(persons, playerId);
+    removePlayer(scene.id, playerId);
+    announce(
+      t('a11y.removedPlayer', {
+        name: slot.name,
+        scene: scene.name,
+      }),
+    );
+  };
+
+  const handleRemoveAllPlay = () => {
+    setAllPlay(scene.id, false);
+    announce(t('a11y.removedAllPlay', { scene: scene.name }));
+  };
+
   const playerControls = scene.isAllPlay ? (
     <AllPlaySlot
       sceneId={scene.id}
       inline
-      onRemove={() => setAllPlay(scene.id, false)}
+      onRemove={handleRemoveAllPlay}
     />
   ) : (
     <>
@@ -82,7 +98,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
             name={slot.name}
             isWarning={slot.isWarning}
             warningLabel={slot.warningLabel}
-            onRemove={() => removePlayer(scene.id, playerId)}
+            onRemove={() => handleRemovePlayer(playerId)}
           />
         );
       })}
@@ -101,10 +117,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
     <>
       <div className="min-w-0 flex-1 space-y-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
         {scene.isAllPlay ? (
-          <AllPlaySlot
-            sceneId={scene.id}
-            onRemove={() => setAllPlay(scene.id, false)}
-          />
+          <AllPlaySlot sceneId={scene.id} onRemove={handleRemoveAllPlay} />
         ) : (
           <>
             {sortedPlayerIds.map((playerId) => {
@@ -133,7 +146,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
                       aria-label={t('lineup.removePlayer', {
                         name: slot.name,
                       })}
-                      onClick={() => removePlayer(scene.id, playerId)}
+                      onClick={() => handleRemovePlayer(playerId)}
                     >
                       <X aria-hidden className="size-4" />
                     </Button>

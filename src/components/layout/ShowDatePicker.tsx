@@ -14,10 +14,12 @@ import {
   isoDateToDate,
   toIsoDateString,
 } from '@/lib/show-date';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 
 export function ShowDatePicker() {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const showDate = useAppStore((state) => state.showDate);
   const setShowDate = useAppStore((state) => state.setShowDate);
   const [open, setOpen] = useState(false);
@@ -50,7 +52,13 @@ export function ShowDatePicker() {
           onSelect={(date) => {
             if (!date) return;
 
-            setShowDate(toIsoDateString(date));
+            const nextDate = toIsoDateString(date);
+            setShowDate(nextDate);
+            announce(
+              t('a11y.showDateChanged', {
+                date: formatPrintDate(nextDate),
+              }),
+            );
             setOpen(false);
           }}
         />

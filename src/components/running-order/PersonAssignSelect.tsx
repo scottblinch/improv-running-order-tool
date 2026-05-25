@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/i18n';
@@ -29,6 +29,7 @@ export function PersonAssignSelect({
   inline = false,
 }: PersonAssignSelectProps) {
   const { t } = useTranslation();
+  const triggerId = useId();
   const [selectKey, setSelectKey] = useState(0);
   const available = persons.filter(
     (person) => !excludedPersonIds.includes(person.id),
@@ -43,27 +44,32 @@ export function PersonAssignSelect({
   }
 
   return (
-    <Select
-      key={selectKey}
-      onValueChange={(personId) => {
-        onAssign(personId);
-        setSelectKey((key) => key + 1);
-      }}
-    >
-      <SelectTrigger
-        className={cn('w-full', inline && 'md:w-auto md:min-w-36')}
-        aria-label={label}
-        aria-describedby={describedBy}
+    <div className={cn(inline && 'md:inline-block md:min-w-36')}>
+      <label htmlFor={triggerId} className="sr-only">
+        {label}
+      </label>
+      <Select
+        key={selectKey}
+        onValueChange={(personId) => {
+          onAssign(personId);
+          setSelectKey((key) => key + 1);
+        }}
       >
-        <SelectValue placeholder={label} />
-      </SelectTrigger>
-      <SelectContent>
-        {available.map((person) => (
-          <SelectItem key={person.id} value={person.id}>
-            {person.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+        <SelectTrigger
+          id={triggerId}
+          className={cn('w-full', inline && 'md:w-auto md:min-w-36')}
+          aria-describedby={describedBy}
+        >
+          <SelectValue placeholder={label} />
+        </SelectTrigger>
+        <SelectContent>
+          {available.map((person) => (
+            <SelectItem key={person.id} value={person.id}>
+              {person.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

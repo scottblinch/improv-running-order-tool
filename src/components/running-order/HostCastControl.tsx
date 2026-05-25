@@ -46,6 +46,17 @@ export function HostCastControl({ scene }: HostCastControlProps) {
     announceHostAssigned(personId);
   };
 
+  const handleRemoveHost = () => {
+    const person = scene.hostId ? getPersonById(persons, scene.hostId) : null;
+    removeHost(scene.id);
+    announce(
+      t('a11y.removedHost', {
+        name: person?.name ?? t('fallback.performer'),
+        scene: scene.name,
+      }),
+    );
+  };
+
   return (
     <>
       <div className="min-w-0 flex-1 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:hidden">
@@ -55,7 +66,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
           persons={slotPersons}
           describedBy={ROSTER_CASTING_HELP_ID}
           onValueChange={handleAssignHost}
-          onClear={() => removeHost(scene.id)}
+          onClear={handleRemoveHost}
         />
       </div>
 
@@ -73,7 +84,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
             name={hostSlot.name}
             isWarning={hostSlot.isWarning}
             warningLabel={hostSlot.warningLabel}
-            onRemove={() => removeHost(scene.id)}
+            onRemove={handleRemoveHost}
           />
         ) : (
           <PersonAssignSelect

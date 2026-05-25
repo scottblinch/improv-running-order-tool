@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { TriangleAlert } from 'lucide-react';
 
 import {
@@ -33,6 +34,7 @@ export function PersonSlotSelect({
   className,
 }: PersonSlotSelectProps) {
   const { t } = useTranslation();
+  const triggerId = useId();
   const assignedPerson = value
     ? persons.find((person) => person.id === value)
     : undefined;
@@ -41,48 +43,49 @@ export function PersonSlotSelect({
     : label;
 
   return (
-    <Select
-      value={value ?? undefined}
-      onValueChange={(selected) => {
-        if (selected === CLEAR_VALUE) {
-          onClear?.();
-          return;
-        }
+    <div className={cn('min-w-0', className)}>
+      <label htmlFor={triggerId} className="sr-only">
+        {triggerLabel}
+      </label>
+      <Select
+        value={value ?? undefined}
+        onValueChange={(selected) => {
+          if (selected === CLEAR_VALUE) {
+            onClear?.();
+            return;
+          }
 
-        onValueChange(selected);
-      }}
-    >
-      <SelectTrigger
-        className={cn('w-full', className)}
-        aria-label={triggerLabel}
-        aria-describedby={describedBy}
+          onValueChange(selected);
+        }}
       >
-        <SelectValue placeholder={label} />
-      </SelectTrigger>
-      <SelectContent>
-        {onClear && value ? (
-          <SelectItem value={CLEAR_VALUE}>{t('lineup.unassigned')}</SelectItem>
-        ) : null}
-        {persons.map((person) => {
-          const isWarning = person.isAbsent || person.isDeleted;
+        <SelectTrigger id={triggerId} className="w-full" aria-describedby={describedBy}>
+          <SelectValue placeholder={label} />
+        </SelectTrigger>
+        <SelectContent>
+          {onClear && value ? (
+            <SelectItem value={CLEAR_VALUE}>{t('lineup.unassigned')}</SelectItem>
+          ) : null}
+          {persons.map((person) => {
+            const isWarning = person.isAbsent || person.isDeleted;
 
-          return (
-            <SelectItem key={person.id} value={person.id}>
-              {isWarning ? (
-                <span className="flex items-center gap-1.5">
-                  <TriangleAlert aria-hidden className="size-3.5 shrink-0" />
-                  {person.name}
-                  {person.isAbsent
-                    ? ` (${t('roster.absent')})`
-                    : ` (${t('fallback.removed')})`}
-                </span>
-              ) : (
-                person.name
-              )}
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </Select>
+            return (
+              <SelectItem key={person.id} value={person.id}>
+                {isWarning ? (
+                  <span className="flex items-center gap-1.5">
+                    <TriangleAlert aria-hidden className="size-3.5 shrink-0" />
+                    {person.name}
+                    {person.isAbsent
+                      ? ` (${t('roster.absent')})`
+                      : ` (${t('fallback.removed')})`}
+                  </span>
+                ) : (
+                  person.name
+                )}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

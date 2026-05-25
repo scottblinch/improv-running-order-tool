@@ -20,6 +20,7 @@ import {
   partitionShowsByShowDate,
 } from '@/lib/show-workspace';
 import { formatShowDisplayName } from '@/lib/show-date';
+import { useA11yAnnounceStore } from '@/store/useA11yAnnounceStore';
 import { useAppStore } from '@/store/useAppStore';
 import type { ShowId, ShowRecord } from '@/types/app';
 
@@ -81,6 +82,7 @@ function ShowMenuItem({
 
 export function ShowSwitcher() {
   const { t } = useTranslation();
+  const announce = useA11yAnnounceStore((state) => state.announce);
   const activeShowId = useAppStore((state) => state.activeShowId);
   const shows = useAppStore((state) => state.shows);
   const showName = useAppStore((state) => state.showName);
@@ -102,6 +104,18 @@ export function ShowSwitcher() {
   const upcomingLabel = hasPastSection
     ? t('workspace.upcomingShows')
     : t('workspace.savedShows');
+
+  const handleSwitchShow = (id: ShowId) => {
+    const show = shows.find((item) => item.id === id);
+    switchShow(id);
+    if (show) {
+      announce(
+        t('a11y.switchedShow', {
+          label: formatShowMenuLabel(show.showName, show.showDate),
+        }),
+      );
+    }
+  };
 
   return (
     <>
@@ -127,7 +141,7 @@ export function ShowSwitcher() {
                   show={show}
                   isActive={show.id === activeShowId}
                   canDelete={canDelete}
-                  onSwitch={switchShow}
+                  onSwitch={handleSwitchShow}
                   onDelete={setDeleteTarget}
                 />
               ))}
@@ -143,7 +157,7 @@ export function ShowSwitcher() {
                   show={show}
                   isActive={show.id === activeShowId}
                   canDelete={canDelete}
-                  onSwitch={switchShow}
+                  onSwitch={handleSwitchShow}
                   onDelete={setDeleteTarget}
                 />
               ))}

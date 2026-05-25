@@ -4,15 +4,25 @@ import '@/i18n';
 import '@/index.css';
 
 import { render } from '@testing-library/react';
+import { Clapperboard } from 'lucide-react';
+import type React from 'react';
 import { axe } from 'vitest-axe';
 import * as axeMatchers from 'vitest-axe/matchers';
 import { describe, expect, it } from 'vitest';
 
+import { SkipLink } from '@/components/layout/SkipLink';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
-import { SkipLink } from '@/components/layout/SkipLink';
+import { CastSlot } from '@/components/shared/CastSlot';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { RenameDialog } from '@/components/shared/RenameDialog';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 expect.extend(axeMatchers);
+
+function renderWithUiProviders(ui: React.ReactNode) {
+  return render(<TooltipProvider>{ui}</TooltipProvider>);
+}
 
 describe('accessibility smoke tests', () => {
   it('RosterQuickAdd has no axe violations', async () => {
@@ -28,5 +38,54 @@ describe('accessibility smoke tests', () => {
   it('SkipLink has no axe violations', async () => {
     const { container } = render(<SkipLink />);
     expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('EmptyState has no axe violations', async () => {
+    const { container } = render(
+      <EmptyState
+        icon={<Clapperboard aria-hidden className="size-4" />}
+        title="No scenes yet"
+        description="Add a scene to build your lineup."
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('RenameDialog has no axe violations when open', async () => {
+    const { container } = render(
+      <RenameDialog
+        open
+        onOpenChange={() => undefined}
+        currentName="Opening Game"
+        onConfirm={() => undefined}
+        title="Rename scene"
+        description="Enter a new name for this scene."
+        inputLabel="Scene name"
+        fieldName="sceneName"
+        maxLength={80}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('CastSlot host has no axe violations in light and dark themes', async () => {
+    const slot = (
+      <CastSlot
+        personId="person-1"
+        name="Alex"
+        castRole="host"
+        isWarning={false}
+        inline
+        onRemove={() => undefined}
+      />
+    );
+
+    const { container: lightContainer } = renderWithUiProviders(slot);
+    expect(await axe(lightContainer)).toHaveNoViolations();
+
+    const { container: darkContainer } = renderWithUiProviders(
+      <div className="dark">{slot}</div>,
+    );
+    expect(await axe(darkContainer)).toHaveNoViolations();
   });
 });
