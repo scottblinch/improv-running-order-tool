@@ -18,7 +18,7 @@ export function AppFooter() {
 
   return (
     <>
-      <footer className="shrink-0 border-t px-6 py-3 print:hidden">
+      <footer className="border-t pt-4 print:hidden">
         <p className="text-center text-xs text-muted-foreground">
           <Trans
             i18nKey="footer.credit"

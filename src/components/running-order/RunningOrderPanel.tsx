@@ -1,5 +1,6 @@
 import { Clapperboard } from 'lucide-react';
 
+import { AppFooter } from '@/components/layout/AppFooter';
 import { PanelShell } from '@/components/layout/PanelShell';
 import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPrintView';
 import { SceneList } from '@/components/running-order/SceneList';
@@ -27,7 +28,7 @@ export function RunningOrderPanel() {
     <>
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
         <PanelShell>
-          <div className="flex flex-col gap-2">
+          <div className="flex min-h-full flex-col gap-2">
             <h2 id="lineup-heading" className="sr-only">
               {t('lineup.heading')}
             </h2>
@@ -44,6 +45,9 @@ export function RunningOrderPanel() {
             ) : (
               <SceneList scenes={scenes} />
             )}
+            <div className="mt-auto shrink-0 pt-4">
+              <AppFooter />
+            </div>
           </div>
         </PanelShell>
       </div>

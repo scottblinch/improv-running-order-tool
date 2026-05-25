@@ -1,5 +1,4 @@
 import { AppHeader } from '@/components/layout/AppHeader';
-import { AppFooter } from '@/components/layout/AppFooter';
 import { RosterPanel } from '@/components/roster/RosterPanel';
 import { RunningOrderPanel } from '@/components/running-order/RunningOrderPanel';
 import { AppDndProvider } from '@/components/dnd/AppDndProvider';
@@ -43,8 +42,6 @@ export function AppShell() {
           </div>
         </AppDndProvider>
       </div>
-
-      {!printPreview ? <AppFooter /> : null}
     </div>
   );
 }
