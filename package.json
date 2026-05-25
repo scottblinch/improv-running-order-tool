@@ -22,7 +22,7 @@
     "dev": "vite",
     "build": "tsc -b && BROWSERSLIST_ENV=production vite build",
     "build:pages": "tsc -b && GITHUB_PAGES=true BROWSERSLIST_ENV=production vite build",
-    "check:pages": "pnpm lint && pnpm format:check && pnpm build:pages",
+    "check:pages": "pnpm lint && pnpm format:check && pnpm test && pnpm build:pages",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

@@ -45,7 +45,7 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | `pnpm build`               | Typecheck + production build                   |
 | `pnpm build:pages`         | Production build for GitHub Pages base path    |
 | `pnpm check`               | `lint` + `format:check` + `build`              |
-| `pnpm check:pages`         | `lint` + `format:check` + `build:pages`        |
+| `pnpm check:pages`         | `lint` + `format:check` + `test` + `build:pages` |
 | `pnpm preview`             | Preview production build locally               |
 | `pnpm preview:pages`       | Build for GitHub Pages base path and preview   |
 | `pnpm lint`                | Run ESLint                                     |
