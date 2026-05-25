@@ -59,7 +59,7 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | `pnpm format:check`        | Prettier check                                              |
 | `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg`              |
 
-Pushes to `main` and pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`).
+Pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`).
 
 Local commits run [`check:precommit`](package.json) via [Husky](.husky/pre-commit) (lint, format check, tests — no build or audit).
 
@@ -71,7 +71,7 @@ Vitest runs in `src/**/*.test.{ts,tsx}`. Component tests use jsdom; [`src/test/s
 
 ## Deploy
 
-Successful pushes to `main` run CI first; [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) deploys to GitHub Pages only after CI passes. You can also trigger a deploy manually from the Actions tab. In the repo **Settings → Pages**, set the source to **GitHub Actions**.
+Pushes to `main` run [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) (`pnpm check:pages`, then deploy). You can also trigger a deploy manually from the Actions tab. In the repo **Settings → Pages**, set the source to **GitHub Actions**.
 
 ## Docs
 
