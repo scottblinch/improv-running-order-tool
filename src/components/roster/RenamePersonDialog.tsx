@@ -20,9 +20,7 @@ export function RenamePersonDialog(props: RenamePersonDialogProps) {
       inputLabel={t('roster.performerName')}
       fieldName="performerName"
       maxLength={INPUT_LIMITS.maxPersonNameLength}
-      required
-      pattern=".*\S.*"
-      validationTitle={t('roster.performerNameRequired')}
+      validationMessage={t('roster.performerNameRequired')}
     />
   );
 }

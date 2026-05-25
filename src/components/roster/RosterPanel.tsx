@@ -4,7 +4,7 @@ import { RosterList } from '@/components/roster/RosterList';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { useTranslation } from '@/i18n';
-import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
+import { ROSTER_CASTING_HELP_ID, ROSTER_HEADING_ID } from '@/lib/a11y-ids';
 import { selectActivePersons } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -16,7 +16,7 @@ export function RosterPanel() {
   return (
     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
       <div className="flex flex-col gap-2">
-        <h2 id="roster-heading" className="sr-only">
+        <h2 id={ROSTER_HEADING_ID} tabIndex={-1} className="sr-only">
           {t('roster.heading')}
         </h2>
         <p id={ROSTER_CASTING_HELP_ID} className="sr-only">

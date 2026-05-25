@@ -7,7 +7,7 @@ import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { useTranslation } from '@/i18n';
-import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
+import { SCENE_REORDER_HELP_ID, LINEUP_HEADING_ID } from '@/lib/a11y-ids';
 import { useAppStore } from '@/store/useAppStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
@@ -19,6 +19,9 @@ export function RunningOrderPanel() {
   if (printPreview) {
     return (
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-6 py-10 print:p-0">
+        <h2 id={LINEUP_HEADING_ID} tabIndex={-1} className="sr-only">
+          {t('lineup.heading')}
+        </h2>
         <RunningOrderPrintView scenes={scenes} fitToPage />
       </div>
     );
@@ -29,7 +32,7 @@ export function RunningOrderPanel() {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
         <PanelShell>
           <div className="flex min-h-full flex-col gap-2">
-            <h2 id="lineup-heading" className="sr-only">
+            <h2 id={LINEUP_HEADING_ID} tabIndex={-1} className="sr-only">
               {t('lineup.heading')}
             </h2>
             <p id={SCENE_REORDER_HELP_ID} className="sr-only">
@@ -52,10 +55,7 @@ export function RunningOrderPanel() {
         </PanelShell>
       </div>
 
-      <div
-        aria-hidden
-        className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto"
-      >
+      <div className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto">
         <RunningOrderPrintView scenes={scenes} fitToPage fitTarget="page" />
       </div>
     </>

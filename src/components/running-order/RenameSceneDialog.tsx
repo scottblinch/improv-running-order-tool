@@ -20,9 +20,7 @@ export function RenameSceneDialog(props: RenameSceneDialogProps) {
       inputLabel={t('lineup.sceneName')}
       fieldName="sceneName"
       maxLength={INPUT_LIMITS.maxSceneNameLength}
-      required
-      pattern=".*\S.*"
-      validationTitle={t('lineup.sceneNameRequired')}
+      validationMessage={t('lineup.sceneNameRequired')}
     />
   );
 }

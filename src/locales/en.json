@@ -16,7 +16,13 @@
     "host": "Host",
     "players": "Players",
     "player": "Player",
-    "allPlay": "All play"
+    "allPlay": "All play",
+    "fieldRequired": "Enter {label}."
+  },
+  "a11y": {
+    "skipLinksNav": "Skip links",
+    "skipToRoster": "Skip to roster",
+    "skipToLineup": "Skip to lineup"
   },
   "theme": {
     "toggle": "Toggle theme",

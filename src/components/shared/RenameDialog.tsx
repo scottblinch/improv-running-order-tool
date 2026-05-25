@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useId, useRef } from 'react';
+import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
 import {
   AlertDialog,
@@ -24,9 +24,7 @@ export type RenameDialogProps = {
   fieldName: string;
   maxLength: number;
   placeholder?: string;
-  required?: boolean;
-  pattern?: string;
-  validationTitle?: string;
+  validationMessage?: string;
   /** When true (default), trimmed empty values are rejected on submit. */
   rejectEmpty?: boolean;
 };
@@ -43,14 +41,16 @@ function RenameDialogForm({
   fieldName,
   maxLength,
   placeholder,
-  required,
-  pattern,
-  validationTitle,
+  validationMessage: validationMessageProp,
   rejectEmpty = true,
 }: RenameDialogFormProps) {
   const { t } = useTranslation();
   const inputId = useId();
+  const errorId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
+  const validationMessage =
+    validationMessageProp ?? t('common.fieldRequired', { label: inputLabel });
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -64,19 +64,26 @@ function RenameDialogForm({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get(fieldName);
+    const input = inputRef.current;
+    if (!input) return;
+
+    const name = new FormData(event.currentTarget).get(fieldName);
     if (typeof name !== 'string') return;
 
     const trimmed = name.trim();
-    if (rejectEmpty && !trimmed) return;
+    if (rejectEmpty && !trimmed) {
+      setError(validationMessage);
+      input.focus();
+      return;
+    }
 
+    setError(null);
     onConfirm(trimmed);
     onOpenChange(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form noValidate onSubmit={handleSubmit}>
       <AlertDialogHeader>
         <AlertDialogTitle>{title}</AlertDialogTitle>
         <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -94,10 +101,15 @@ function RenameDialogForm({
           autoFocus
           maxLength={maxLength}
           placeholder={placeholder}
-          required={required}
-          pattern={pattern}
-          title={validationTitle}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
+          onInput={() => setError(null)}
         />
+        {error ? (
+          <p id={errorId} role="alert" className="mt-2 text-sm text-destructive">
+            {error}
+          </p>
+        ) : null}
       </div>
       <AlertDialogFooter>
         <AlertDialogCancel type="button">
