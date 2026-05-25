@@ -129,7 +129,10 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
     setActiveDrag(null);
     setActiveDragType(undefined);
 
-    if (!over) return;
+    if (!over) {
+      setLiveMessage(t('a11y.dragCancelled'));
+      return;
+    }
 
     const activeData = active.data.current as DndDragData | undefined;
     const overData = over.data.current as DndDropData | undefined;

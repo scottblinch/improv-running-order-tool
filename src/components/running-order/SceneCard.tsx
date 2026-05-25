@@ -110,6 +110,7 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             </IconButtonTooltip>
             <SceneReorderButtons
               sceneId={scene.id}
+              sceneName={scene.name}
               index={index}
               sceneCount={sceneCount}
             />

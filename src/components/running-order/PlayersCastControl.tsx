@@ -48,7 +48,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
           <CastSlot
             key={playerId}
             inline
-            role="player"
+            castRole="player"
             personId={slot.personId}
             name={slot.name}
             isWarning={slot.isWarning}
@@ -84,7 +84,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               return (
                 <div key={playerId} className="flex items-center gap-2">
                   <PersonSlotSelect
-                    label={t('common.player')}
+                    label={t('lineup.playerInScene', { scene: scene.name })}
                     value={playerId}
                     persons={selectPersonsForSlot(persons, playerId)}
                     describedBy={ROSTER_CASTING_HELP_ID}

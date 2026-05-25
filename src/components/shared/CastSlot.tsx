@@ -16,7 +16,7 @@ export type { CastSlotRole };
 type CastSlotProps = {
   personId: PersonId;
   name: string;
-  role: CastSlotRole;
+  castRole: CastSlotRole;
   isWarning: boolean;
   warningLabel?: 'Absent' | 'Removed';
   inline?: boolean;
@@ -26,7 +26,7 @@ type CastSlotProps = {
 export function CastSlot({
   personId,
   name,
-  role,
+  castRole,
   isWarning,
   warningLabel,
   inline = false,
@@ -38,7 +38,7 @@ export function CastSlot({
   );
 
   const removeLabel =
-    role === 'host'
+    castRole === 'host'
       ? t('lineup.removeHost', { name })
       : t('lineup.removePlayer', { name });
 
@@ -50,7 +50,7 @@ export function CastSlot({
         inline ? 'inline-flex max-w-full shrink-0' : 'flex w-full',
         isWarning
           ? 'border-destructive/50 bg-destructive/5'
-          : castRoleSurfaceClasses(role),
+          : castRoleSurfaceClasses(castRole),
         isHighlighted &&
           'ring-2 ring-primary/40 ring-offset-1 ring-offset-background',
       )}

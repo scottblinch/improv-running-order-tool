@@ -98,7 +98,6 @@ function RenameDialogForm({
           name={fieldName}
           defaultValue={currentName}
           autoComplete="off"
-          autoFocus
           maxLength={maxLength}
           placeholder={placeholder}
           aria-required={rejectEmpty ? true : undefined}

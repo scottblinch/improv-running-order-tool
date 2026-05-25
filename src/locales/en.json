@@ -92,7 +92,8 @@
     "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>). <privacyLink>Privacy</privacyLink>.",
     "authorLinkAria": "Scott Blinch's website (opens in new tab)",
     "githubLinkAria": "GitHub feedback (opens in new tab)",
-    "licenseLinkAria": "GPL-2.0 license (opens in new tab)"
+    "licenseLinkAria": "GPL-2.0 license (opens in new tab)",
+    "privacyLinkAria": "Privacy policy"
   },
   "privacy": {
     "title": "Privacy",
@@ -160,6 +161,9 @@
     "allPlayItemTitle": "Switch {name} to all play",
     "moveUp": "Move scene up",
     "moveDown": "Move scene down",
+    "moveSceneUp": "Move {name} up",
+    "moveSceneDown": "Move {name} down",
+    "playerInScene": "Player in {scene}",
     "assignHost": "Assign host",
     "slotAssigned": "{label}, {name}",
     "removeHost": "Remove host {name}",

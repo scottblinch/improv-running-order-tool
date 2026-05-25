@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -42,10 +43,11 @@ function ShowMenuItem({
   const deleteLabel = t('workspace.deleteShowItemTitle', { label });
 
   return (
-    <div className="flex items-center">
+    <DropdownMenuGroup className="flex items-center">
       <DropdownMenuItem
         className="min-w-0 flex-1"
         title={t('workspace.switchShowItemTitle', { label })}
+        aria-current={isActive ? 'true' : undefined}
         onSelect={() => {
           if (!isActive) {
             onSwitch(show.id);
@@ -73,7 +75,7 @@ function ShowMenuItem({
           </DropdownMenuItem>
         </IconButtonTooltip>
       ) : null}
-    </div>
+    </DropdownMenuGroup>
   );
 }
 

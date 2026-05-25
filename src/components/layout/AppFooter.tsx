@@ -56,6 +56,7 @@ export function AppFooter() {
                   type="button"
                   onClick={() => setPrivacyOpen(true)}
                   className={inlineLinkButtonClassName}
+                  aria-label={t('footer.privacyLinkAria')}
                 />
               ),
             }}
