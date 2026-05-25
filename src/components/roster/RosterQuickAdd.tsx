@@ -44,6 +44,7 @@ export function RosterQuickAdd() {
           name="performerName"
           autoComplete="off"
           aria-label={t('roster.performerName')}
+          aria-required
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           placeholder={t('roster.performerName')}

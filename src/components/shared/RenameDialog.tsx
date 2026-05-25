@@ -101,6 +101,7 @@ function RenameDialogForm({
           autoFocus
           maxLength={maxLength}
           placeholder={placeholder}
+          aria-required={rejectEmpty ? true : undefined}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           onInput={() => setError(null)}

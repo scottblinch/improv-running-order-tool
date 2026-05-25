@@ -39,44 +39,41 @@ function ShowMenuItem({
 }: ShowMenuItemProps) {
   const { t } = useTranslation();
   const label = formatShowMenuLabel(show.showName, show.showDate);
+  const deleteLabel = t('workspace.deleteShowItemTitle', { label });
 
   return (
-    <DropdownMenuItem
-      className="flex items-center gap-2"
-      title={t('workspace.switchShowItemTitle', { label })}
-      onSelect={() => {
-        if (!isActive) {
-          onSwitch(show.id);
-        }
-      }}
-    >
-      <Check
-        aria-hidden
-        className={`size-4 shrink-0 ${isActive ? 'opacity-100' : 'opacity-0'}`}
-      />
-      <span className="min-w-0 flex-1 truncate">{label}</span>
+    <div className="flex items-center">
+      <DropdownMenuItem
+        className="min-w-0 flex-1"
+        title={t('workspace.switchShowItemTitle', { label })}
+        onSelect={() => {
+          if (!isActive) {
+            onSwitch(show.id);
+          }
+        }}
+      >
+        <Check
+          aria-hidden
+          className={`size-4 shrink-0 ${isActive ? 'opacity-100' : 'opacity-0'}`}
+        />
+        <span className="min-w-0 flex-1 truncate">{label}</span>
+      </DropdownMenuItem>
       {canDelete ? (
-        <IconButtonTooltip
-          label={t('workspace.deleteShowItemTitle', { label })}
-        >
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            className="size-7 shrink-0"
-            title={t('workspace.deleteShowItemTitle', { label })}
-            aria-label={t('workspace.deleteShowItemTitle', { label })}
-            onClick={(event) => {
+        <IconButtonTooltip label={deleteLabel}>
+          <DropdownMenuItem
+            variant="destructive"
+            className="shrink-0 px-2"
+            aria-label={deleteLabel}
+            onSelect={(event) => {
               event.preventDefault();
-              event.stopPropagation();
               onDelete({ id: show.id, label });
             }}
           >
             <Trash2 aria-hidden className="size-3.5" />
-          </Button>
+          </DropdownMenuItem>
         </IconButtonTooltip>
       ) : null}
-    </DropdownMenuItem>
+    </div>
   );
 }
 

@@ -44,6 +44,7 @@ export function SceneQuickAdd() {
           name="sceneName"
           autoComplete="off"
           aria-label={t('lineup.sceneName')}
+          aria-required
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           placeholder={t('lineup.sceneName')}

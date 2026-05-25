@@ -9,6 +9,7 @@ import type { SceneId } from '@/types/app';
 type CastDropZoneProps = {
   sceneId: SceneId;
   zone: 'host' | 'players';
+  ariaLabel: string;
   className?: string;
   children: ReactNode;
 };
@@ -16,6 +17,7 @@ type CastDropZoneProps = {
 export function CastDropZone({
   sceneId,
   zone,
+  ariaLabel,
   className,
   children,
 }: CastDropZoneProps) {
@@ -33,6 +35,7 @@ export function CastDropZone({
     <div
       ref={setNodeRef}
       data-drop-zone={zone}
+      aria-label={ariaLabel}
       className={cn(
         className,
         isOver &&

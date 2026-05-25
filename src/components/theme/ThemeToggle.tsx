@@ -20,6 +20,7 @@ import { useTranslation } from '@/i18n';
 export function ThemeToggle() {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
+  const toggleLabel = t('theme.toggle');
 
   return (
     <DropdownMenu>
@@ -30,7 +31,7 @@ export function ThemeToggle() {
               variant="outline"
               size="icon"
               className="relative shrink-0"
-              aria-label={t('theme.toggle')}
+              aria-label={toggleLabel}
             >
               <Sun
                 aria-hidden
@@ -43,7 +44,7 @@ export function ThemeToggle() {
             </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
-        <TooltipContent>{t('theme.toggle')}</TooltipContent>
+        <TooltipContent>{toggleLabel}</TooltipContent>
       </Tooltip>
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup

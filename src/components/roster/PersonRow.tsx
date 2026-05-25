@@ -28,7 +28,6 @@ import { cn } from '@/lib/utils';
 import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import { rosterPersonDragId } from '@/lib/dnd-ids';
 import {
-  formatPersonRowLabel,
   formatRoleBadgeTooltip,
   formatRoleCountLabel,
 } from '@/lib/i18n-labels';
@@ -73,13 +72,6 @@ export function PersonRow({ person }: PersonRowProps) {
     persons,
   );
 
-  const rowLabel = formatPersonRowLabel(
-    person.name,
-    person.isAbsent,
-    hostCount,
-    playerCount,
-  );
-
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [absentOpen, setAbsentOpen] = useState(false);
@@ -97,7 +89,6 @@ export function PersonRow({ person }: PersonRowProps) {
     <>
       <li
         ref={setNodeRef}
-        aria-label={rowLabel}
         className={cn(
           'flex items-center justify-between gap-2 rounded-lg border bg-card px-3 py-2',
           person.isAbsent && 'border-destructive/50 bg-destructive/5',

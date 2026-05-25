@@ -100,7 +100,7 @@
   },
   "roster": {
     "heading": "Roster",
-    "castingHelp": "On desktop, drag performers into scene slots. On mobile, assign cast using the dropdown menus in each scene.",
+    "castingHelp": "On desktop, drag performers into scene slots or assign cast using the menus in each scene. On mobile, use the dropdown menus in each scene. Roster drag is a pointer shortcut; assign cast from each scene when using the keyboard.",
     "listLabel": "Performers on roster",
     "emptyTitle": "No performers yet",
     "emptyDescription": "Add someone above to start building your roster.",
@@ -149,6 +149,8 @@
     "moveUp": "Move scene up",
     "moveDown": "Move scene down",
     "assignHost": "Assign host",
+    "dropHostZone": "{name} — host drop zone. Drag a performer here or use Assign host.",
+    "dropPlayersZone": "{name} — players drop zone. Drag performers here or use Add player.",
     "addPlayer": "Add player",
     "removePlayer": "Remove {name}",
     "removeAllPlay": "Remove all play",

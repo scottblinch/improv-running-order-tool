@@ -6,6 +6,7 @@ import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPr
 import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { useConcealedUntilPrint } from '@/hooks/useConcealedUntilPrint';
 import { useTranslation } from '@/i18n';
 import { SCENE_REORDER_HELP_ID, LINEUP_HEADING_ID } from '@/lib/a11y-ids';
 import { useAppStore } from '@/store/useAppStore';
@@ -15,6 +16,7 @@ export function RunningOrderPanel() {
   const { t } = useTranslation();
   const scenes = useAppStore((state) => state.scenes);
   const printPreview = usePrintPreviewStore((state) => state.enabled);
+  const printCloneRef = useConcealedUntilPrint<HTMLDivElement>();
 
   if (printPreview) {
     return (
@@ -55,7 +57,10 @@ export function RunningOrderPanel() {
         </PanelShell>
       </div>
 
-      <div className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto">
+      <div
+        ref={printCloneRef}
+        className="fixed top-0 -left-[9999rem] w-[7.5in] print:static print:left-auto"
+      >
         <RunningOrderPrintView scenes={scenes} fitToPage fitTarget="page" />
       </div>
     </>

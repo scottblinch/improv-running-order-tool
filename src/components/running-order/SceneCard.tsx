@@ -84,10 +84,6 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
       <li
         ref={setNodeRef}
         style={style}
-        aria-label={t('lineup.sceneLabel', {
-          index: index + 1,
-          name: scene.name,
-        })}
         className={cn(
           'rounded-xl border bg-card px-4 py-2 ring-1 ring-foreground/10',
           isDragging && 'opacity-50',

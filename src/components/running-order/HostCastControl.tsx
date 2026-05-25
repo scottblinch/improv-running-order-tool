@@ -42,6 +42,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
       <CastDropZone
         sceneId={scene.id}
         zone="host"
+        ariaLabel={t('lineup.dropHostZone', { name: scene.name })}
         className="hidden min-w-0 flex-1 flex-wrap items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 p-2 md:flex"
       >
         {hostSlot ? (
