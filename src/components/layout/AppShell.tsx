@@ -44,7 +44,7 @@ export function AppShell() {
         </AppDndProvider>
       </div>
 
-      <AppFooter />
+      {!printPreview ? <AppFooter /> : null}
     </div>
   );
 }
