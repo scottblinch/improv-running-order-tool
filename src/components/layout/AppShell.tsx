@@ -4,6 +4,7 @@ import { LINEUP_HEADING_ID, ROSTER_HEADING_ID } from '@/lib/a11y-ids';
 import { RosterPanel } from '@/components/roster/RosterPanel';
 import { RunningOrderPanel } from '@/components/running-order/RunningOrderPanel';
 import { AppDndProvider } from '@/components/dnd/AppDndProvider';
+import { A11yLiveRegion } from '@/components/a11y/A11yLiveRegion';
 import { cn } from '@/lib/utils';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
@@ -18,6 +19,7 @@ export function AppShell() {
       )}
     >
       <SkipLink />
+      <A11yLiveRegion />
       <AppHeader />
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:min-h-0">

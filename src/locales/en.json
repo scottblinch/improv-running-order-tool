@@ -28,7 +28,11 @@
     "assignedHost": "{name} assigned as host in {scene}",
     "addedPlayer": "{name} added as player in {scene}",
     "movedScene": "Moved {name}",
-    "dragCancelled": "Drag cancelled"
+    "movedSceneUp": "Moved {name} up",
+    "movedSceneDown": "Moved {name} down",
+    "dragCancelled": "Drag cancelled",
+    "dropFailed": "Drop not allowed here",
+    "notifications": "Notifications"
   },
   "theme": {
     "toggle": "Toggle theme",
@@ -105,6 +109,7 @@
   "workspace": {
     "newShow": "New show",
     "newShowItemTitle": "Create a new saved show",
+    "newShowMaxShows": "Maximum of {max} saved shows reached.",
     "deleteShow": "Delete show",
     "deleteShowItemTitle": "Delete show {label}",
     "switchShowItemTitle": "Switch to {label}",

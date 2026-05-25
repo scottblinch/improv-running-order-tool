@@ -132,31 +132,25 @@ export function PersonRow({ person }: PersonRowProps) {
             >
               {person.name}
             </span>
-            <IconButtonTooltip
-              label={formatRoleBadgeTooltip('host', person.name, hostCount)}
+            <Badge
+              variant="host"
+              className="shrink-0"
+              title={formatRoleBadgeTooltip('host', person.name, hostCount)}
+              aria-label={formatRoleCountLabel('host', hostCount)}
             >
-              <Badge
-                variant="host"
-                className="shrink-0"
-                aria-label={formatRoleCountLabel('host', hostCount)}
-              >
-                H: {hostCount}
-              </Badge>
-            </IconButtonTooltip>
-            <IconButtonTooltip
-              label={formatRoleBadgeTooltip('player', person.name, playerCount)}
+              H: {hostCount}
+            </Badge>
+            <Badge
+              variant="player"
+              className="shrink-0"
+              title={formatRoleBadgeTooltip('player', person.name, playerCount)}
+              aria-label={formatRoleCountLabel('player', playerCount)}
             >
-              <Badge
-                variant="player"
-                className="shrink-0"
-                aria-label={formatRoleCountLabel('player', playerCount)}
-              >
-                {playerCount === 0 ? (
-                  <TriangleAlert aria-hidden className="size-3" />
-                ) : null}
-                P: {playerCount}
-              </Badge>
-            </IconButtonTooltip>
+              {playerCount === 0 ? (
+                <TriangleAlert aria-hidden className="size-3" />
+              ) : null}
+              P: {playerCount}
+            </Badge>
             {person.isAbsent ? (
               <Badge variant="destructive" className="shrink-0">
                 {t('roster.absent')}

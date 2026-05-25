@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Check, ChevronDown, Plus, Trash2 } from 'lucide-react';
 
 import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
@@ -93,6 +93,7 @@ export function ShowSwitcher() {
     label: string;
   } | null>(null);
 
+  const maxShowsHintId = useId();
   const currentLabel = formatShowDisplayName(showName);
   const { currentAndUpcoming, past } = partitionShowsByShowDate(shows);
   const canCreate = canAddShow(shows.length);
@@ -152,11 +153,19 @@ export function ShowSwitcher() {
           <DropdownMenuItem
             disabled={!canCreate}
             title={t('workspace.newShowItemTitle')}
+            aria-describedby={!canCreate ? maxShowsHintId : undefined}
             onSelect={() => createShow()}
           >
             <Plus aria-hidden className="size-4" />
             {t('workspace.newShow')}
-            {!canCreate ? ` (${INPUT_LIMITS.maxShows})` : null}
+            {!canCreate ? (
+              <>
+                {` (${INPUT_LIMITS.maxShows})`}
+                <span id={maxShowsHintId} className="sr-only">
+                  {t('workspace.newShowMaxShows', { max: INPUT_LIMITS.maxShows })}
+                </span>
+              </>
+            ) : null}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

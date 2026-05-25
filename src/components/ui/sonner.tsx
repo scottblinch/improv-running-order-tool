@@ -9,14 +9,17 @@ import type { CSSProperties } from 'react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
 import { useTheme } from '@/components/theme/useTheme';
+import { useTranslation } from '@/i18n';
 
 export function Toaster(props: ToasterProps) {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Sonner
       theme={theme === 'system' ? 'system' : theme}
       className="toaster group print:hidden"
+      containerAriaLabel={t('a11y.notifications')}
       icons={{
         success: <CircleCheckIcon className="size-4" aria-hidden />,
         info: <InfoIcon className="size-4" aria-hidden />,
@@ -36,6 +39,7 @@ export function Toaster(props: ToasterProps) {
         classNames: {
           toast: 'cn-toast',
         },
+        closeButtonAriaLabel: t('privacy.close'),
       }}
       {...props}
     />
