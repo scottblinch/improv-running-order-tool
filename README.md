@@ -39,20 +39,20 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Scripts
 
-| Command                    | Description                                    |
-| -------------------------- | ---------------------------------------------- |
-| `pnpm dev`                 | Start dev server                               |
-| `pnpm build`               | Typecheck + production build                   |
-| `pnpm build:pages`         | Production build for GitHub Pages base path    |
-| `pnpm check`               | `lint` + `format:check` + `build`              |
+| Command                    | Description                                      |
+| -------------------------- | ------------------------------------------------ |
+| `pnpm dev`                 | Start dev server                                 |
+| `pnpm build`               | Typecheck + production build                     |
+| `pnpm build:pages`         | Production build for GitHub Pages base path      |
+| `pnpm check`               | `lint` + `format:check` + `build`                |
 | `pnpm check:pages`         | `lint` + `format:check` + `test` + `build:pages` |
-| `pnpm preview`             | Preview production build locally               |
-| `pnpm preview:pages`       | Build for GitHub Pages base path and preview   |
-| `pnpm lint`                | Run ESLint                                     |
-| `pnpm lint:fix`            | ESLint with auto-fix                           |
-| `pnpm format`              | Prettier write                                 |
-| `pnpm format:check`        | Prettier check                                 |
-| `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg` |
+| `pnpm preview`             | Preview production build locally                 |
+| `pnpm preview:pages`       | Build for GitHub Pages base path and preview     |
+| `pnpm lint`                | Run ESLint                                       |
+| `pnpm lint:fix`            | ESLint with auto-fix                             |
+| `pnpm format`              | Prettier write                                   |
+| `pnpm format:check`        | Prettier check                                   |
+| `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg`   |
 
 Pushes to `main` and pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`).
 

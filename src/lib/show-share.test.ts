@@ -52,7 +52,9 @@ describe('decodeShowShareParam', () => {
 
   it('round-trips a valid shared show payload', () => {
     const encoded = encodeShowShareParam(sampleShow);
-    expect(encoded).toEqual(expect.objectContaining({ url: expect.any(String) }));
+    expect(encoded).toEqual(
+      expect.objectContaining({ url: expect.any(String) }),
+    );
 
     if (!('url' in encoded)) return;
 
@@ -71,7 +73,9 @@ describe('decodeShowShareParam', () => {
   });
 
   it('rejects params longer than the share URL limit', () => {
-    expect(decodeShowShareParam('a'.repeat(MAX_SHARE_PARAM_LENGTH + 1))).toBeNull();
+    expect(
+      decodeShowShareParam('a'.repeat(MAX_SHARE_PARAM_LENGTH + 1)),
+    ).toBeNull();
   });
 
   it('rejects decompression bombs that exceed the inflated byte limit', () => {
