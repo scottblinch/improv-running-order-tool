@@ -34,6 +34,7 @@ export function CastDropZone({
   return (
     <div
       ref={setNodeRef}
+      role="group"
       data-drop-zone={zone}
       aria-label={ariaLabel}
       className={cn(

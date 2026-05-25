@@ -2,6 +2,7 @@ import { CastDropZone } from '@/components/running-order/CastDropZone';
 import { PersonAssignSelect } from '@/components/running-order/PersonAssignSelect';
 import { PersonSlotSelect } from '@/components/running-order/PersonSlotSelect';
 import { CastSlot } from '@/components/shared/CastSlot';
+import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import {
   resolveSlotDisplay,
   selectCastablePersons,
@@ -34,6 +35,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
           label={t('lineup.assignHost')}
           value={scene.hostId}
           persons={slotPersons}
+          describedBy={ROSTER_CASTING_HELP_ID}
           onValueChange={(personId) => assignHost(scene.id, personId)}
           onClear={() => removeHost(scene.id)}
         />
@@ -60,6 +62,7 @@ export function HostCastControl({ scene }: HostCastControlProps) {
             inline
             label={t('lineup.assignHost')}
             persons={castablePersons}
+            describedBy={ROSTER_CASTING_HELP_ID}
             onAssign={(personId) => assignHost(scene.id, personId)}
           />
         )}

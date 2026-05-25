@@ -108,7 +108,7 @@ export function ShowSwitcher() {
             type="button"
             variant="outline"
             className="max-w-56 min-w-0 shrink justify-between gap-2 font-heading font-semibold tracking-tight"
-            aria-label={t('header.switchShow')}
+            aria-label={t('header.switchShowNamed', { label: currentLabel })}
           >
             <span className="truncate">{currentLabel}</span>
             <ChevronDown aria-hidden className="size-4 shrink-0 opacity-60" />

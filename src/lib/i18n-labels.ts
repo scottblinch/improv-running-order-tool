@@ -19,23 +19,6 @@ export function formatRoleBadgeTooltip(
   return i18n.t(key, { name, count });
 }
 
-export function formatPersonRowLabel(
-  name: string,
-  isAbsent: boolean,
-  hostCount: number,
-  playerCount: number,
-): string {
-  const details = [
-    isAbsent ? i18n.t('roster.rowLabelAbsent') : null,
-    formatRoleCountLabel('host', hostCount),
-    formatRoleCountLabel('player', playerCount),
-  ]
-    .filter(Boolean)
-    .join(', ');
-
-  return i18n.t('roster.rowLabel', { name, details });
-}
-
 export function formatWarningLabel(warningLabel: 'Absent' | 'Removed'): string {
   if (warningLabel === 'Absent') {
     return i18n.t('roster.absent');

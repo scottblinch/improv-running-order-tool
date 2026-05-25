@@ -114,10 +114,10 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               sceneCount={sceneCount}
             />
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium">
+              <h3 className="truncate font-medium">
                 <span className="text-muted-foreground">{index + 1}.</span>{' '}
                 {scene.name}
-              </p>
+              </h3>
             </div>
           </div>
 

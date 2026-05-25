@@ -51,7 +51,13 @@
   "header": {
     "renameShow": "Rename show",
     "showDate": "Show date",
-    "switchShow": "Switch show"
+    "showDateNamed": "Show date, {date}",
+    "switchShow": "Switch show",
+    "switchShowNamed": "Switch show, {label}"
+  },
+  "calendar": {
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
   },
   "share": {
     "copyLink": "Copy share link",
@@ -77,7 +83,10 @@
     "copyFailedDescription": "Your browser blocked clipboard access. Copy the address bar after sharing again, or check browser permissions."
   },
   "footer": {
-    "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>). <privacyLink>Privacy</privacyLink>."
+    "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>). <privacyLink>Privacy</privacyLink>.",
+    "authorLinkAria": "Scott Blinch's website (opens in new tab)",
+    "githubLinkAria": "GitHub feedback (opens in new tab)",
+    "licenseLinkAria": "GPL-2.0 license (opens in new tab)"
   },
   "privacy": {
     "title": "Privacy",
@@ -100,7 +109,7 @@
   },
   "roster": {
     "heading": "Roster",
-    "castingHelp": "On desktop, drag performers into scene slots or assign cast using the menus in each scene. On mobile, use the dropdown menus in each scene. Roster drag is a pointer shortcut; assign cast from each scene when using the keyboard.",
+    "castingHelp": "On desktop, drag performers into scene slots or assign cast using the Assign host and Add player menus in each scene. On mobile, use the dropdown menus in each scene. Roster drag is a pointer shortcut only.",
     "listLabel": "Performers on roster",
     "emptyTitle": "No performers yet",
     "emptyDescription": "Add someone above to start building your roster.",
@@ -111,8 +120,6 @@
     "roleCountPlayer": "Player in {count, plural, one {# scene} other {# scenes}}",
     "hostBadgeTooltip": "{name} hosts {count, plural, one {# scene} other {# scenes}}",
     "playerBadgeTooltip": "{name} plays in {count, plural, one {# scene} other {# scenes}}",
-    "rowLabel": "{name}, {details}",
-    "rowLabelAbsent": "absent",
     "dragPerformer": "Drag {name}",
     "actionsFor": "Actions for {name}",
     "clearAbsent": "Clear absent",
@@ -139,7 +146,6 @@
     "emptyDescription": "Add a scene above to start building the lineup.",
     "sceneName": "Scene name",
     "sceneNameRequired": "Enter a scene name.",
-    "sceneLabel": "Scene {index}: {name}",
     "reorderScene": "Reorder {name}",
     "actionsForScene": "Actions for {name}",
     "removeScene": "Remove scene",
@@ -149,6 +155,7 @@
     "moveUp": "Move scene up",
     "moveDown": "Move scene down",
     "assignHost": "Assign host",
+    "removeHost": "Remove host {name}",
     "dropHostZone": "{name} — host drop zone. Drag a performer here or use Assign host.",
     "dropPlayersZone": "{name} — players drop zone. Drag performers here or use Add player.",
     "addPlayer": "Add player",

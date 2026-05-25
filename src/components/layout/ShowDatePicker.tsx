@@ -30,7 +30,9 @@ export function ShowDatePicker() {
           type="button"
           variant="outline"
           className="shrink-0 font-normal"
-          aria-label={t('header.showDate')}
+          aria-label={t('header.showDateNamed', {
+            date: formatPrintDate(showDate),
+          })}
         >
           <CalendarIcon aria-hidden className="size-4" />
           {formatPrintDate(showDate)}
@@ -41,6 +43,10 @@ export function ShowDatePicker() {
           mode="single"
           selected={selectedDate}
           defaultMonth={selectedDate}
+          labels={{
+            labelPrevious: () => t('calendar.previousMonth'),
+            labelNext: () => t('calendar.nextMonth'),
+          }}
           onSelect={(date) => {
             if (!date) return;
 

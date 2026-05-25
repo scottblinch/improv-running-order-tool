@@ -37,6 +37,11 @@ export function CastSlot({
     (state) => state.hoveredPersonId === personId,
   );
 
+  const removeLabel =
+    role === 'host'
+      ? t('lineup.removeHost', { name })
+      : t('lineup.removePlayer', { name });
+
   return (
     <div
       data-person-id={personId}
@@ -65,13 +70,13 @@ export function CastSlot({
         </Badge>
       ) : null}
       {onRemove ? (
-        <IconButtonTooltip label={t('lineup.removePlayer', { name })}>
+        <IconButtonTooltip label={removeLabel}>
           <Button
             type="button"
             variant="ghost"
             size="icon-sm"
             className="shrink-0"
-            aria-label={t('lineup.removePlayer', { name })}
+            aria-label={removeLabel}
             onClick={onRemove}
           >
             <X aria-hidden className="size-4" />

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { PrivacyDialog } from '@/components/layout/PrivacyDialog';
-import { Trans } from '@/i18n';
+import { Trans, useTranslation } from '@/i18n';
 
 const AUTHOR_WEBSITE = 'https://scottblinch.me';
 const GITHUB_FEEDBACK =
@@ -14,6 +14,7 @@ const linkClassName = 'underline-offset-4 hover:text-foreground';
 const inlineLinkButtonClassName = `${linkClassName} inline h-auto border-0 bg-transparent p-0 font-inherit text-inherit cursor-pointer`;
 
 export function AppFooter() {
+  const { t } = useTranslation();
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
   return (
@@ -29,6 +30,7 @@ export function AppFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={linkClassName}
+                  aria-label={t('footer.authorLinkAria')}
                 />
               ),
               githubLink: (
@@ -37,6 +39,7 @@ export function AppFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={linkClassName}
+                  aria-label={t('footer.githubLinkAria')}
                 />
               ),
               licenseLink: (
@@ -45,6 +48,7 @@ export function AppFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={linkClassName}
+                  aria-label={t('footer.licenseLinkAria')}
                 />
               ),
               privacyLink: (

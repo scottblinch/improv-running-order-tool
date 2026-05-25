@@ -16,6 +16,7 @@ type PersonAssignSelectProps = {
   persons: Person[];
   excludedPersonIds?: PersonId[];
   onAssign: (personId: PersonId) => void;
+  describedBy?: string;
   inline?: boolean;
 };
 
@@ -24,6 +25,7 @@ export function PersonAssignSelect({
   persons,
   excludedPersonIds = [],
   onAssign,
+  describedBy,
   inline = false,
 }: PersonAssignSelectProps) {
   const { t } = useTranslation();
@@ -51,6 +53,7 @@ export function PersonAssignSelect({
       <SelectTrigger
         className={cn('w-full', inline && 'md:w-auto md:min-w-36')}
         aria-label={label}
+        aria-describedby={describedBy}
       >
         <SelectValue placeholder={label} />
       </SelectTrigger>

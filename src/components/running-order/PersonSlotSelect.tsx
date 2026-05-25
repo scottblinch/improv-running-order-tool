@@ -19,6 +19,7 @@ type PersonSlotSelectProps = {
   persons: Person[];
   onValueChange: (personId: PersonId) => void;
   onClear?: () => void;
+  describedBy?: string;
   className?: string;
 };
 
@@ -28,6 +29,7 @@ export function PersonSlotSelect({
   persons,
   onValueChange,
   onClear,
+  describedBy,
   className,
 }: PersonSlotSelectProps) {
   const { t } = useTranslation();
@@ -44,7 +46,11 @@ export function PersonSlotSelect({
         onValueChange(selected);
       }}
     >
-      <SelectTrigger className={cn('w-full', className)} aria-label={label}>
+      <SelectTrigger
+        className={cn('w-full', className)}
+        aria-label={value ? undefined : label}
+        aria-describedby={describedBy}
+      >
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>

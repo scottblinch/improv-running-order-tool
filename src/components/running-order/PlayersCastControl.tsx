@@ -7,6 +7,7 @@ import { PersonSlotSelect } from '@/components/running-order/PersonSlotSelect';
 import { CastSlot } from '@/components/shared/CastSlot';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
+import { ROSTER_CASTING_HELP_ID } from '@/lib/a11y-ids';
 import {
   resolveSlotDisplay,
   selectCastablePersons,
@@ -61,6 +62,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
         label={t('lineup.addPlayer')}
         persons={castablePersons}
         excludedPersonIds={scene.playerIds}
+        describedBy={ROSTER_CASTING_HELP_ID}
         onAssign={(personId) => addPlayer(scene.id, personId)}
       />
     </>
@@ -85,6 +87,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
                     label={t('common.player')}
                     value={playerId}
                     persons={selectPersonsForSlot(persons, playerId)}
+                    describedBy={ROSTER_CASTING_HELP_ID}
                     onValueChange={(newPersonId) =>
                       replacePlayer(scene.id, playerId, newPersonId)
                     }
@@ -113,6 +116,7 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
               label={t('lineup.addPlayer')}
               persons={castablePersons}
               excludedPersonIds={scene.playerIds}
+              describedBy={ROSTER_CASTING_HELP_ID}
               onAssign={(personId) => addPlayer(scene.id, personId)}
             />
           </>
