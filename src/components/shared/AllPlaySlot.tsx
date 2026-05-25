@@ -1,6 +1,7 @@
 import { Users, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/i18n';
 import { personPlaysInScene } from '@/store/selectors';
@@ -42,16 +43,18 @@ export function AllPlaySlot({
       <Users aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
       <span className="text-sm font-medium">{t('common.allPlay')}</span>
       {onRemove ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="shrink-0"
-          aria-label={t('lineup.removeAllPlay')}
-          onClick={onRemove}
-        >
-          <X aria-hidden className="size-4" />
-        </Button>
+        <IconButtonTooltip label={t('lineup.removeAllPlay')}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="shrink-0"
+            aria-label={t('lineup.removeAllPlay')}
+            onClick={onRemove}
+          >
+            <X aria-hidden className="size-4" />
+          </Button>
+        </IconButtonTooltip>
       ) : null}
     </div>
   );

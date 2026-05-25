@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check, ChevronDown, Plus, Trash2 } from 'lucide-react';
 
 import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -54,20 +55,22 @@ function ShowMenuItem({
       />
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {canDelete ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="size-7 shrink-0"
-          aria-label={t('workspace.deleteShow')}
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            onDelete({ id: show.id, label });
-          }}
-        >
-          <Trash2 aria-hidden className="size-3.5" />
-        </Button>
+        <IconButtonTooltip label={t('workspace.deleteShow')}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="size-7 shrink-0"
+            aria-label={t('workspace.deleteShow')}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onDelete({ id: show.id, label });
+            }}
+          >
+            <Trash2 aria-hidden className="size-3.5" />
+          </Button>
+        </IconButtonTooltip>
       ) : null}
     </DropdownMenuItem>
   );

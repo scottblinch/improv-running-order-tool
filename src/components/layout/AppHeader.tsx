@@ -7,6 +7,7 @@ import { ShareShowButton } from '@/components/layout/ShareShowButton';
 import { ShowSwitcher } from '@/components/layout/ShowSwitcher';
 import { ShowDatePicker } from '@/components/layout/ShowDatePicker';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatShowDisplayName } from '@/lib/show-date';
@@ -33,16 +34,18 @@ export function AppHeader() {
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <h1 className="sr-only">{formatShowDisplayName(showName)}</h1>
             <ShowSwitcher />
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="shrink-0"
-              aria-label={t('header.renameShow')}
-              onClick={() => setRenameOpen(true)}
-            >
-              <Pencil aria-hidden className="size-4" />
-            </Button>
+            <IconButtonTooltip label={t('header.renameShow')}>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                aria-label={t('header.renameShow')}
+                onClick={() => setRenameOpen(true)}
+              >
+                <Pencil aria-hidden className="size-4" />
+              </Button>
+            </IconButtonTooltip>
             <ShowDatePicker />
             <ShareShowButton />
           </div>

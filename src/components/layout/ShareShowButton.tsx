@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { useTranslation } from '@/i18n';
 import { formatShowDisplayName } from '@/lib/show-date';
 import {
@@ -109,16 +110,18 @@ export function ShareShowButton() {
 
   return (
     <>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="shrink-0"
-        aria-label={t('share.copyLink')}
-        onClick={handleShareClick}
-      >
-        <Share2 aria-hidden className="size-4" />
-      </Button>
+      <IconButtonTooltip label={t('share.copyLink')}>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="shrink-0"
+          aria-label={t('share.copyLink')}
+          onClick={handleShareClick}
+        >
+          <Share2 aria-hidden className="size-4" />
+        </Button>
+      </IconButtonTooltip>
 
       <AlertDialog
         open={confirmOpen}

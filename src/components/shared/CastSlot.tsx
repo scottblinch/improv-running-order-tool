@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { cn } from '@/lib/utils';
 import { formatWarningLabel } from '@/lib/i18n-labels';
 import { useHoverStore } from '@/store/useHoverStore';
@@ -58,16 +59,18 @@ export function CastSlot({
         </Badge>
       ) : null}
       {onRemove ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="shrink-0"
-          aria-label={t('lineup.removePlayer', { name })}
-          onClick={onRemove}
-        >
-          <X aria-hidden className="size-4" />
-        </Button>
+        <IconButtonTooltip label={t('lineup.removePlayer', { name })}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="shrink-0"
+            aria-label={t('lineup.removePlayer', { name })}
+            onClick={onRemove}
+          >
+            <X aria-hidden className="size-4" />
+          </Button>
+        </IconButtonTooltip>
       ) : null}
     </div>
   );

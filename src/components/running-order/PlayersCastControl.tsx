@@ -5,6 +5,7 @@ import { CastDropZone } from '@/components/running-order/CastDropZone';
 import { PersonAssignSelect } from '@/components/running-order/PersonAssignSelect';
 import { PersonSlotSelect } from '@/components/running-order/PersonSlotSelect';
 import { CastSlot } from '@/components/shared/CastSlot';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import {
   resolveSlotDisplay,
@@ -88,18 +89,22 @@ export function PlayersCastControl({ scene }: PlayersCastControlProps) {
                     }
                     className="min-w-0 flex-1"
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    className="shrink-0"
-                    aria-label={t('lineup.removePlayer', {
-                      name: slot.name,
-                    })}
-                    onClick={() => removePlayer(scene.id, playerId)}
+                  <IconButtonTooltip
+                    label={t('lineup.removePlayer', { name: slot.name })}
                   >
-                    <X aria-hidden className="size-4" />
-                  </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      className="shrink-0"
+                      aria-label={t('lineup.removePlayer', {
+                        name: slot.name,
+                      })}
+                      onClick={() => removePlayer(scene.id, playerId)}
+                    >
+                      <X aria-hidden className="size-4" />
+                    </Button>
+                  </IconButtonTooltip>
                 </div>
               );
             })}

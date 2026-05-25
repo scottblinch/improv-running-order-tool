@@ -14,6 +14,7 @@ import { useDesktopDndEnabled } from '@/components/dnd/desktop-dnd-context';
 import { DeletePersonDialog } from '@/components/roster/DeletePersonDialog';
 import { MarkAbsentDialog } from '@/components/roster/MarkAbsentDialog';
 import { RenamePersonDialog } from '@/components/roster/RenamePersonDialog';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -109,19 +110,23 @@ export function PersonRow({ person }: PersonRowProps) {
       >
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {!person.isAbsent ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              className="hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
-              aria-label={t('roster.dragPerformer', { name: person.name })}
-              disabled={!canDrag}
-              {...listeners}
-              {...attributes}
-              aria-describedby={ROSTER_CASTING_HELP_ID}
+            <IconButtonTooltip
+              label={t('roster.dragPerformer', { name: person.name })}
             >
-              <GripVertical aria-hidden className="size-4" />
-            </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
+                aria-label={t('roster.dragPerformer', { name: person.name })}
+                disabled={!canDrag}
+                {...listeners}
+                {...attributes}
+                aria-describedby={ROSTER_CASTING_HELP_ID}
+              >
+                <GripVertical aria-hidden className="size-4" />
+              </Button>
+            </IconButtonTooltip>
           ) : null}
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
             <span
@@ -158,16 +163,20 @@ export function PersonRow({ person }: PersonRowProps) {
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="shrink-0"
-              aria-label={t('roster.actionsFor', { name: person.name })}
-            >
-              <MoreHorizontal aria-hidden className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <IconButtonTooltip
+            label={t('roster.actionsFor', { name: person.name })}
+          >
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="shrink-0"
+                aria-label={t('roster.actionsFor', { name: person.name })}
+              >
+                <MoreHorizontal aria-hidden className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+          </IconButtonTooltip>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onSelect={(event) => {

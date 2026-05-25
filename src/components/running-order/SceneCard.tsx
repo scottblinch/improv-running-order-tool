@@ -16,6 +16,7 @@ import { RemoveSceneDialog } from '@/components/running-order/RemoveSceneDialog'
 import { RenameSceneDialog } from '@/components/running-order/RenameSceneDialog';
 import { SceneReorderButtons } from '@/components/running-order/SceneReorderButtons';
 import { SetAllPlayDialog } from '@/components/running-order/SetAllPlayDialog';
+import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -93,19 +94,23 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
       >
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-1 items-start gap-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              className="mt-0.5 hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
-              aria-label={t('lineup.reorderScene', { name: scene.name })}
-              disabled={!desktopDndEnabled}
-              {...listeners}
-              {...attributes}
-              aria-describedby={SCENE_REORDER_HELP_ID}
+            <IconButtonTooltip
+              label={t('lineup.reorderScene', { name: scene.name })}
             >
-              <GripVertical aria-hidden className="size-4" />
-            </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="mt-0.5 hidden shrink-0 cursor-grab touch-none active:cursor-grabbing md:inline-flex print:hidden"
+                aria-label={t('lineup.reorderScene', { name: scene.name })}
+                disabled={!desktopDndEnabled}
+                {...listeners}
+                {...attributes}
+                aria-describedby={SCENE_REORDER_HELP_ID}
+              >
+                <GripVertical aria-hidden className="size-4" />
+              </Button>
+            </IconButtonTooltip>
             <SceneReorderButtons
               sceneId={scene.id}
               index={index}
@@ -120,18 +125,22 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
           </div>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="shrink-0"
-                aria-label={t('lineup.actionsForScene', {
-                  name: scene.name,
-                })}
-              >
-                <MoreHorizontal aria-hidden className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
+            <IconButtonTooltip
+              label={t('lineup.actionsForScene', { name: scene.name })}
+            >
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="shrink-0"
+                  aria-label={t('lineup.actionsForScene', {
+                    name: scene.name,
+                  })}
+                >
+                  <MoreHorizontal aria-hidden className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+            </IconButtonTooltip>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
                 <Pencil aria-hidden className="size-4" />
