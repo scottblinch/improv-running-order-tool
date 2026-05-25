@@ -40,8 +40,14 @@
     "switchShow": "Switch show"
   },
   "share": {
-    "copyLink": "Copy share link",
+    "copyLink": "Share show",
     "copied": "Share link copied",
+    "shared": "Show shared",
+    "nativeText": "Improv show lineup: {showName}",
+    "confirmTitle": "Share this show?",
+    "confirmDescription": "The link includes performer names, the show name, and cast assignments. It stays in the URL until cleared. Only share it with people who should see that information.",
+    "confirmAction": "Share",
+    "confirmSkip": "Don't show this again",
     "importOk": "OK",
     "importInvalidTitle": "Could not open shared show",
     "importInvalidDescription": "This share link is invalid or out of date.",
@@ -55,7 +61,14 @@
     "copyFailedDescription": "Your browser blocked clipboard access. Copy the address bar after sharing again, or check browser permissions."
   },
   "footer": {
-    "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>)."
+    "credit": "Made with love by <authorLink>Scott Blinch</authorLink>. Give feedback on <githubLink>GitHub</githubLink>. Free to share and remix — just keep it free (<licenseLink>GPL-2.0</licenseLink>). <privacyLink>Privacy</privacyLink>."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "localStorage": "Show data is stored only in your browser. This app does not upload your shows to a server or create accounts.",
+    "shareLinks": "When you share a show, performer names and cast assignments are encoded in the link. Anyone with that link can open the show. Only share links with people who should see that information.",
+    "hosting": "This site is hosted on GitHub Pages. GitHub may log basic access data (such as IP address and requested URL) as part of normal web hosting.",
+    "close": "Close"
   },
   "workspace": {
     "newShow": "New show",
