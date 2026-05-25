@@ -7,7 +7,6 @@ import { render } from '@testing-library/react';
 import { Clapperboard } from 'lucide-react';
 import type React from 'react';
 import { axe } from 'vitest-axe';
-import * as axeMatchers from 'vitest-axe/matchers';
 import { describe, expect, it } from 'vitest';
 
 import { DeletePersonDialog } from '@/components/roster/DeletePersonDialog';
@@ -26,8 +25,6 @@ import { RenameDialog } from '@/components/shared/RenameDialog';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useAppStore } from '@/store/useAppStore';
 import type { Person } from '@/types/app';
-
-expect.extend(axeMatchers);
 
 const testPerson: Person = {
   id: 'person-test',
