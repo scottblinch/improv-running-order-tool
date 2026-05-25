@@ -132,6 +132,9 @@
   html {
     @apply font-sans;
   }
+  a {
+    @apply underline underline-offset-4 hover:no-underline focus-visible:no-underline;
+  }
 }
 
 @media print {
