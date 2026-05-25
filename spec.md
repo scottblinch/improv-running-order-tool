@@ -24,6 +24,9 @@ A purely client-side React single-page application (SPA) for building and managi
 - **Share encoding:** `fflate` (deflate/inflate for compact URL payloads)
 - **PWA:** `vite-plugin-pwa` (manifest + service worker)
 - **Toasts:** Sonner via shadcn `sonner` component
+- **Testing:** Vitest + Testing Library; `vitest-axe` for accessibility smoke tests
+- **Lint:** ESLint (TypeScript, React Hooks, `eslint-plugin-jsx-a11y` recommended rules)
+- **Git hooks:** Husky pre-commit → `pnpm check:precommit`
 - **IDs:** `crypto.randomUUID()` at runtime
 
 ## 3. Data Models (TypeScript Interfaces)
@@ -123,6 +126,16 @@ Desktop: two-column layout with header and footer. Mobile: stacked columns; assi
 
 - `TooltipProvider` — icon button tooltips
 - `Toaster` (Sonner) — ephemeral feedback for share, import, and PWA update
+- `A11yLiveRegion` — polite `aria-live` region for screen-reader announcements (cast changes, reorders, renames, show switch, print preview, etc.)
+- `SkipLink` — skip navigation to roster and lineup headings (roster link hidden in print preview)
+
+### Landmarks & structure
+
+- Roster column: `<aside aria-labelledby="…">`; lineup: `<main aria-labelledby="…">`
+- Panel headings use stable IDs from `lib/a11y-ids.ts` (skip-link targets)
+- Scene list: semantic `<ol>`; loading gate: `role="status"` sr-only “ready” message
+- Icon-only controls: visible tooltips and/or `aria-label` (decorative icons `aria-hidden`)
+- Drag overlay preview: `aria-hidden` (announcements describe the action instead)
 
 ### Mobile
 
@@ -227,42 +240,67 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 - **Input limits:** caps on persons, scenes, shows, name lengths, and IDs; sanitization strips control characters and drops invalid cross-references (defense against hand-edited `localStorage`)
 - **Share links:** user-initiated; data is encoded in the URL, not stored on a server by this app. GitHub Pages may log HTTP access metadata.
 
-## 8. Development Guidelines
+## 8. Accessibility
 
-- Semantic HTML (`ol` for scene list, sr-only headings, `role="status"` on loading, etc.).
+### Screen reader announcements
+
+- Zustand `useA11yAnnounceStore` holds the live-region message; `A11yLiveRegion` renders it.
+- Components call `useA11yAnnounce()` — wraps `t()` + store `announce()` so copy stays in `en.json` under `a11y.*` keys.
+- Cast assign/remove/replace (drag, select, keyboard): `lib/cast-a11y.ts` resolves performer names and builds consistent messages.
+- Repeating the same announcement clears then re-sets the message so assistive tech re-reads it.
+
+### Keyboard & mobile
+
+- Quick-add forms and rename dialogs: Enter to submit; dialogs trap focus via Radix.
+- Desktop cast: keyboard path on cast drop zones (`CastDropZone` as `role="group"`).
+- Mobile: host/player assignment via labeled selects; scene reorder via up/down buttons with announcements.
+- Print preview toggle announces enter/exit; calendar picker announces date changes.
+
+### Lint & tests
+
+- ESLint `jsx-a11y` recommended rules project-wide (shadcn `ui/` folder exempt from `heading-has-content` only).
+- `src/a11y-smoke.test.tsx` — axe smoke tests on shared forms, dialogs, roster row, cast slots (light + dark), skip link, etc.
+- Vitest setup mocks `localStorage` for store tests in jsdom.
+
+## 9. Development Guidelines
+
+- Semantic HTML (`ol` for scene list, sr-only headings, `role="status"` on loading, landmarks as above).
 - shadcn/Radix defaults for a11y; keyboard submit on quick-add forms and rename dialogs.
 - `dnd-kit` must work inside scrollable panels.
 - Zustand `persist`: guard hydration before rendering persisted UI.
 - Single page; no router.
 - **i18n:** user-visible strings in `src/locales/en.json`; use `useTranslation` / `Trans` — no hardcoded UI copy in components.
 - **Styling:** prefer shadcn components and variants; avoid custom CSS except print rules and unavoidable third-party overrides.
+- **Shared UI:** `QuickAddForm`, `RenameDialog` (+ optional announce props), `IconButtonTooltip`, `CastSlot` — feature wrappers stay thin.
+- **DRY helpers:** `useA11yAnnounce`, `cast-a11y`, `cast-role-styles` (`castDropSurfaceClasses`).
 
-## 9. Product Decisions
+## 10. Product Decisions
 
-| Topic                     | Decision                                      |
-| ------------------------- | --------------------------------------------- |
-| Multi-scene casting       | Allowed                                       |
-| Host + player, same scene | Allowed                                       |
-| All play                  | Allowed; clears named players                 |
-| Duplicate performer slots | Not allowed (`playerIds` deduped in store)    |
-| Absent                    | Toggle both ways; confirm when marking absent |
-| Drag while absent         | Not allowed                                   |
-| Roster sort               | Present A–Z, then absent A–Z                  |
-| Roster CRUD               | Add, rename, delete (with mode choice)        |
-| Scene CRUD                | Add, rename, remove                           |
-| Multi-show workspace      | Up to 32 shows; switch/create/delete          |
-| Show metadata             | Name + ISO date per show                      |
-| Warning slot visuals      | Same for absent and deleted-from-roster       |
-| Player order              | Append-only                                   |
-| Print                     | Title, date, scenes + cast                    |
-| Persistence               | `localStorage` workspace                      |
-| Theme                     | Light / dark / system                         |
-| i18n                      | i18next + ICU; English only                   |
-| Share                     | URL query param; import on load; dedup        |
-| PWA                       | Installable; offline shell; update toast      |
-| Privacy                   | Share confirm + footer dialog                 |
-| Export / import JSON      | Post-MVP                                      |
-| Mobile                    | Dropdowns/selects for slots                   |
-| Back-to-back cast warning | Post-MVP                                      |
-| Venue on print            | Post-MVP                                      |
-| Terminology               | UI: **Absent**; code: `isAbsent`              |
+| Topic                     | Decision                                                |
+| ------------------------- | ------------------------------------------------------- |
+| Multi-scene casting       | Allowed                                                 |
+| Host + player, same scene | Allowed                                                 |
+| All play                  | Allowed; clears named players                           |
+| Duplicate performer slots | Not allowed (`playerIds` deduped in store)              |
+| Absent                    | Toggle both ways; confirm when marking absent           |
+| Drag while absent         | Not allowed                                             |
+| Roster sort               | Present A–Z, then absent A–Z                            |
+| Roster CRUD               | Add, rename, delete (with mode choice)                  |
+| Scene CRUD                | Add, rename, remove                                     |
+| Multi-show workspace      | Up to 32 shows; switch/create/delete                    |
+| Show metadata             | Name + ISO date per show                                |
+| Warning slot visuals      | Same for absent and deleted-from-roster                 |
+| Player order              | Append-only                                             |
+| Print                     | Title, date, scenes + cast                              |
+| Persistence               | `localStorage` workspace                                |
+| Theme                     | Light / dark / system                                   |
+| i18n                      | i18next + ICU; English only                             |
+| Share                     | URL query param; import on load; dedup                  |
+| PWA                       | Installable; offline shell; update toast                |
+| Privacy                   | Share confirm + footer dialog                           |
+| Accessibility             | Skip links, live region, jsx-a11y lint, axe smoke tests |
+| Export / import JSON      | Post-MVP                                                |
+| Mobile                    | Dropdowns/selects for slots                             |
+| Back-to-back cast warning | Post-MVP                                                |
+| Venue on print            | Post-MVP                                                |
+| Terminology               | UI: **Absent**; code: `isAbsent`                        |
