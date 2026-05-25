@@ -17,6 +17,23 @@ type RunningOrderPrintViewProps = {
   fitTarget?: PrintFitTarget;
 };
 
+function PrintShowHeader({
+  showName,
+  showDate,
+}: {
+  showName: string;
+  showDate: string;
+}) {
+  return (
+    <header className="mb-[2.5em] text-center print:mb-[1.25em]">
+      <h1 className="text-[1.125em] font-bold tracking-wide uppercase underline">
+        {formatShowPrintTitle(showName)}
+      </h1>
+      <p className="mt-[0.5em] text-[1em]">{formatPrintDate(showDate)}</p>
+    </header>
+  );
+}
+
 function RunningOrderPrintContent({
   scenes,
   showName,
@@ -32,12 +49,7 @@ function RunningOrderPrintContent({
 
   return (
     <>
-      <header className="mb-[2.5em] text-center print:mb-[1.25em]">
-        <h1 className="text-[1.125em] font-bold tracking-wide uppercase underline">
-          {formatShowPrintTitle(showName)}
-        </h1>
-        <p className="mt-[0.5em] text-[1em]">{formatPrintDate(showDate)}</p>
-      </header>
+      <PrintShowHeader showName={showName} showDate={showDate} />
 
       <ol aria-label={t('print.lineupList')}>
         {scenes.map((scene) => {
@@ -86,7 +98,14 @@ export function RunningOrderPrintView({
   );
 
   if (scenes.length === 0) {
-    return <p className="text-sm text-neutral-600">{t('print.noScenes')}</p>;
+    return (
+      <div className="mx-auto w-full max-w-3xl text-left text-base text-black">
+        <PrintShowHeader showName={showName} showDate={showDate} />
+        <p className="text-center text-sm text-neutral-600">
+          {t('print.noScenes')}
+        </p>
+      </div>
+    );
   }
 
   const content = (

@@ -21,6 +21,7 @@ import {
 import { DragPreviewChip } from '@/components/dnd/DragPreviewChip';
 import { DesktopDndProvider } from '@/components/dnd/desktop-dnd-context';
 import { useIsDesktopDnd } from '@/hooks/useIsDesktopDnd';
+import { useTranslation } from '@/i18n';
 import {
   parseSceneDragId,
   sceneDragId,
@@ -29,7 +30,6 @@ import {
 } from '@/lib/dnd-ids';
 import { getPersonById } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
-import i18n from '@/i18n';
 import type { PersonId, SceneId } from '@/types/app';
 
 type ActiveDrag =
@@ -71,6 +71,7 @@ function resolveCollisionDetection(
 }
 
 export function AppDndProvider({ children }: AppDndProviderProps) {
+  const { t } = useTranslation();
   const isDesktopDnd = useIsDesktopDnd();
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
@@ -82,6 +83,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
   const [activeDragType, setActiveDragType] = useState<
     DndDragData['type'] | undefined
   >(undefined);
+  const [liveMessage, setLiveMessage] = useState('');
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -100,21 +102,25 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
 
     if (data.type === 'roster-person') {
       const person = getPersonById(persons, data.personId);
+      const label = person?.name ?? t('fallback.performer');
       setActiveDrag({
         type: 'roster-person',
         personId: data.personId,
-        label: person?.name ?? i18n.t('fallback.performer'),
+        label,
       });
+      setLiveMessage(t('a11y.draggingPerformer', { name: label }));
       return;
     }
 
     if (data.type === 'scene') {
       const scene = scenes.find((item) => item.id === data.sceneId);
+      const label = scene?.name ?? t('fallback.scene');
       setActiveDrag({
         type: 'scene',
         sceneId: data.sceneId,
-        label: scene?.name ?? i18n.t('fallback.scene'),
+        label,
       });
+      setLiveMessage(t('a11y.draggingScene', { name: label }));
     }
   };
 
@@ -132,13 +138,24 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
       const person = getPersonById(persons, activeData.personId);
       if (!person || person.isAbsent || person.isDeleted) return;
 
+      const scene = overData
+        ? scenes.find((item) => item.id === overData.sceneId)
+        : undefined;
+      const sceneName = scene?.name ?? t('fallback.scene');
+
       if (overData?.type === 'host-zone') {
         assignHost(overData.sceneId, activeData.personId);
+        setLiveMessage(
+          t('a11y.assignedHost', { name: person.name, scene: sceneName }),
+        );
         return;
       }
 
       if (overData?.type === 'player-zone') {
         addPlayer(overData.sceneId, activeData.personId);
+        setLiveMessage(
+          t('a11y.addedPlayer', { name: person.name, scene: sceneName }),
+        );
       }
 
       return;
@@ -152,6 +169,12 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
 
       if (overSceneId && overSceneId !== activeData.sceneId) {
         reorderScenes(activeData.sceneId, overSceneId);
+        const scene = scenes.find((item) => item.id === activeData.sceneId);
+        setLiveMessage(
+          t('a11y.movedScene', {
+            name: scene?.name ?? t('fallback.scene'),
+          }),
+        );
       }
     }
   };
@@ -159,6 +182,7 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
   const handleDragCancel = () => {
     setActiveDrag(null);
     setActiveDragType(undefined);
+    setLiveMessage(t('a11y.dragCancelled'));
   };
 
   if (!isDesktopDnd) {
@@ -184,6 +208,9 @@ export function AppDndProvider({ children }: AppDndProviderProps) {
         >
           {children}
         </SortableContext>
+        <p aria-live="polite" aria-atomic="true" className="sr-only">
+          {liveMessage}
+        </p>
         <DragOverlay className="print:hidden" dropAnimation={null}>
           {activeDrag ? (
             activeDrag.type === 'scene' ? (

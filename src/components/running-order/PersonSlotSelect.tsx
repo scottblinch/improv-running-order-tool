@@ -33,6 +33,12 @@ export function PersonSlotSelect({
   className,
 }: PersonSlotSelectProps) {
   const { t } = useTranslation();
+  const assignedPerson = value
+    ? persons.find((person) => person.id === value)
+    : undefined;
+  const triggerLabel = assignedPerson
+    ? t('lineup.slotAssigned', { label, name: assignedPerson.name })
+    : label;
 
   return (
     <Select
@@ -48,7 +54,7 @@ export function PersonSlotSelect({
     >
       <SelectTrigger
         className={cn('w-full', className)}
-        aria-label={value ? undefined : label}
+        aria-label={triggerLabel}
         aria-describedby={describedBy}
       >
         <SelectValue placeholder={label} />

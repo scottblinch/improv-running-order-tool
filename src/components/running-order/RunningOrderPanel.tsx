@@ -9,23 +9,18 @@ import { EmptyState } from '@/components/shared/EmptyState';
 import { useConcealedUntilPrint } from '@/hooks/useConcealedUntilPrint';
 import { useTranslation } from '@/i18n';
 import { SCENE_REORDER_HELP_ID, LINEUP_HEADING_ID } from '@/lib/a11y-ids';
-import { formatShowDisplayName } from '@/lib/show-date';
 import { useAppStore } from '@/store/useAppStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
 
 export function RunningOrderPanel() {
   const { t } = useTranslation();
   const scenes = useAppStore((state) => state.scenes);
-  const showName = useAppStore((state) => state.showName);
   const printPreview = usePrintPreviewStore((state) => state.enabled);
   const printCloneRef = useConcealedUntilPrint<HTMLDivElement>();
 
   if (printPreview) {
     return (
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-6 py-10 print:p-0">
-        {scenes.length === 0 ? (
-          <h1 className="sr-only">{formatShowDisplayName(showName)}</h1>
-        ) : null}
         <h2 id={LINEUP_HEADING_ID} tabIndex={-1} className="sr-only">
           {t('lineup.heading')}
         </h2>
