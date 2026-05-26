@@ -6,15 +6,15 @@ Roadmap for building the Improv Show app. Product behavior and data rules live i
 
 Layered folders under `src/components/` — **no barrel `index.ts` files**; import from the module path.
 
-| Layer       | Path                                              | Role                                                                                                    |
-| ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed): `button`, `alert-dialog`, `tooltip`, `sonner`, …                 |
-| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, share/import dialogs, show switcher, show details dialog, skip link |
-| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `RenameDialog`, `QuickAddForm`, `IconButtonTooltip`)        |
-| **a11y**    | `components/a11y/`                                | Live region for screen-reader announcements                                                             |
-| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                                         |
-| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                                            |
-| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                                         |
+| Layer       | Path                                              | Role                                                                                                                                                    |
+| ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed): `button`, `alert-dialog`, `tooltip`, `sonner`, …                                                                 |
+| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, empty workspace, share/import dialogs, show switcher, show details dialog, duplicate/delete show dialogs, skip link |
+| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `RenameDialog`, `QuickAddForm`, `IconButtonTooltip`, `TitleWithIcon`, `FieldLabel`)                         |
+| **a11y**    | `components/a11y/`                                | Live region for screen-reader announcements                                                                                                             |
+| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                                                                                         |
+| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                                                                                            |
+| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                                                                                         |
 
 Supporting folders (not under `components/`):
 
@@ -67,6 +67,11 @@ Supporting folders (not under `components/`):
 | 27   | DRY shared helpers (forms, cast, announce)    | Done   |
 | 28   | Show details dialog (venue, time, v2 persist) | Done   |
 | 29   | Deploy workflow hardening (split permissions) | Done   |
+| 30   | Empty workspace (default first view)          | Done   |
+| 31   | Duplicate show + duplicate scene              | Done   |
+| 32   | Delete last show → empty workspace            | Done   |
+| 33   | UI icons + Drama branding                     | Done   |
+| 34   | PWA deploy refresh (NetworkFirst HTML)        | Done   |
 
 ---
 
@@ -101,7 +106,7 @@ Supporting folders (not under `components/`):
 
 ## 4. Static layout — Done
 
-- [x] Two-column shell: **Roster** (left) | **Lineup** (right)
+- [x] Two-column shell: **Roster** (left) | **Lineup** (right); `EmptyWorkspace` when no shows
 - [x] `AppHeader`, `AppFooter`, `PanelShell`, empty states
 - [x] Desktop-first (`md:` side-by-side; stacked on narrow viewports)
 - [x] Hydration gate before persisted UI
@@ -112,7 +117,7 @@ Supporting folders (not under `components/`):
 
 - [x] Quick-add, rename, delete (with mode), mark absent
 - [x] `CastSlot` / `AllPlaySlot` — normal vs warning slots
-- [x] Scene cards: host, players, all play, rename, remove
+- [x] Scene cards: host, players, all play, rename, duplicate, remove
 - [x] Roster sorted present A–Z then absent A–Z; castable lists alphabetized
 
 ---
@@ -164,9 +169,10 @@ Supporting folders (not under `components/`):
 ## 11. Multi-show workspace — Done
 
 - [x] `WorkspacePersistedState` — `activeShowId`, `shows[]`
-- [x] `createShow`, `switchShow`, `deleteShow` actions
-- [x] `ShowSwitcher` — upcoming vs past sections; sort by date then name
-- [x] `DeleteShowDialog`; max 32 shows (`INPUT_LIMITS.maxShows`)
+- [x] `createShow`, `switchShow`, `duplicateShow`, `deleteShow` actions
+- [x] `ShowSwitcher` — upcoming vs past sections; sort by date then name; per-row duplicate/delete
+- [x] `DeleteShowDialog`, `DuplicateShowDialog`; max 32 shows (`INPUT_LIMITS.maxShows`)
+- [x] Deleting the last show returns to empty workspace
 
 ---
 
@@ -203,7 +209,7 @@ Supporting folders (not under `components/`):
 
 ## 16. App footer — Done
 
-- [x] Author credit, GitHub issues link, GPL-2.0 summary with license link
+- [x] Author credit, GitHub issues link, GPL-2.0 summary with license link; Drama icon
 - [x] `Trans` for inline links; hidden when printing and in print preview mode
 - [x] `PrivacyDialog` — local storage, share links, GitHub Pages hosting note
 
@@ -224,8 +230,9 @@ Supporting folders (not under `components/`):
 ## 18. PWA — Done
 
 - [x] `vite-plugin-pwa` — manifest, Workbox, `registerType: 'autoUpdate'`
-- [x] `src/pwa/register-service-worker.ts` — prod registration; update-available toast with Refresh action
-- [x] Icons via `pnpm generate:pwa-assets`; GitHub Pages uses `pnpm build:pages`
+- [x] `src/pwa/register-service-worker.ts` — prod registration; update-available toast with Refresh action; visibility-based update check
+- [x] NetworkFirst HTML navigations; no precached `index.html`
+- [x] Icons via `pnpm generate:pwa-assets` from Drama `favicon.svg`; GitHub Pages uses `pnpm build:pages`
 
 ---
 
@@ -307,7 +314,7 @@ Supporting folders (not under `components/`):
 ## 28. Show details expansion — Done
 
 - [x] `showVenue` + `showTime` on `PersistedState`; `ShowDetails` type
-- [x] `ShowDetailsDialog` replaces header rename button + inline date picker
+- [x] `ShowDetailsDialog` replaces header rename button + inline date picker; includes delete show
 - [x] `sanitizeShowVenue`, `sanitizeShowTime`; `formatShowDateTime` / `formatPrintTime`
 - [x] Print, document title, switcher labels, and share encode/decode updated
 - [x] `PERSIST_VERSION` 2 (single bump for venue + time)
@@ -319,6 +326,49 @@ Supporting folders (not under `components/`):
 - [x] `deploy-pages.yml` triggers on `main` push (not `workflow_run`)
 - [x] Split permissions: build job `contents: read`; deploy job `pages: write` + `id-token: write`
 - [x] `ci.yml` runs on pull requests only (`pnpm check`)
+
+---
+
+## 30. Empty workspace — Done
+
+- [x] `EmptyWorkspace` — welcome blurb, Drama icon, **New show** button, footer pinned to bottom
+- [x] `createInitialState()` and invalid persist fallback → zero shows (`createEmptyWorkspaceSlice`)
+- [x] `AppShell` — roster/lineup only when `hasSavedShows`; header adapts (app title + Drama when empty)
+- [x] Print preview toggle hidden until a show exists
+
+---
+
+## 31. Duplicate show + duplicate scene — Done
+
+- [x] `duplicateShow` store action — clones roster, lineup, metadata; “(copy)” name suffix; switches to new show
+- [x] `DuplicateShowDialog` + copy button on each row in `ShowSwitcher`
+- [x] `duplicateScene` store action — inserts copy after source scene; no confirmation
+- [x] Scene card dropdown **Duplicate** item
+- [x] `cloneShowRecord`, `cloneScene`, `formatDuplicateShowName`, `formatDuplicateSceneName` in `lib/`
+
+---
+
+## 32. Delete last show — Done
+
+- [x] `deleteShow` returns `createEmptyWorkspaceSlice()` when the last show is removed
+- [x] `DeleteShowDialog` special copy for last show (`deleteLastDescription`)
+- [x] Delete from show switcher and from **Show details** dialog footer
+
+---
+
+## 33. UI icons + Drama branding — Done
+
+- [x] Lucide icons on panel headings, form labels (`FieldLabel`), dialogs, and action buttons (add/save/delete/duplicate/share)
+- [x] Drama icon in empty-state header, welcome blurb (`EmptyMedia`), and footer
+- [x] `public/favicon.svg` — Drama motif; `pnpm generate:pwa-assets` for ICO/PNG/PWA icons
+
+---
+
+## 34. PWA deploy refresh — Done
+
+- [x] Workbox: no precached `index.html`; `navigateFallback: null`
+- [x] NetworkFirst runtime cache for HTML navigations
+- [x] `register-service-worker.ts` — check for SW updates on tab visibility
 
 ---
 

@@ -6,17 +6,20 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 
 ## Features
 
-- **Multi-show workspace** — create, switch, and delete saved shows in `localStorage` (grouped upcoming vs past by date)
-- **Show details** — name, date, optional time and venue in one dialog (header edit button); included on print and in share links
+- **Empty workspace** — first visit starts with no shows; welcome blurb and **New show** to begin; deleting the last show returns here
+- **Multi-show workspace** — create, switch, duplicate, and delete saved shows in `localStorage` (grouped upcoming vs past by date)
+- **Show details** — name, date, optional time and venue in one dialog (header edit button); delete show from the same dialog; included on print and in share links
+- **Duplicate** — copy a show (confirmed) or a scene (from the scene menu, placed after the original)
 - **Roster** — add, rename, mark absent, soft-delete with assignment choices; alphabetized list (present first, then absent)
 - **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile
 - **Share** — copy or native-share a link to the current show; open a link to import (deduped by content fingerprint)
-- **Print** — show title, date/time, venue, and lineup on the cast sheet; on-screen print preview; fit-to-page scaling
+- **Print** — show title, date/time, venue, and lineup on the cast sheet; on-screen print preview (hidden when no shows); fit-to-page scaling
 - **Theme** — light, dark, or system
-- **PWA** — installable; works offline after first load (show data stays in `localStorage`); update toast after deploys
+- **PWA** — installable; works offline after first load (show data stays in `localStorage`); update toast after deploys; HTML fetched from network first so deploys show on the next refresh
 - **Privacy** — share confirmation and footer privacy note (local storage, share URLs, hosting)
 - **Accessibility** — skip links, landmarks, screen-reader live announcements, keyboard paths for cast/reorder/print, ESLint `jsx-a11y`
 - **i18n** — UI strings in `src/locales/en.json` (i18next + ICU; English only for now)
+- **Branding** — Lucide **Drama** icon in the header (empty state), welcome blurb, and footer; PWA/favicon assets generated from `public/favicon.svg`
 
 ## Requirements
 

@@ -81,7 +81,7 @@ export interface WorkspacePersistedState {
 }
 ```
 
-Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowDetails`, `createShow`, `switchShow`, `deleteShow`, and `importSharedShow`.
+Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowDetails`, `createShow`, `duplicateShow`, `duplicateScene`, `switchShow`, `deleteShow`, and `importSharedShow`.
 
 ### ID generation & deduping
 
@@ -98,16 +98,24 @@ Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowDet
 
 ## 4. UI Layout & Architecture
 
-Desktop: two-column layout with header and footer. Mobile: stacked columns; assignment via dropdowns/selects per slot (see §8).
+Desktop: two-column layout with header and footer when at least one show exists. Mobile: stacked columns; assignment via dropdowns/selects per slot (see §8). With **no saved shows**, the main area is a dedicated empty workspace (welcome copy, **New show** button, footer pinned to the bottom).
+
+### Empty workspace
+
+- Shown on first visit and after deleting the last show.
+- Header shows the app title with a **Drama** icon (no show switcher or share controls).
+- Print preview toggle is hidden until a show exists.
+- **New show** creates the first saved show and switches to the normal two-column layout.
 
 ### Header
 
-- **Show switcher** — dropdown of saved shows (upcoming vs past sections); create and delete shows; menu labels include date/time/venue when set
-- **Edit show details** — dialog for `showName`, `showDate`, optional `showTime` and `showVenue` (explicit Save/Cancel; scrollable on small viewports)
+- **Show switcher** — dropdown of saved shows (upcoming vs past sections); create, duplicate, and delete shows; menu labels include date/time/venue when set
+- **Edit show details** — dialog for `showName`, `showDate`, optional `showTime` and `showVenue` (explicit Save/Cancel; **Delete show** in footer; scrollable on small viewports)
 - **Share show** — copy or native-share a URL encoding the current show (`?show=`); privacy confirmation on first use
 - **Theme toggle** — light / dark / system (separate `localStorage` key)
-- **Print preview** — on-screen WYSIWYG before printing
+- **Print preview** — on-screen WYSIWYG before printing (hidden when no shows)
 - **Tooltips** — on icon-only controls (hover/focus labels)
+- **Icons** — Lucide icons on panel headings, form labels, and common actions (add, save, delete, duplicate, share, etc.)
 
 ### Left Column: The Roster
 
@@ -120,12 +128,12 @@ Desktop: two-column layout with header and footer. Mobile: stacked columns; assi
 ### Right Column: The Lineup
 
 - Quick-add scenes; sortable scene cards (`@dnd-kit/sortable`).
-- Per card: editable scene name, remove scene (confirmed), drag handle, host zone (max 1), players zone (append-only, deduped), **all play** toggle.
+- Per card: editable scene name, remove scene (confirmed), duplicate scene (no confirm; copy inserted after original), drag handle, host zone (max 1), players zone (append-only, deduped), **all play** toggle.
 - Slot remove (`X`) does not require confirmation.
 
 ### Footer
 
-- Author credit, GitHub feedback link, short GPL-2.0 summary, **Privacy** link
+- **Drama** icon beside author credit, GitHub feedback link, short GPL-2.0 summary, **Privacy** link
 - Hidden when printing and in print preview mode
 
 ### App-level providers
@@ -192,8 +200,10 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 ### Multi-show workspace
 
 - Up to 32 saved shows; each holds its own roster, lineup, and show metadata.
+- **First visit** (or invalid/corrupt saved data with no recoverable shows): empty workspace with zero shows — user creates the first show explicitly.
 - Switching shows updates the active slice in the store; `localStorage` persists the full workspace.
-- Delete show is confirmed; cannot delete the last remaining show.
+- **Duplicate show** is confirmed; copies roster, lineup, and metadata with a “(copy)” suffix on the name; switches to the new show.
+- **Delete show** is confirmed; deleting the **last** show returns to the empty workspace (special confirmation copy).
 - Show switcher lists upcoming shows (date ≥ today) and past shows separately, sorted by date then name.
 
 ### Show sharing
@@ -207,9 +217,12 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 
 ### PWA
 
-- Installable; static assets cached after first load via service worker.
+- Installable; hashed JS/CSS and static assets cached after first load via service worker.
+- **HTML navigations** use NetworkFirst (not precached `index.html`) so deploys are visible on the next refresh.
+- Service worker checks for updates when the tab becomes visible again.
 - Show data remains in `localStorage` only (not uploaded).
 - When a new app version is deployed, a toast offers **Refresh** to activate the updated service worker.
+- App icon / favicon: Lucide **Drama** motif; regenerate PNG/ICO assets with `pnpm generate:pwa-assets` from `public/favicon.svg`.
 
 ### Confirmations
 
@@ -217,12 +230,13 @@ Use shadcn `AlertDialog` for:
 
 - Delete person (mode choice)
 - Delete scene
-- Delete show
+- Delete show (including last show → empty workspace)
+- Duplicate show
 - Mark person absent
 - Switch scene to all play (when players are assigned)
 - Share show (first time only; skippable via `localStorage`)
 
-No confirmation for: clearing absent, removing a slot (`X`), rename.
+No confirmation for: clearing absent, removing a slot (`X`), rename, duplicate scene.
 
 ## 6. Export & Print
 
@@ -240,7 +254,7 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 - **Storage key:** `improv-running-order`
 - **Version:** `PERSIST_VERSION` in `migrate-persisted-state.ts` (currently `2` — adds `showVenue`, `showTime`); Zustand `migrate` hook normalizes on load
 - **Persisted shape:** `{ activeShowId, shows[] }` — not the flat single-show shape
-- **Hydration:** `hydrate-persisted-state.ts` normalizes and sanitizes on load; invalid data falls back to one empty show
+- **Hydration:** `hydrate-persisted-state.ts` normalizes and sanitizes on load; invalid data or an empty `shows[]` array falls back to an **empty workspace** (no auto-created show)
 - **Input limits:** caps on persons, scenes, shows, name lengths, and IDs; sanitization strips control characters and drops invalid cross-references (defense against hand-edited `localStorage`)
 - **Share links:** user-initiated; data is encoded in the URL, not stored on a server by this app. GitHub Pages may log HTTP access metadata.
 
@@ -290,8 +304,9 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 | Drag while absent         | Not allowed                                             |
 | Roster sort               | Present A–Z, then absent A–Z                            |
 | Roster CRUD               | Add, rename, delete (with mode choice)                  |
-| Scene CRUD                | Add, rename, remove                                     |
-| Multi-show workspace      | Up to 32 shows; switch/create/delete                    |
+| Scene CRUD                | Add, rename, duplicate, remove                          |
+| Multi-show workspace      | Up to 32 shows; switch/create/duplicate/delete          |
+| Empty workspace           | Default first view; last show delete returns here       |
 | Show metadata             | Name, ISO date, optional time (`HH:mm`) and venue       |
 | Warning slot visuals      | Same for absent and deleted-from-roster                 |
 | Player order              | Append-only                                             |
