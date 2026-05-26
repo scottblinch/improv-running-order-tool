@@ -128,8 +128,8 @@
   },
   "privacy": {
     "title": "Privacy",
-    "localStorage": "Show data is stored only in your browser. This app does not upload your shows to a server or create accounts.",
-    "shareLinks": "When you share a show, performer names and cast assignments are encoded in the link. Anyone with that link can open the show. Only share links with people who should see that information.",
+    "localStorage": "Show data is stored only in your browser. This app does not upload your shows to a server or create accounts. There is no cloud backup—clearing site data, uninstalling the app, or using a different browser or device will remove your saved shows.",
+    "shareLinks": "When you share a show, performer names and cast assignments are encoded in the link. Anyone with that link can open the show. Only share links with people who should see that information. Shared links always show the generic app title in chat previews, not the show name.",
     "hosting": "This site is hosted on GitHub Pages. GitHub may log basic access data (such as IP address and requested URL) as part of normal web hosting.",
     "close": "Close"
   },
@@ -150,7 +150,7 @@
     "deleteLastDescription": "This is your last saved show. Deleting it clears the workspace until you create a new show.",
     "emptyTitle": "No shows yet",
     "emptyDescription": "Create a show to get started.",
-    "emptyBlurb": "Build your roster, plan scenes, assign hosts and players, then print or share a cast sheet. Everything stays in your browser—no account needed.",
+    "emptyBlurb": "Build your roster, plan scenes, assign hosts and players, then print or share a cast sheet. Everything stays in your browser—no account and no cloud backup.",
     "savedShows": "Saved shows",
     "upcomingShows": "Upcoming shows",
     "pastShows": "Past shows"

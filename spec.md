@@ -153,6 +153,9 @@ Desktop: two-column layout with header and footer when at least one show exists.
 
 ### Mobile
 
+- Roster and lineup stack vertically with **one page scroll** (not separate panel scroll areas).
+- **Collapsible panels** — each section heading is the expand/collapse control; headers stick to the top of the scroll area while scrolling.
+- Footer sits **outside** the lineup collapsible; inside the lineup column’s scroll area on desktop.
 - Assign host/players via shadcn `Select` (or similar) per slot instead of cross-column drag.
 - Scene reorder via up/down buttons; sortable DnD at `md+` only.
 
@@ -212,7 +215,7 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 - **Import:** opening a share link on load imports the show into the workspace (or switches to an existing show with the same content fingerprint).
 - **Dedup:** `shareKey` (16-char hex hash of canonical show content) prevents duplicate imports when the same link is opened again.
 - **Limits:** share param max length; workspace max 32 shows — failures surface via dialog or toast.
-- **Privacy:** confirmation before first share explains that performer names are in the URL; optional “Don’t show again”. Footer **Privacy** dialog describes local storage, share links, and GitHub Pages hosting logs.
+- **Privacy:** confirmation before first share explains that performer names are in the URL; optional “Don’t show again”. Footer **Privacy** dialog describes local storage, data loss when clearing site data, share links (including generic chat previews), and GitHub Pages hosting logs.
 - **Feedback:** Sonner toast on successful share/copy/import; errors via toast (share) or dialog (invalid link, workspace full).
 
 ### PWA
@@ -223,7 +226,8 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 - Show data remains in `localStorage` only (not uploaded).
 - When a new app version is deployed, a toast offers **Refresh** to activate the updated service worker.
 - App icon / favicon: Lucide **Drama** motif; regenerate PNG/ICO assets with `pnpm generate:pwa-assets` from `public/favicon.svg`.
-- **Link previews:** Open Graph and Twitter Card meta tags (injected at build/dev via `vite-social-meta.ts`); `public/og-image.png` (512×512 drama icon) generated from `public/favicon.svg` with `pnpm generate:og-image`. Twitter uses the `summary` card (small square thumbnail beside title/description).
+- **Link previews:** Open Graph and Twitter Card meta tags (injected at build/dev via `vite-social-meta.ts` from `site-metadata.ts`); `public/og-image.png` (512×512 drama icon) generated from `public/favicon.svg` with `pnpm generate:og-image`. Twitter uses the `summary` card. Shared show URLs always preview as the generic app — not the show name.
+- **`public/robots.txt`** allows all crawlers.
 
 ### Confirmations
 

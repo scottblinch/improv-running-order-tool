@@ -11,12 +11,12 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 - **Show details** — name, date, optional time and venue in one dialog (header edit button); delete show from the same dialog; included on print and in share links
 - **Duplicate** — copy a show (confirmed) or a scene (from the scene menu, placed after the original)
 - **Roster** — add, rename, mark absent, soft-delete with assignment choices; alphabetized list (present first, then absent)
-- **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile
-- **Share** — copy or native-share a link to the current show; open a link to import (deduped by content fingerprint)
+- **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile; on mobile, roster and lineup are **collapsible** with sticky section headers and one page scroll
+- **Share** — copy or native-share a link to the current show; open a link to import (deduped by content fingerprint). Chat apps show the generic app preview, not the show name
 - **Print** — show title, date/time, venue, and lineup on the cast sheet; on-screen print preview (hidden when no shows); fit-to-page scaling
 - **Theme** — light, dark, or system
 - **PWA** — installable; works offline after first load (show data stays in `localStorage`); update toast after deploys; HTML fetched from network first so deploys show on the next refresh
-- **Privacy** — share confirmation and footer privacy note (local storage, share URLs, hosting)
+- **Privacy** — share confirmation and footer privacy note (local storage, no cloud backup, share URLs, hosting)
 - **Accessibility** — skip links, landmarks, screen-reader live announcements, keyboard paths for cast/reorder/print, ESLint `jsx-a11y`
 - **i18n** — UI strings in `src/locales/en.json` (i18next + ICU; English only for now)
 - **Branding** — Lucide **Drama** icon in the header (empty state), welcome blurb, and footer; PWA/favicon assets generated from `public/favicon.svg`; Open Graph / Twitter Card meta for link previews (512×512 icon thumbnail)
@@ -64,7 +64,13 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg`              |
 | `pnpm generate:og-image`   | Regenerate `public/og-image.png` from `public/favicon.svg`  |
 
-Pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`). Pushes to `main` run [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) separately (`pnpm check:pages`, then GitHub Pages deploy) with split job permissions.
+When you change `public/favicon.svg`, regenerate icons manually:
+
+```bash
+pnpm generate:pwa-assets && pnpm generate:og-image
+```
+
+Pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check:pages` — same build as deploy). Pushes to `main` run [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) separately (`pnpm check:pages`, then GitHub Pages deploy) with split job permissions.
 
 Local commits run [`check:precommit`](package.json) via [Husky](.husky/pre-commit) (lint, format check, tests — no build or audit).
 
@@ -72,7 +78,11 @@ Local commits run [`check:precommit`](package.json) via [Husky](.husky/pre-commi
 
 Vitest runs in `src/**/*.test.{ts,tsx}`. Component tests use jsdom; [`src/test/setup.ts`](src/test/setup.ts) mocks `localStorage` for Zustand persist.
 
-[`src/a11y-smoke.test.tsx`](src/a11y-smoke.test.tsx) runs [axe-core](https://github.com/dequelabs/axe-core) smoke checks on key UI (forms, dialogs, roster/lineup controls, cast slots in light and dark). [`src/test/vitest-axe.d.ts`](src/test/vitest-axe.d.ts) augments Vitest matchers for `tsc -b`.
+[`src/a11y-smoke.test.tsx`](src/a11y-smoke.test.tsx) runs [axe-core](https://github.com/dequelabs/axe-core) smoke checks on key UI (forms, dialogs, empty workspace, collapsible panels, roster/lineup controls, cast slots in light and dark). [`src/test/vitest-axe.d.ts`](src/test/vitest-axe.d.ts) augments Vitest matchers for `tsc -b`.
+
+Site title and description live in [`site-metadata.ts`](site-metadata.ts) and feed the HTML meta tags, Open Graph tags, and PWA manifest at build time.
+
+Production JS is ~240 KB gzipped (single bundle). No server round-trips after load; acceptable for a client-side tool.
 
 ## Deploy
 

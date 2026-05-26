@@ -1,7 +1,7 @@
 {
   "name": "improv-running-order-tool",
   "version": "1.0.0",
-  "description": "A simple improv running order tool",
+  "description": "Build and manage improv show lineups, cast assignments, and print-ready show sheets. Client-side only; data stays in your browser.",
   "type": "module",
   "private": true,
   "packageManager": "pnpm@11.3.0",

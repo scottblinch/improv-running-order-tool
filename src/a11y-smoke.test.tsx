@@ -4,14 +4,18 @@ import '@/i18n';
 import '@/index.css';
 
 import { render } from '@testing-library/react';
-import { Clapperboard } from 'lucide-react';
+import { Clapperboard, Users } from 'lucide-react';
 import type React from 'react';
 import { axe } from 'vitest-axe';
 import { describe, expect, it } from 'vitest';
 
 import { DeletePersonDialog } from '@/components/roster/DeletePersonDialog';
 import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
+import { DuplicateShowDialog } from '@/components/layout/DuplicateShowDialog';
+import { EmptyWorkspace } from '@/components/layout/EmptyWorkspace';
+import { MobileCollapsiblePanel } from '@/components/layout/MobileCollapsiblePanel';
 import { ShareConfirmDialog } from '@/components/layout/ShareConfirmDialog';
+import { ShowDetailsDialog } from '@/components/layout/ShowDetailsDialog';
 import { SkipLink } from '@/components/layout/SkipLink';
 import { DesktopDndProvider } from '@/components/dnd/desktop-dnd-context';
 import { DragPreviewChip } from '@/components/dnd/DragPreviewChip';
@@ -23,6 +27,8 @@ import { CastSlot } from '@/components/shared/CastSlot';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { RenameDialog } from '@/components/shared/RenameDialog';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { ROSTER_HEADING_ID } from '@/lib/a11y-ids';
+import { EMPTY_ACTIVE_SHOW_ID } from '@/lib/show-workspace';
 import { useAppStore } from '@/store/useAppStore';
 import type { Person } from '@/types/app';
 
@@ -76,6 +82,25 @@ describe('accessibility smoke tests', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
+  it('EmptyWorkspace has no axe violations', async () => {
+    useAppStore.setState({ shows: [], activeShowId: EMPTY_ACTIVE_SHOW_ID });
+    const { container } = renderWithUiProviders(<EmptyWorkspace />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('MobileCollapsiblePanel has no axe violations when open', async () => {
+    const { container } = renderWithUiProviders(
+      <MobileCollapsiblePanel
+        headingId={ROSTER_HEADING_ID}
+        title="Roster"
+        icon={Users}
+      >
+        <p>Panel content</p>
+      </MobileCollapsiblePanel>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
   it('RenameDialog has no axe violations when open', async () => {
     const { container } = render(
       <RenameDialog
@@ -100,6 +125,38 @@ describe('accessibility smoke tests', () => {
         onOpenChange={() => undefined}
         label="Friday Show"
         onConfirm={() => undefined}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('DuplicateShowDialog has no axe violations when open', async () => {
+    const { container } = render(
+      <DuplicateShowDialog
+        open
+        onOpenChange={() => undefined}
+        label="Friday Show"
+        onConfirm={() => undefined}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('ShowDetailsDialog has no axe violations when open', async () => {
+    const { container } = render(
+      <ShowDetailsDialog
+        open
+        onOpenChange={() => undefined}
+        details={{
+          showName: 'Friday Show',
+          showDate: '2025-06-01',
+          showVenue: 'Main Stage',
+          showTime: '19:30',
+        }}
+        showLabel="Friday Show — Jun 1"
+        isLastShow={false}
+        onConfirm={() => undefined}
+        onDelete={() => undefined}
       />,
     );
     expect(await axe(container)).toHaveNoViolations();

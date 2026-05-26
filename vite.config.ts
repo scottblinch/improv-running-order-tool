@@ -10,6 +10,7 @@ import { browserslistToTargets } from 'lightningcss';
 import { VitePWA } from 'vite-plugin-pwa';
 
 import { socialMetaPlugin } from './vite-social-meta';
+import { PWA_SHORT_NAME, SITE_DESCRIPTION, SITE_TITLE } from './site-metadata';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -95,10 +96,9 @@ export default defineConfig({
         'og-image.png',
       ],
       manifest: {
-        name: "Scott's Improv Running Order Tool",
-        short_name: 'Improv Shows',
-        description:
-          'Build and manage improv show lineups and cast assignments.',
+        name: SITE_TITLE,
+        short_name: PWA_SHORT_NAME,
+        description: SITE_DESCRIPTION,
         theme_color: '#f4f4f5',
         background_color: '#ffffff',
         display: 'standalone',

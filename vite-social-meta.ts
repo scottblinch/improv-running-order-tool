@@ -1,16 +1,16 @@
 import type { Plugin } from 'vite';
 
-const SITE_TITLE = "Scott's Improv Running Order Tool";
-const SITE_DESCRIPTION =
-  'Build and manage improv show lineups and cast assignments.';
-const SITE_AUTHOR = 'Scott Blinch';
-const OG_IMAGE_ALT = 'Drama masks app icon';
-const OG_IMAGE_WIDTH = 512;
-const OG_IMAGE_HEIGHT = 512;
-const OG_LOCALE = 'en_US';
-
-const DEFAULT_SITE_URL =
-  'https://scottblinch.github.io/improv-running-order-tool';
+import {
+  DEFAULT_SITE_URL,
+  OG_IMAGE_ALT,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
+  OG_LOCALE,
+  PWA_SHORT_NAME,
+  SITE_AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+} from './site-metadata';
 
 function resolveSiteUrl(): string {
   return (process.env.SITE_URL ?? DEFAULT_SITE_URL).replace(/\/$/, '');
@@ -48,14 +48,11 @@ export function socialMetaPlugin(): Plugin {
   return {
     name: 'social-meta',
     transformIndexHtml(html) {
-      return html.replace('<!--vite-social-meta-->', tags);
+      return html
+        .replace('<!--vite-social-meta-->', tags)
+        .replaceAll('<!--vite-site-description-->', SITE_DESCRIPTION)
+        .replaceAll('<!--vite-site-title-->', SITE_TITLE)
+        .replaceAll('<!--vite-pwa-short-name-->', PWA_SHORT_NAME);
     },
   };
 }
-
-export const socialMetaConstants = {
-  SITE_TITLE,
-  SITE_DESCRIPTION,
-  SITE_AUTHOR,
-  OG_IMAGE_ALT,
-} as const;

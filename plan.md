@@ -72,6 +72,8 @@ Supporting folders (not under `components/`):
 | 32   | Delete last show → empty workspace            | Done   |
 | 33   | UI icons + Drama branding                     | Done   |
 | 34   | PWA deploy refresh (NetworkFirst HTML)        | Done   |
+| 35   | Mobile collapsible panels + sticky headers    | Done   |
+| 36   | Launch hardening (CI, privacy, metadata)      | Done   |
 
 ---
 
@@ -369,6 +371,27 @@ Supporting folders (not under `components/`):
 - [x] Workbox: no precached `index.html`; `navigateFallback: null`
 - [x] NetworkFirst runtime cache for HTML navigations
 - [x] `register-service-worker.ts` — check for SW updates on tab visibility
+
+---
+
+## 35. Mobile collapsible panels — Done
+
+- [x] `MobileCollapsiblePanel` — full-width heading trigger, chevron, sticky headers on mobile
+- [x] Single page scroll on mobile; independent column scroll at `md+`
+- [x] Footer outside lineup collapsible on mobile; inside lineup scroll on desktop
+- [x] `Collapsible` UI primitive (Radix)
+
+---
+
+## 36. Launch hardening — Done
+
+- [x] CI PR checks use `check:pages` (same build as deploy)
+- [x] Store tests for create/duplicate/delete show and duplicate scene
+- [x] Privacy copy: no cloud backup, generic share link previews
+- [x] `site-metadata.ts` — single source for title, description, PWA manifest
+- [x] Single `PrivacyDialog` in `App.tsx`; footer links only in `AppFooter`
+- [x] `public/robots.txt`; axe smoke for key dialogs and empty workspace
+- [x] Expanded a11y smoke coverage
 
 ---
 

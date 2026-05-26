@@ -36,7 +36,6 @@ export function MobileCollapsiblePanel({
   const isDesktop = useIsDesktopDnd();
   const [mobileOpen, setMobileOpen] = useState(defaultOpen);
   const open = isDesktop || mobileOpen;
-  const contentId = `${headingId}-content`;
 
   return (
     <Collapsible
@@ -82,7 +81,6 @@ export function MobileCollapsiblePanel({
         ) : null}
       </div>
       <CollapsibleContent
-        id={contentId}
         className={cn(
           'px-4 pb-4 md:min-h-0 md:flex-1 md:overflow-y-auto',
           contentClassName,
