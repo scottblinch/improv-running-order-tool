@@ -1,3 +1,4 @@
+import { Drama } from 'lucide-react';
 import { useState } from 'react';
 
 import { PrivacyDialog } from '@/components/layout/PrivacyDialog';
@@ -20,48 +21,51 @@ export function AppFooter() {
   return (
     <>
       <footer className="border-t pt-4 print:hidden">
-        <p className="text-center text-xs text-muted-foreground">
-          <Trans
-            i18nKey="footer.credit"
-            components={{
-              authorLink: (
-                <a
-                  href={AUTHOR_WEBSITE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={linkClassName}
-                  aria-label={t('footer.authorLinkAria')}
-                />
-              ),
-              githubLink: (
-                <a
-                  href={GITHUB_FEEDBACK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={linkClassName}
-                  aria-label={t('footer.githubLinkAria')}
-                />
-              ),
-              licenseLink: (
-                <a
-                  href={LICENSE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={linkClassName}
-                  aria-label={t('footer.licenseLinkAria')}
-                />
-              ),
-              privacyLink: (
-                <button
-                  type="button"
-                  onClick={() => setPrivacyOpen(true)}
-                  className={inlineLinkButtonClassName}
-                  aria-label={t('footer.privacyLinkAria')}
-                />
-              ),
-            }}
-          />
-        </p>
+        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+          <Drama aria-hidden className="size-3.5 shrink-0 opacity-70" />
+          <p className="text-center">
+            <Trans
+              i18nKey="footer.credit"
+              components={{
+                authorLink: (
+                  <a
+                    href={AUTHOR_WEBSITE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={linkClassName}
+                    aria-label={t('footer.authorLinkAria')}
+                  />
+                ),
+                githubLink: (
+                  <a
+                    href={GITHUB_FEEDBACK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={linkClassName}
+                    aria-label={t('footer.githubLinkAria')}
+                  />
+                ),
+                licenseLink: (
+                  <a
+                    href={LICENSE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={linkClassName}
+                    aria-label={t('footer.licenseLinkAria')}
+                  />
+                ),
+                privacyLink: (
+                  <button
+                    type="button"
+                    onClick={() => setPrivacyOpen(true)}
+                    className={inlineLinkButtonClassName}
+                    aria-label={t('footer.privacyLinkAria')}
+                  />
+                ),
+              }}
+            />
+          </p>
+        </div>
       </footer>
 
       <PrivacyDialog open={privacyOpen} onOpenChange={setPrivacyOpen} />
