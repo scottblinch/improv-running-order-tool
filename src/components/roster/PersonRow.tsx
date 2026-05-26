@@ -147,34 +147,41 @@ export function PersonRow({ person }: PersonRowProps) {
             >
               {person.name}
             </span>
-            <Badge
-              variant="host"
-              className="shrink-0"
-              title={formatRoleBadgeTooltip('host', person.name, hostCount)}
-              aria-label={formatRoleCountLabel('host', hostCount)}
-            >
-              <Mic2 aria-hidden className="size-3" />
-              {hostCount}
-            </Badge>
-            <Badge
-              variant="player"
-              className="shrink-0"
-              title={formatRoleBadgeTooltip('player', person.name, playerCount)}
-              aria-label={formatRoleCountLabel('player', playerCount)}
-            >
-              {playerCount === 0 ? (
-                <TriangleAlert aria-hidden className="size-3" />
-              ) : (
-                <Users aria-hidden className="size-3" />
-              )}
-              {playerCount}
-            </Badge>
             {person.isAbsent ? (
               <Badge variant="destructive" className="shrink-0">
                 <UserX aria-hidden className="size-3" />
                 {t('roster.absent')}
               </Badge>
-            ) : null}
+            ) : (
+              <>
+                <Badge
+                  variant="host"
+                  className="shrink-0"
+                  title={formatRoleBadgeTooltip('host', person.name, hostCount)}
+                  aria-label={formatRoleCountLabel('host', hostCount)}
+                >
+                  <Mic2 aria-hidden className="size-3" />
+                  {hostCount}
+                </Badge>
+                <Badge
+                  variant="player"
+                  className="shrink-0"
+                  title={formatRoleBadgeTooltip(
+                    'player',
+                    person.name,
+                    playerCount,
+                  )}
+                  aria-label={formatRoleCountLabel('player', playerCount)}
+                >
+                  {playerCount === 0 ? (
+                    <TriangleAlert aria-hidden className="size-3" />
+                  ) : (
+                    <Users aria-hidden className="size-3" />
+                  )}
+                  {playerCount}
+                </Badge>
+              </>
+            )}
           </div>
         </div>
 
