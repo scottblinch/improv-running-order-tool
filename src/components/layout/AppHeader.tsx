@@ -74,7 +74,7 @@ export function AppHeader() {
           className={cn('flex items-center gap-2', printPreview && 'ml-auto')}
         >
           {!printPreview && <ThemeToggle />}
-          <PrintPreviewToggle />
+          {hasShows || printPreview ? <PrintPreviewToggle /> : null}
         </div>
       </header>
 
