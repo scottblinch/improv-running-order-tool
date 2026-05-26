@@ -1,3 +1,4 @@
+import { AlertCircle, FolderOpen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -9,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { processShareImportFromLocation } from '@/lib/import-shared-show';
 import { showShareImportSuccess } from '@/lib/show-share-feedback';
 import { useTranslation } from '@/i18n';
@@ -37,9 +39,11 @@ export function ImportSharedShowDialog() {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {error === 'full'
-              ? t('share.importFullTitle')
-              : t('share.importInvalidTitle')}
+            <TitleWithIcon icon={error === 'full' ? FolderOpen : AlertCircle}>
+              {error === 'full'
+                ? t('share.importFullTitle')
+                : t('share.importInvalidTitle')}
+            </TitleWithIcon>
           </AlertDialogTitle>
           <AlertDialogDescription>
             {error === 'full'

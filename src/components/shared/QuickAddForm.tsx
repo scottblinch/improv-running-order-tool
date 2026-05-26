@@ -1,3 +1,4 @@
+import { Plus, type LucideIcon } from 'lucide-react';
 import { type FormEvent, useId, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ type QuickAddFormProps = {
   requiredMessage: string;
   announceKey: string;
   onAdd: (name: string) => void;
+  addIcon?: LucideIcon;
 };
 
 export function QuickAddForm({
@@ -21,6 +23,7 @@ export function QuickAddForm({
   requiredMessage,
   announceKey,
   onAdd,
+  addIcon: AddIcon = Plus,
 }: QuickAddFormProps) {
   const { t } = useTranslation();
   const announceA11y = useA11yAnnounce();
@@ -72,6 +75,7 @@ export function QuickAddForm({
           onInput={() => setError(null)}
         />
         <Button type="submit" className="shrink-0">
+          <AddIcon aria-hidden className="size-4" />
           {t('common.add')}
         </Button>
       </div>

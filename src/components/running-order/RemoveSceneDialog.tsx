@@ -1,3 +1,5 @@
+import { Trash2 } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 
 type RemoveSceneDialogProps = {
@@ -30,7 +33,9 @@ export function RemoveSceneDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {t('lineup.removeTitle', { name: sceneName })}
+            <TitleWithIcon icon={Trash2}>
+              {t('lineup.removeTitle', { name: sceneName })}
+            </TitleWithIcon>
           </AlertDialogTitle>
           <AlertDialogDescription>
             {t('lineup.removeDescription')}

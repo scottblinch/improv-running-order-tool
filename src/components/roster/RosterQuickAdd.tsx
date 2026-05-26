@@ -1,3 +1,5 @@
+import { UserPlus } from 'lucide-react';
+
 import { QuickAddForm } from '@/components/shared/QuickAddForm';
 import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
@@ -15,6 +17,7 @@ export function RosterQuickAdd() {
       requiredMessage={t('roster.performerNameRequired')}
       announceKey="a11y.addedPerformer"
       onAdd={addPerson}
+      addIcon={UserPlus}
     />
   );
 }

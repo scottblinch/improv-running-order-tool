@@ -1,3 +1,5 @@
+import { UserX } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 
 type MarkAbsentDialogProps = {
@@ -30,7 +33,9 @@ export function MarkAbsentDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {t('roster.markAbsentTitle', { name: personName })}
+            <TitleWithIcon icon={UserX}>
+              {t('roster.markAbsentTitle', { name: personName })}
+            </TitleWithIcon>
           </AlertDialogTitle>
           <AlertDialogDescription>
             {t('roster.markAbsentDescription')}

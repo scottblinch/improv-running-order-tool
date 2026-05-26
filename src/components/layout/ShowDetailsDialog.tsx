@@ -1,4 +1,11 @@
-import { CalendarIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  Check,
+  Clock,
+  MapPin,
+  Settings2,
+  Tag,
+} from 'lucide-react';
 import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
 import {
@@ -12,6 +19,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { FieldLabel } from '@/components/shared/FieldLabel';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { Input } from '@/components/ui/input';
 import {
   Popover,
@@ -87,8 +96,12 @@ function ShowDetailsForm({
   return (
     <form noValidate onSubmit={handleSubmit} className="flex flex-col">
       <div className="max-h-[calc(90dvh-4.5rem)] overflow-y-auto px-4 pt-4 pb-3">
-        <AlertDialogHeader className="pb-4">
-          <AlertDialogTitle>{t('show.detailsTitle')}</AlertDialogTitle>
+        <AlertDialogHeader className="pr-10 pb-4">
+          <AlertDialogTitle>
+            <TitleWithIcon icon={Settings2}>
+              {t('show.detailsTitle')}
+            </TitleWithIcon>
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {t('show.detailsDescription')}
           </AlertDialogDescription>
@@ -96,9 +109,9 @@ function ShowDetailsForm({
 
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <label htmlFor={nameId} className="text-sm font-medium">
+            <FieldLabel icon={Tag} htmlFor={nameId}>
               {t('show.showName')}
-            </label>
+            </FieldLabel>
             <Input
               ref={nameRef}
               id={nameId}
@@ -112,9 +125,9 @@ function ShowDetailsForm({
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor={venueId} className="text-sm font-medium">
+            <FieldLabel icon={MapPin} htmlFor={venueId}>
               {t('show.showVenue')}
-            </label>
+            </FieldLabel>
             <Input
               id={venueId}
               name="showVenue"
@@ -127,9 +140,9 @@ function ShowDetailsForm({
           </div>
 
           <div className="grid gap-2">
-            <span id={dateLabelId} className="text-sm font-medium">
+            <FieldLabel icon={CalendarIcon} as="span" id={dateLabelId}>
               {t('show.showDate')}
-            </span>
+            </FieldLabel>
             <Popover
               open={datePickerOpen}
               onOpenChange={setDatePickerOpen}
@@ -171,9 +184,9 @@ function ShowDetailsForm({
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor={timeId} className="text-sm font-medium">
+            <FieldLabel icon={Clock} htmlFor={timeId}>
               {t('show.showTime')}
-            </label>
+            </FieldLabel>
             <Input
               id={timeId}
               name="showTime"
@@ -189,7 +202,10 @@ function ShowDetailsForm({
         <AlertDialogCancel type="button">
           {t('common.cancel')}
         </AlertDialogCancel>
-        <Button type="submit">{t('common.save')}</Button>
+        <Button type="submit">
+          <Check aria-hidden className="size-4" />
+          {t('common.save')}
+        </Button>
       </AlertDialogFooter>
     </form>
   );

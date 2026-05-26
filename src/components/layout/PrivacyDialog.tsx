@@ -1,3 +1,5 @@
+import { Shield } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,6 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 
 type PrivacyDialogProps = {
@@ -21,7 +24,9 @@ export function PrivacyDialog({ open, onOpenChange }: PrivacyDialogProps) {
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('privacy.title')}</AlertDialogTitle>
+          <AlertDialogTitle>
+            <TitleWithIcon icon={Shield}>{t('privacy.title')}</TitleWithIcon>
+          </AlertDialogTitle>
           <AlertDialogDescription asChild>
             <div className="space-y-3 text-left">
               <p>{t('privacy.localStorage')}</p>

@@ -1,5 +1,12 @@
 import { useState, useId } from 'react';
-import { Check, ChevronDown, Plus, Trash2 } from 'lucide-react';
+import {
+  Check,
+  ChevronDown,
+  History,
+  Plus,
+  Sparkles,
+  Trash2,
+} from 'lucide-react';
 
 import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
@@ -159,14 +166,20 @@ export function ShowSwitcher() {
               label: currentMenuLabel,
             })}
           >
-            <span className="truncate">{currentLabel}</span>
+            <span className="flex min-w-0 flex-1 items-center gap-1.5 truncate">
+              <Sparkles aria-hidden className="size-3.5 shrink-0 opacity-70" />
+              {currentLabel}
+            </span>
             <ChevronDown aria-hidden className="size-4 shrink-0 opacity-60" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-72">
           {currentAndUpcoming.length > 0 ? (
             <>
-              <DropdownMenuLabel>{upcomingLabel}</DropdownMenuLabel>
+              <DropdownMenuLabel className="flex items-center gap-1.5">
+                <Sparkles aria-hidden className="size-3.5 opacity-60" />
+                {upcomingLabel}
+              </DropdownMenuLabel>
               {currentAndUpcoming.map((show) => (
                 <ShowMenuItem
                   key={show.id}
@@ -182,7 +195,10 @@ export function ShowSwitcher() {
           {hasPastSection ? (
             <>
               {currentAndUpcoming.length > 0 ? <DropdownMenuSeparator /> : null}
-              <DropdownMenuLabel>{t('workspace.pastShows')}</DropdownMenuLabel>
+              <DropdownMenuLabel className="flex items-center gap-1.5">
+                <History aria-hidden className="size-3.5 opacity-60" />
+                {t('workspace.pastShows')}
+              </DropdownMenuLabel>
               {past.map((show) => (
                 <ShowMenuItem
                   key={show.id}

@@ -1,3 +1,5 @@
+import { Clapperboard } from 'lucide-react';
+
 import { QuickAddForm } from '@/components/shared/QuickAddForm';
 import { useTranslation } from '@/i18n';
 import { INPUT_LIMITS } from '@/lib/input-security';
@@ -15,6 +17,7 @@ export function SceneQuickAdd() {
       requiredMessage={t('lineup.sceneNameRequired')}
       announceKey="a11y.addedScene"
       onAdd={addScene}
+      addIcon={Clapperboard}
     />
   );
 }

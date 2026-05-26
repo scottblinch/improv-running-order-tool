@@ -1,3 +1,5 @@
+import { Trash2 } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 
 type DeleteShowDialogProps = {
@@ -30,7 +33,9 @@ export function DeleteShowDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {t('workspace.deleteTitle', { label })}
+            <TitleWithIcon icon={Trash2}>
+              {t('workspace.deleteTitle', { label })}
+            </TitleWithIcon>
           </AlertDialogTitle>
           <AlertDialogDescription>
             {t('workspace.deleteDescription')}

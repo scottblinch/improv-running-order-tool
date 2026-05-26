@@ -1,3 +1,5 @@
+import { UserMinus } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 import type { DeletePersonMode } from '@/types/app';
 
@@ -45,7 +48,9 @@ export function DeletePersonDialog({
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {t('roster.deleteTitle', { name: personName })}
+            <TitleWithIcon icon={UserMinus}>
+              {t('roster.deleteTitle', { name: personName })}
+            </TitleWithIcon>
           </AlertDialogTitle>
           <AlertDialogDescription>
             {hasSceneAssignments

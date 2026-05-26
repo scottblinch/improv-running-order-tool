@@ -3,6 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
   GripVertical,
+  Mic2,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -182,16 +183,11 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-host-label`} className="sr-only">
               {t('common.host')}
             </span>
-            <span
+            <Mic2
               aria-hidden
               title={t('common.host')}
-              className={cn(
-                'w-4 shrink-0 text-xs font-medium',
-                castRoleLabelClasses('host'),
-              )}
-            >
-              H:
-            </span>
+              className={cn('size-3.5 shrink-0', castRoleLabelClasses('host'))}
+            />
             <HostCastControl scene={scene} />
           </div>
 
@@ -202,16 +198,14 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-players-label`} className="sr-only">
               {t('common.players')}
             </span>
-            <span
+            <Users
               aria-hidden
               title={t('common.players')}
               className={cn(
-                'w-4 shrink-0 text-xs font-medium',
+                'size-3.5 shrink-0',
                 castRoleLabelClasses('player'),
               )}
-            >
-              P:
-            </span>
+            />
             <PlayersCastControl scene={scene} />
           </div>
         </div>

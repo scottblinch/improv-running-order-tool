@@ -1,3 +1,4 @@
+import { Check, Pencil } from 'lucide-react';
 import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
 import {
@@ -11,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
 
@@ -97,7 +99,9 @@ function RenameDialogForm({
   return (
     <form noValidate onSubmit={handleSubmit}>
       <AlertDialogHeader>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogTitle>
+          <TitleWithIcon icon={Pencil}>{title}</TitleWithIcon>
+        </AlertDialogTitle>
         <AlertDialogDescription>{description}</AlertDialogDescription>
       </AlertDialogHeader>
       <div className="py-2">
@@ -131,7 +135,10 @@ function RenameDialogForm({
         <AlertDialogCancel type="button">
           {t('common.cancel')}
         </AlertDialogCancel>
-        <Button type="submit">{t('common.save')}</Button>
+        <Button type="submit">
+          <Check aria-hidden className="size-4" />
+          {t('common.save')}
+        </Button>
       </AlertDialogFooter>
     </form>
   );

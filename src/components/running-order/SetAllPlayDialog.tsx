@@ -1,3 +1,5 @@
+import { Users } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 
 type SetAllPlayDialogProps = {
@@ -31,7 +34,11 @@ export function SetAllPlayDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('lineup.allPlayTitle')}</AlertDialogTitle>
+          <AlertDialogTitle>
+            <TitleWithIcon icon={Users}>
+              {t('lineup.allPlayTitle')}
+            </TitleWithIcon>
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {t('lineup.allPlayDescription', {
               count: playerCount,

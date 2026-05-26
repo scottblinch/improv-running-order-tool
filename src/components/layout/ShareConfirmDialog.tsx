@@ -1,3 +1,4 @@
+import { Share2 } from 'lucide-react';
 import { useId, useState } from 'react';
 
 import {
@@ -10,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { setSkippedSharePrivacy } from '@/lib/share-show-action';
 import { useTranslation } from '@/i18n';
 
@@ -46,7 +48,11 @@ export function ShareConfirmDialog({
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('share.confirmTitle')}</AlertDialogTitle>
+          <AlertDialogTitle>
+            <TitleWithIcon icon={Share2}>
+              {t('share.confirmTitle')}
+            </TitleWithIcon>
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {t('share.confirmDescription')}
           </AlertDialogDescription>
@@ -69,6 +75,7 @@ export function ShareConfirmDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm}>
+            <Share2 aria-hidden className="size-4" />
             {t('share.confirmAction')}
           </AlertDialogAction>
         </AlertDialogFooter>

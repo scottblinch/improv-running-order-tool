@@ -6,6 +6,7 @@ import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPr
 import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useConcealedUntilPrint } from '@/hooks/useConcealedUntilPrint';
 import { useTranslation } from '@/i18n';
 import { SCENE_REORDER_HELP_ID, LINEUP_HEADING_ID } from '@/lib/a11y-ids';
@@ -34,8 +35,14 @@ export function RunningOrderPanel() {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
         <PanelShell>
           <div className="flex min-h-full flex-col gap-2">
-            <h2 id={LINEUP_HEADING_ID} tabIndex={-1} className="sr-only">
-              {t('lineup.heading')}
+            <h2
+              id={LINEUP_HEADING_ID}
+              tabIndex={-1}
+              className="text-sm font-semibold tracking-tight text-muted-foreground"
+            >
+              <TitleWithIcon icon={Clapperboard} iconClassName="size-4">
+                {t('lineup.heading')}
+              </TitleWithIcon>
             </h2>
             <p id={SCENE_REORDER_HELP_ID} className="sr-only">
               {t('lineup.reorderHelp')}

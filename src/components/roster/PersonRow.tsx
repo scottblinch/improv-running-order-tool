@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import {
   GripVertical,
+  Mic2,
   MoreHorizontal,
   Pencil,
   Trash2,
   TriangleAlert,
   UserCheck,
   UserX,
+  Users,
 } from 'lucide-react';
 
 import { useDesktopDndEnabled } from '@/components/dnd/desktop-dnd-context';
@@ -151,7 +153,8 @@ export function PersonRow({ person }: PersonRowProps) {
               title={formatRoleBadgeTooltip('host', person.name, hostCount)}
               aria-label={formatRoleCountLabel('host', hostCount)}
             >
-              H: {hostCount}
+              <Mic2 aria-hidden className="size-3" />
+              {hostCount}
             </Badge>
             <Badge
               variant="player"
@@ -161,11 +164,14 @@ export function PersonRow({ person }: PersonRowProps) {
             >
               {playerCount === 0 ? (
                 <TriangleAlert aria-hidden className="size-3" />
-              ) : null}
-              P: {playerCount}
+              ) : (
+                <Users aria-hidden className="size-3" />
+              )}
+              {playerCount}
             </Badge>
             {person.isAbsent ? (
               <Badge variant="destructive" className="shrink-0">
+                <UserX aria-hidden className="size-3" />
                 {t('roster.absent')}
               </Badge>
             ) : null}
