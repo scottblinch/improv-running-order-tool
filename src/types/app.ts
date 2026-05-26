@@ -24,7 +24,14 @@ export interface PersistedState {
   scenes: Scene[];
   showName: string;
   showDate: string;
+  showVenue: string;
+  showTime: string;
 }
+
+export type ShowDetails = Pick<
+  PersistedState,
+  'showName' | 'showDate' | 'showVenue' | 'showTime'
+>;
 
 export interface ShowRecord extends PersistedState {
   id: ShowId;

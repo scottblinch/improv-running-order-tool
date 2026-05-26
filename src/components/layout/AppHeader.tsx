@@ -1,16 +1,15 @@
-import { Pencil } from 'lucide-react';
+import { Settings2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { PrintPreviewToggle } from '@/components/layout/PrintPreviewToggle';
-import { RenameShowDialog } from '@/components/layout/RenameShowDialog';
 import { ShareShowButton } from '@/components/layout/ShareShowButton';
+import { ShowDetailsDialog } from '@/components/layout/ShowDetailsDialog';
 import { ShowSwitcher } from '@/components/layout/ShowSwitcher';
-import { ShowDatePicker } from '@/components/layout/ShowDatePicker';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { formatShowDisplayName } from '@/lib/show-date';
+import { formatShowMenuLabel } from '@/lib/show-workspace';
 import { useTranslation } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 import { usePrintPreviewStore } from '@/store/usePrintPreviewStore';
@@ -19,8 +18,17 @@ export function AppHeader() {
   const { t } = useTranslation();
   const printPreview = usePrintPreviewStore((state) => state.enabled);
   const showName = useAppStore((state) => state.showName);
-  const setShowName = useAppStore((state) => state.setShowName);
-  const [renameOpen, setRenameOpen] = useState(false);
+  const showDate = useAppStore((state) => state.showDate);
+  const showVenue = useAppStore((state) => state.showVenue);
+  const showTime = useAppStore((state) => state.showTime);
+  const setShowDetails = useAppStore((state) => state.setShowDetails);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const showLabel = formatShowMenuLabel(
+    showName,
+    showDate,
+    showVenue,
+    showTime,
+  );
 
   return (
     <>
@@ -32,21 +40,20 @@ export function AppHeader() {
       >
         {!printPreview ? (
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <h1 className="sr-only">{formatShowDisplayName(showName)}</h1>
+            <h1 className="sr-only">{showLabel}</h1>
             <ShowSwitcher />
-            <IconButtonTooltip label={t('header.renameShow')}>
+            <IconButtonTooltip label={t('header.editShowDetails')}>
               <Button
                 type="button"
                 variant="outline"
                 size="icon"
                 className="shrink-0"
-                aria-label={t('header.renameShow')}
-                onClick={() => setRenameOpen(true)}
+                aria-label={t('header.editShowDetails')}
+                onClick={() => setDetailsOpen(true)}
               >
-                <Pencil aria-hidden className="size-4" />
+                <Settings2 aria-hidden className="size-4" />
               </Button>
             </IconButtonTooltip>
-            <ShowDatePicker />
             <ShareShowButton />
           </div>
         ) : null}
@@ -58,11 +65,11 @@ export function AppHeader() {
         </div>
       </header>
 
-      <RenameShowDialog
-        open={renameOpen}
-        onOpenChange={setRenameOpen}
-        currentName={showName}
-        onConfirm={setShowName}
+      <ShowDetailsDialog
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        details={{ showName, showDate, showVenue, showTime }}
+        onConfirm={setShowDetails}
       />
     </>
   );

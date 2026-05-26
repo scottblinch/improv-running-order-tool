@@ -7,10 +7,11 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 ## Features
 
 - **Multi-show workspace** — create, switch, and delete saved shows in `localStorage` (grouped upcoming vs past by date)
+- **Show details** — name, date, optional time and venue in one dialog (header edit button); included on print and in share links
 - **Roster** — add, rename, mark absent, soft-delete with assignment choices; alphabetized list (present first, then absent)
 - **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile
 - **Share** — copy or native-share a link to the current show; open a link to import (deduped by content fingerprint)
-- **Print** — show title and date on the cast sheet; on-screen print preview; fit-to-page scaling
+- **Print** — show title, date/time, venue, and lineup on the cast sheet; on-screen print preview; fit-to-page scaling
 - **Theme** — light, dark, or system
 - **PWA** — installable; works offline after first load (show data stays in `localStorage`); update toast after deploys
 - **Privacy** — share confirmation and footer privacy note (local storage, share URLs, hosting)
@@ -59,7 +60,7 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | `pnpm format:check`        | Prettier check                                              |
 | `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg`              |
 
-Pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`).
+Pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`). Pushes to `main` run [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) separately (`pnpm check:pages`, then GitHub Pages deploy) with split job permissions.
 
 Local commits run [`check:precommit`](package.json) via [Husky](.husky/pre-commit) (lint, format check, tests — no build or audit).
 
@@ -67,7 +68,7 @@ Local commits run [`check:precommit`](package.json) via [Husky](.husky/pre-commi
 
 Vitest runs in `src/**/*.test.{ts,tsx}`. Component tests use jsdom; [`src/test/setup.ts`](src/test/setup.ts) mocks `localStorage` for Zustand persist.
 
-[`src/a11y-smoke.test.tsx`](src/a11y-smoke.test.tsx) runs [axe-core](https://github.com/dequelabs/axe-core) smoke checks on key UI (forms, dialogs, roster/lineup controls, cast slots in light and dark).
+[`src/a11y-smoke.test.tsx`](src/a11y-smoke.test.tsx) runs [axe-core](https://github.com/dequelabs/axe-core) smoke checks on key UI (forms, dialogs, roster/lineup controls, cast slots in light and dark). [`src/test/vitest-axe.d.ts`](src/test/vitest-axe.d.ts) augments Vitest matchers for `tsc -b`.
 
 ## Deploy
 

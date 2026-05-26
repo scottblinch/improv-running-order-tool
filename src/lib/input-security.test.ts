@@ -34,6 +34,8 @@ describe('sanitizePersistedState', () => {
     const state: PersistedState = {
       showName: 'Show',
       showDate: '2025-06-01',
+      showVenue: '',
+      showTime: '',
       persons: Array.from({ length: INPUT_LIMITS.maxPersons + 5 }, (_, i) => ({
         id: `person-${i}`,
         name: `Person ${i}`,
@@ -59,6 +61,8 @@ describe('sanitizePersistedState', () => {
     const state: PersistedState = {
       showName: 'Show',
       showDate: 'not-a-date',
+      showVenue: '',
+      showTime: '',
       persons: [
         {
           id: 'valid-person',
@@ -97,6 +101,8 @@ describe('sanitizePersistedState', () => {
     const state: PersistedState = {
       showName: '  My Show\u0007  ',
       showDate: '2025-06-01',
+      showVenue: '  The Hideout\u0000  ',
+      showTime: '7:30',
       persons: [
         {
           id: 'p1',
@@ -111,6 +117,8 @@ describe('sanitizePersistedState', () => {
     const sanitized = sanitizePersistedState(state);
 
     expect(sanitized.showName).toBe('My Show');
+    expect(sanitized.showVenue).toBe('The Hideout');
+    expect(sanitized.showTime).toBe('07:30');
     expect(sanitized.persons[0]?.name).toBe('Alice');
   });
 });

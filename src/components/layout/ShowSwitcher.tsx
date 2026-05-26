@@ -40,7 +40,12 @@ function ShowMenuItem({
   onDelete,
 }: ShowMenuItemProps) {
   const { t } = useTranslation();
-  const label = formatShowMenuLabel(show.showName, show.showDate);
+  const label = formatShowMenuLabel(
+    show.showName,
+    show.showDate,
+    show.showVenue,
+    show.showTime,
+  );
   const deleteLabel = t('workspace.deleteShowItemTitle', { label });
 
   return (
@@ -86,6 +91,9 @@ export function ShowSwitcher() {
   const activeShowId = useAppStore((state) => state.activeShowId);
   const shows = useAppStore((state) => state.shows);
   const showName = useAppStore((state) => state.showName);
+  const showDate = useAppStore((state) => state.showDate);
+  const showVenue = useAppStore((state) => state.showVenue);
+  const showTime = useAppStore((state) => state.showTime);
   const createShow = useAppStore((state) => state.createShow);
   const switchShow = useAppStore((state) => state.switchShow);
   const deleteShow = useAppStore((state) => state.deleteShow);
@@ -97,6 +105,12 @@ export function ShowSwitcher() {
 
   const maxShowsHintId = useId();
   const currentLabel = formatShowDisplayName(showName);
+  const currentMenuLabel = formatShowMenuLabel(
+    showName,
+    showDate,
+    showVenue,
+    showTime,
+  );
   const { currentAndUpcoming, past } = partitionShowsByShowDate(shows);
   const canCreate = canAddShow(shows.length);
   const canDelete = shows.length > 1;
@@ -110,16 +124,26 @@ export function ShowSwitcher() {
     switchShow(id);
     if (show) {
       announceA11y('a11y.switchedShow', {
-        label: formatShowMenuLabel(show.showName, show.showDate),
+        label: formatShowMenuLabel(
+          show.showName,
+          show.showDate,
+          show.showVenue,
+          show.showTime,
+        ),
       });
     }
   };
 
   const handleCreateShow = () => {
     createShow();
-    const { showName: nextName, showDate: nextDate } = useAppStore.getState();
+    const {
+      showName: nextName,
+      showDate: nextDate,
+      showVenue: nextVenue,
+      showTime: nextTime,
+    } = useAppStore.getState();
     announceA11y('a11y.createdShow', {
-      label: formatShowMenuLabel(nextName, nextDate),
+      label: formatShowMenuLabel(nextName, nextDate, nextVenue, nextTime),
     });
   };
 
@@ -131,7 +155,9 @@ export function ShowSwitcher() {
             type="button"
             variant="outline"
             className="max-w-56 min-w-0 shrink justify-between gap-2 font-heading font-semibold tracking-tight"
-            aria-label={t('header.switchShowNamed', { label: currentLabel })}
+            aria-label={t('header.switchShowNamed', {
+              label: currentMenuLabel,
+            })}
           >
             <span className="truncate">{currentLabel}</span>
             <ChevronDown aria-hidden className="size-4 shrink-0 opacity-60" />

@@ -6,25 +6,25 @@ Roadmap for building the Improv Show app. Product behavior and data rules live i
 
 Layered folders under `src/components/` — **no barrel `index.ts` files**; import from the module path.
 
-| Layer       | Path                                              | Role                                                                                             |
-| ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed): `button`, `alert-dialog`, `tooltip`, `sonner`, …          |
-| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, share/import dialogs, show switcher, date picker, skip link  |
-| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `RenameDialog`, `QuickAddForm`, `IconButtonTooltip`) |
-| **a11y**    | `components/a11y/`                                | Live region for screen-reader announcements                                                      |
-| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                                  |
-| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                                     |
-| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                                  |
+| Layer       | Path                                              | Role                                                                                                    |
+| ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **ui**      | `components/ui/`                                  | shadcn/Radix primitives (CLI-managed): `button`, `alert-dialog`, `tooltip`, `sonner`, …                 |
+| **layout**  | `components/layout/`                              | App chrome — shell, header, footer, share/import dialogs, show switcher, show details dialog, skip link |
+| **shared**  | `components/shared/`                              | Cross-feature UI (`EmptyState`, `CastSlot`, `RenameDialog`, `QuickAddForm`, `IconButtonTooltip`)        |
+| **a11y**    | `components/a11y/`                                | Live region for screen-reader announcements                                                             |
+| **feature** | `components/roster/`, `components/running-order/` | Domain panels and subcomponents                                                                         |
+| **theme**   | `components/theme/`                               | Theme provider, hook, toggle                                                                            |
+| **dnd**     | `components/dnd/`                                 | Desktop drag-and-drop provider and drag preview                                                         |
 
 Supporting folders (not under `components/`):
 
-| Path         | Role                                                                                                        |
-| ------------ | ----------------------------------------------------------------------------------------------------------- |
-| `src/lib/`   | Pure logic — share encode/decode, import bootstrap, print fit, dates, cast a11y, a11y IDs, cast role styles |
-| `src/store/` | Zustand stores and selectors (`useAppStore`, `useA11yAnnounceStore`, …)                                     |
-| `src/hooks/` | Cross-cutting React hooks (`useDocumentTitle`, `useA11yAnnounce`, print fit scale)                          |
-| `src/pwa/`   | Service worker registration and update toasts                                                               |
-| `src/test/`  | Vitest setup (e.g. `localStorage` mock for jsdom)                                                           |
+| Path         | Role                                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `src/lib/`   | Pure logic — share encode/decode, import bootstrap, print fit, dates/times, cast a11y, a11y IDs, cast role styles |
+| `src/store/` | Zustand stores and selectors (`useAppStore`, `useA11yAnnounceStore`, …)                                           |
+| `src/hooks/` | Cross-cutting React hooks (`useDocumentTitle`, `useA11yAnnounce`, print fit scale)                                |
+| `src/pwa/`   | Service worker registration and update toasts                                                                     |
+| `src/test/`  | Vitest setup (e.g. `localStorage` mock for jsdom)                                                                 |
 
 **Composition flow:** `App.tsx` → providers (`TooltipProvider`, `Toaster`) → `AppShell` (header + content + footer) → feature panels → list/item → `ui` + `shared`.
 
@@ -36,35 +36,37 @@ Supporting folders (not under `components/`):
 
 ## Status
 
-| Step | Description                                | Status |
-| ---- | ------------------------------------------ | ------ |
-| 1    | Vite + React + TypeScript scaffold         | Done   |
-| 2    | Tailwind + shadcn/ui                       | Done   |
-| 3    | Types + Zustand store                      | Done   |
-| 4    | Static two-column layout                   | Done   |
-| 5    | Roster + scenes (no drag)                  | Done   |
-| 6    | Desktop drag-and-drop                      | Done   |
-| 7    | Mobile assignment (dropdowns)              | Done   |
-| 8    | Print styles                               | Done   |
-| 9    | Polish & edge cases                        | Done   |
-| 10   | Show metadata (name + date)                | Done   |
-| 11   | Multi-show workspace                       | Done   |
-| 12   | All play scenes                            | Done   |
-| 13   | Print preview + fit-to-page                | Done   |
-| 14   | i18n (i18next + ICU)                       | Done   |
-| 15   | Input sanitization + persist hydration     | Done   |
-| 16   | App footer                                 | Done   |
-| 17   | Show sharing (URL + import)                | Done   |
-| 18   | PWA (installable + offline shell)          | Done   |
-| 19   | Privacy (share confirm + footer note)      | Done   |
-| 20   | Sonner toasts (share, import, PWA)         | Done   |
-| 21   | Tooltips on icon-only buttons              | Done   |
-| 22   | Shared rename dialog + document title      | Done   |
-| 23   | Accessibility pass (a11y audit + fixes)    | Done   |
-| 24   | axe smoke tests + Vitest setup             | Done   |
-| 25   | ESLint jsx-a11y                            | Done   |
-| 26   | Husky pre-commit                           | Done   |
-| 27   | DRY shared helpers (forms, cast, announce) | Done   |
+| Step | Description                                   | Status |
+| ---- | --------------------------------------------- | ------ |
+| 1    | Vite + React + TypeScript scaffold            | Done   |
+| 2    | Tailwind + shadcn/ui                          | Done   |
+| 3    | Types + Zustand store                         | Done   |
+| 4    | Static two-column layout                      | Done   |
+| 5    | Roster + scenes (no drag)                     | Done   |
+| 6    | Desktop drag-and-drop                         | Done   |
+| 7    | Mobile assignment (dropdowns)                 | Done   |
+| 8    | Print styles                                  | Done   |
+| 9    | Polish & edge cases                           | Done   |
+| 10   | Show metadata (name + date)                   | Done   |
+| 11   | Multi-show workspace                          | Done   |
+| 12   | All play scenes                               | Done   |
+| 13   | Print preview + fit-to-page                   | Done   |
+| 14   | i18n (i18next + ICU)                          | Done   |
+| 15   | Input sanitization + persist hydration        | Done   |
+| 16   | App footer                                    | Done   |
+| 17   | Show sharing (URL + import)                   | Done   |
+| 18   | PWA (installable + offline shell)             | Done   |
+| 19   | Privacy (share confirm + footer note)         | Done   |
+| 20   | Sonner toasts (share, import, PWA)            | Done   |
+| 21   | Tooltips on icon-only buttons                 | Done   |
+| 22   | Shared rename dialog + document title         | Done   |
+| 23   | Accessibility pass (a11y audit + fixes)       | Done   |
+| 24   | axe smoke tests + Vitest setup                | Done   |
+| 25   | ESLint jsx-a11y                               | Done   |
+| 26   | Husky pre-commit                              | Done   |
+| 27   | DRY shared helpers (forms, cast, announce)    | Done   |
+| 28   | Show details dialog (venue, time, v2 persist) | Done   |
+| 29   | Deploy workflow hardening (split permissions) | Done   |
 
 ---
 
@@ -72,7 +74,7 @@ Supporting folders (not under `components/`):
 
 - [x] Vite + React + TypeScript
 - [x] `package.json`: ESM, `GPL-2.0-only`, app scripts
-- [x] GitHub Actions CI and Pages deploy
+- [x] GitHub Actions CI (PRs) and Pages deploy (`main` push, split job permissions)
 
 ---
 
@@ -142,7 +144,7 @@ Supporting folders (not under `components/`):
 
 - [x] Keyboard: Enter on quick-adds and rename dialogs
 - [x] a11y: labels, sr-only headings, `role="status"`, scene list as `ol`
-- [x] CI: `pnpm check` on PRs; `check:pages` on deploy
+- [x] CI: `pnpm check` on PRs; `check:pages` + deploy on `main` push
 - [x] Roster hover highlight synced to lineup slots
 - [x] Expanded in steps 23–27 (skip links, live region, axe tests, jsx-a11y lint, Husky, shared helpers)
 
@@ -151,8 +153,10 @@ Supporting folders (not under `components/`):
 ## 10. Show metadata — Done
 
 - [x] `showName` + `showDate` on `PersistedState`
-- [x] `RenameShowDialog`, `ShowDatePicker` in header
-- [x] Print header uses title and formatted date
+- [x] `ShowDetailsDialog` — name, date (popover calendar), optional time and venue; explicit Save/Cancel
+- [x] `setShowDetails` store action; `PERSIST_VERSION` 2 adds `showVenue` + `showTime`
+- [x] Print header: title, date/time line, optional venue; document title includes time/venue when set
+- [x] Share v2 payload keys `vn`, `tm`; switcher labels include metadata when set
 - [x] Default name: "Untitled Show"
 
 ---
@@ -193,7 +197,7 @@ Supporting folders (not under `components/`):
 
 - [x] `lib/input-security.ts` — limits, sanitization, `canAdd*` guards
 - [x] `hydrate-persisted-state.ts` — normalize workspace on load
-- [x] `migrate-persisted-state.ts` — version scaffold (legacy migrations removed; bump `PERSIST_VERSION` when schema changes)
+- [x] `migrate-persisted-state.ts` — `PERSIST_VERSION` 2 (`showVenue`, `showTime`); normalize on load via hydrate
 
 ---
 
@@ -250,8 +254,8 @@ Supporting folders (not under `components/`):
 
 ## 22. Shared rename + document title — Done
 
-- [x] `RenameDialog` in `shared/` — focus + select-all; wrappers for person, scene, show
-- [x] `lib/document-title.ts` + `useDocumentTitle` — `"[name] - [date] - Scott's Improv Running Order Tool"` when named
+- [x] `RenameDialog` in `shared/` — focus + select-all; wrappers for person and scene (show uses `ShowDetailsDialog`)
+- [x] `lib/document-title.ts` + `useDocumentTitle` — `"[name] - [date] [time] - [venue] - …"` when metadata is set
 
 ---
 
@@ -261,7 +265,7 @@ Supporting folders (not under `components/`):
 - [x] Landmarks: roster `<aside>`, lineup `<main>`, panel heading IDs
 - [x] `useA11yAnnounceStore` + `A11yLiveRegion` — polite live announcements (clear-then-set for repeats)
 - [x] `useA11yAnnounce` hook — i18n keys under `a11y.*`
-- [x] Cast/reorder/rename/show-switch/print-preview/date-picker announcements
+- [x] Cast/reorder/rename/show-switch/print-preview/show-details announcements
 - [x] Desktop keyboard cast path; mobile labeled selects; calendar month labels
 - [x] Decorative icons and drag overlay `aria-hidden`; tooltips not in tab order where redundant
 
@@ -271,7 +275,7 @@ Supporting folders (not under `components/`):
 
 - [x] `vitest-axe` + `axe-core` in `src/a11y-smoke.test.tsx`
 - [x] Covers quick-add forms, dialogs, skip link, roster row, cast slots (light/dark), assign select, drag chip
-- [x] `src/test/setup.ts` — `localStorage` mock; wired in `vite.config.ts` `setupFiles`
+- [x] `src/test/setup.ts` — `localStorage` mock + axe matchers; `src/test/vitest-axe.d.ts` for Vitest 4 types
 - [x] Store unit tests: hydration, migrate, input-security, show-share, announce store
 
 ---
@@ -300,11 +304,28 @@ Supporting folders (not under `components/`):
 
 ---
 
+## 28. Show details expansion — Done
+
+- [x] `showVenue` + `showTime` on `PersistedState`; `ShowDetails` type
+- [x] `ShowDetailsDialog` replaces header rename button + inline date picker
+- [x] `sanitizeShowVenue`, `sanitizeShowTime`; `formatShowDateTime` / `formatPrintTime`
+- [x] Print, document title, switcher labels, and share encode/decode updated
+- [x] `PERSIST_VERSION` 2 (single bump for venue + time)
+
+---
+
+## 29. Deploy workflow hardening — Done
+
+- [x] `deploy-pages.yml` triggers on `main` push (not `workflow_run`)
+- [x] Split permissions: build job `contents: read`; deploy job `pages: write` + `id-token: write`
+- [x] `ci.yml` runs on pull requests only (`pnpm check`)
+
+---
+
 ## Post-MVP (not yet implemented)
 
 - [ ] Export / import JSON
 - [ ] Back-to-back cast warning (same person in consecutive scenes)
-- [ ] Venue field on show + print output
 - [ ] Additional locales beyond English
 
 **Optional verification debt:** expand axe coverage to composite views (e.g. full `SceneCard`); jsdom does not fully evaluate color contrast.

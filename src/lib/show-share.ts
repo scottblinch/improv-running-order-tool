@@ -23,6 +23,8 @@ type CompactSharedShowPayload = {
   v: 2;
   n: string;
   d: string;
+  vn: string;
+  tm: string;
   p: CompactPerson[];
   s: CompactScene[];
 };
@@ -110,6 +112,8 @@ function toCompactPayload(state: PersistedState): CompactSharedShowPayload {
     v: SHOW_SHARE_VERSION,
     n: state.showName,
     d: state.showDate,
+    vn: state.showVenue,
+    tm: state.showTime,
     p: state.persons.map((person) => {
       const flags = personFlags(person);
       return flags === 0 ? [person.name] : [person.name, flags];
@@ -217,6 +221,8 @@ function expandCompactPayload(
   return sanitizePersistedState({
     showName: parsed.n,
     showDate: parsed.d,
+    showVenue: typeof parsed.vn === 'string' ? parsed.vn : '',
+    showTime: typeof parsed.tm === 'string' ? parsed.tm : '',
     persons,
     scenes,
   });
@@ -230,6 +236,8 @@ function expandLegacyPayload(
   const slice: PersistedState = {
     showName: typeof parsed.showName === 'string' ? parsed.showName : '',
     showDate: typeof parsed.showDate === 'string' ? parsed.showDate : '',
+    showVenue: '',
+    showTime: '',
     persons: Array.isArray(parsed.persons) ? parsed.persons : [],
     scenes: Array.isArray(parsed.scenes) ? parsed.scenes : [],
   };
@@ -337,6 +345,8 @@ export function prepareSharedShowForImport(
   return sanitizePersistedState({
     showName: sanitized.showName,
     showDate: sanitized.showDate,
+    showVenue: sanitized.showVenue,
+    showTime: sanitized.showTime,
     persons,
     scenes,
   });

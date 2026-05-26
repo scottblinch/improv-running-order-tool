@@ -40,14 +40,13 @@
     "printPreviewOn": "Print preview on",
     "printPreviewOff": "Print preview off",
     "switchedShow": "Switched to {label}",
-    "showDateChanged": "Show date changed to {date}",
     "createdShow": "Created {label}",
     "deletedShow": "Deleted {label}",
     "addedPerformer": "Added {name} to roster",
     "addedScene": "Added {name} to lineup",
     "markedAbsent": "{name} marked absent",
     "clearedAbsent": "{name} no longer marked absent",
-    "renamedShow": "Show renamed to {name}",
+    "updatedShowDetails": "Show details updated: {name}, {date}, {venue}",
     "renamedPerformer": "Performer renamed to {name}",
     "renamedScene": "Scene renamed to {name}",
     "deletedPerformer": "Deleted {name} from roster",
@@ -83,9 +82,7 @@
     "warningSuffix": "{name} ({warning})"
   },
   "header": {
-    "renameShow": "Rename show",
-    "showDate": "Show date",
-    "showDateNamed": "Show date, {date}",
+    "editShowDetails": "Edit show details",
     "switchShow": "Switch show",
     "switchShowNamed": "Switch show, {label}"
   },
@@ -212,9 +209,14 @@
     "switchToAllPlay": "Switch to all play"
   },
   "show": {
-    "renameTitle": "Rename show",
-    "renameDescription": "Set the show name for the header and printout. Leave blank to use \"Untitled Show\".",
-    "showName": "Show name"
+    "detailsTitle": "Show details",
+    "detailsDescription": "Set the show name, date, time, and venue for the header and printout. Leave the name blank to use \"Untitled Show\".",
+    "showName": "Show name",
+    "showDate": "Show date",
+    "showTime": "Show time",
+    "showVenue": "Venue",
+    "showVenuePlaceholder": "Optional",
+    "noVenue": "No venue"
   },
   "fallback": {
     "unknownPerson": "Unknown",

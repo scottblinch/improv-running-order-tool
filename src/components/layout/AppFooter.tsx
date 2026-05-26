@@ -11,7 +11,7 @@ const LICENSE_URL =
 
 const linkClassName = 'underline-offset-4 hover:text-foreground';
 
-const inlineLinkButtonClassName = `${linkClassName} inline h-auto border-0 bg-transparent p-0 font-inherit text-inherit cursor-pointer`;
+const inlineLinkButtonClassName = `${linkClassName} inline h-auto cursor-pointer border-0 bg-transparent p-0 font-inherit text-inherit underline hover:no-underline focus-visible:no-underline`;
 
 export function AppFooter() {
   const { t } = useTranslation();

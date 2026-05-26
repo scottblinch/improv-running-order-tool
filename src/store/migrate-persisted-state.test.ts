@@ -50,6 +50,8 @@ describe('migratePersistedState', () => {
 
     expect(migrated.activeShowId).toBe('show-1');
     expect(migrated.shows[0]?.showName).toBe('Legacy Show');
+    expect(migrated.shows[0]?.showVenue).toBe('');
+    expect(migrated.shows[0]?.showTime).toBe('');
     expect(migrated.shows[0]?.showDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(migrated.shows[0]?.persons).toEqual([]);
     expect(migrated.shows[0]?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);

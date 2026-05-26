@@ -12,6 +12,8 @@ import type { PersistedState } from '@/types/app';
 const sampleShow: PersistedState = {
   showName: 'Friday Night',
   showDate: '2025-06-01',
+  showVenue: 'The Hideout',
+  showTime: '19:30',
   persons: [
     {
       id: '11111111-1111-4111-8111-111111111111',
@@ -64,6 +66,8 @@ describe('decodeShowShareParam', () => {
     const decoded = decodeShowShareParam(param!);
 
     expect(decoded?.showName).toBe('Friday Night');
+    expect(decoded?.showVenue).toBe('The Hideout');
+    expect(decoded?.showTime).toBe('19:30');
     expect(decoded?.persons[0]?.name).toBe('Alex');
     expect(decoded?.scenes[0]?.name).toBe('Opening');
   });

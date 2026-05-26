@@ -45,3 +45,31 @@ export function isoDateToDate(isoDate: string): Date | undefined {
   const [year, month, day] = isoDate.split('-').map(Number);
   return new Date(year, month - 1, day);
 }
+
+/** 24-hour HH:mm, or empty when unset. */
+export function isShowTimeString(value: string): boolean {
+  if (value === '') return true;
+  if (!/^\d{2}:\d{2}$/.test(value)) return false;
+
+  const [hours, minutes] = value.split(':').map(Number);
+  return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+}
+
+export function formatPrintTime(time: string): string {
+  if (!isShowTimeString(time) || time === '') return '';
+
+  const [hours, minutes] = time.split(':').map(Number);
+  const date = new Date(2000, 0, 1, hours, minutes);
+
+  return new Intl.DateTimeFormat(i18n.language, {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
+}
+
+export function formatShowDateTime(showDate: string, showTime: string): string {
+  const date = formatPrintDate(showDate);
+  const time = formatPrintTime(showTime);
+
+  return time ? `${date} · ${time}` : date;
+}

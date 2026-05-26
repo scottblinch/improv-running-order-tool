@@ -1,8 +1,11 @@
 import {
   sanitizePersistedState,
   sanitizeShowName,
+  sanitizeShowTime,
+  sanitizeShowVenue,
   INPUT_LIMITS,
 } from '@/lib/input-security';
+import { isShowTimeString } from '@/lib/show-date';
 import { createEmptyShow } from '@/lib/show-workspace';
 import { toIsoDateString } from '@/lib/show-date';
 import type {
@@ -61,6 +64,16 @@ function normalizeShowName(raw: unknown): string {
   return typeof raw === 'string' ? sanitizeShowName(raw) : '';
 }
 
+function normalizeShowVenue(raw: unknown): string {
+  return typeof raw === 'string' ? sanitizeShowVenue(raw) : '';
+}
+
+function normalizeShowTime(raw: unknown): string {
+  if (typeof raw !== 'string') return '';
+
+  return isShowTimeString(raw) ? sanitizeShowTime(raw) : '';
+}
+
 function normalizeShowDate(raw: unknown): string {
   if (typeof raw !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
     return toIsoDateString();
@@ -95,6 +108,8 @@ function normalizePersistedSlice(raw: unknown): PersistedState {
       scenes: [],
       showName: '',
       showDate: toIsoDateString(),
+      showVenue: '',
+      showTime: '',
     });
   }
 
@@ -115,6 +130,8 @@ function normalizePersistedSlice(raw: unknown): PersistedState {
     scenes,
     showName: normalizeShowName(raw.showName),
     showDate: normalizeShowDate(raw.showDate),
+    showVenue: normalizeShowVenue(raw.showVenue),
+    showTime: normalizeShowTime(raw.showTime),
   };
 }
 

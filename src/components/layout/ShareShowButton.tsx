@@ -19,6 +19,8 @@ export function ShareShowButton() {
   const { t } = useTranslation();
   const showName = useAppStore((state) => state.showName);
   const showDate = useAppStore((state) => state.showDate);
+  const showVenue = useAppStore((state) => state.showVenue);
+  const showTime = useAppStore((state) => state.showTime);
   const persons = useAppStore((state) => state.persons);
   const scenes = useAppStore((state) => state.scenes);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -31,6 +33,8 @@ export function ShareShowButton() {
     const result = encodeShowShareParam({
       showName,
       showDate,
+      showVenue,
+      showTime,
       persons,
       scenes,
     });

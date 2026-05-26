@@ -13,6 +13,8 @@ function makeShow(
   overrides: Partial<{
     showName: string;
     showDate: string;
+    showVenue: string;
+    showTime: string;
     shareKey: string;
     updatedAt: string;
   }> = {},
@@ -21,6 +23,8 @@ function makeShow(
     id,
     showName: overrides.showName ?? 'Test Show',
     showDate: overrides.showDate ?? '2025-06-01',
+    showVenue: overrides.showVenue ?? '',
+    showTime: overrides.showTime ?? '',
     persons: [
       {
         id: `${id}-person`,

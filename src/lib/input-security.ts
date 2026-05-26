@@ -11,6 +11,7 @@ export const INPUT_LIMITS = {
   maxPersonNameLength: 32,
   maxSceneNameLength: 32,
   maxShowNameLength: 32,
+  maxShowVenueLength: 64,
   maxPersons: 32,
   maxScenes: 32,
   maxPlayersPerScene: 16,
@@ -40,6 +41,34 @@ export function sanitizeSceneName(value: string): string {
 
 export function sanitizeShowName(value: string): string {
   return sanitizeText(value, INPUT_LIMITS.maxShowNameLength);
+}
+
+export function sanitizeShowVenue(value: string): string {
+  return sanitizeText(value, INPUT_LIMITS.maxShowVenueLength);
+}
+
+export function sanitizeShowTime(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+
+  if (!/^\d{1,2}:\d{2}$/.test(trimmed)) return '';
+
+  const [hoursPart, minutesPart] = trimmed.split(':');
+  const hours = Number(hoursPart);
+  const minutes = Number(minutesPart);
+
+  if (
+    !Number.isInteger(hours) ||
+    !Number.isInteger(minutes) ||
+    hours < 0 ||
+    hours > 23 ||
+    minutes < 0 ||
+    minutes > 59
+  ) {
+    return '';
+  }
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
 export function isValidEntityId(id: string): boolean {
@@ -118,8 +147,10 @@ export function sanitizePersistedState(state: PersistedState): PersistedState {
   const showDate = isIsoDateString(state.showDate)
     ? state.showDate
     : toIsoDateString();
+  const showVenue = sanitizeShowVenue(state.showVenue ?? '');
+  const showTime = sanitizeShowTime(state.showTime ?? '');
 
-  return { persons, scenes, showName, showDate };
+  return { persons, scenes, showName, showDate, showVenue, showTime };
 }
 
 export function canAddPerson(personCount: number): boolean {

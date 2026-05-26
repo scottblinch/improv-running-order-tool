@@ -6,11 +6,11 @@ A purely client-side React single-page application (SPA) for building and managi
 
 ### Terminology
 
-| Term              | Meaning                                             |
-| ----------------- | --------------------------------------------------- |
-| **Show**          | A saved unit of work: roster + lineup + name + date |
-| **Lineup**        | User-facing label for the scene list (right column) |
-| **Running order** | Legacy code/doc name for the lineup feature folder  |
+| Term              | Meaning                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| **Show**          | A saved unit of work: roster + lineup + show metadata (name, date, optional time/venue) |
+| **Lineup**        | User-facing label for the scene list (right column)                                     |
+| **Running order** | Legacy code/doc name for the lineup feature folder                                      |
 
 ## 2. Tech Stack & Libraries
 
@@ -20,7 +20,7 @@ A purely client-side React single-page application (SPA) for building and managi
 - **Drag & Drop:** `@dnd-kit/core`, `@dnd-kit/sortable` (desktop)
 - **Icons:** `lucide-react`
 - **i18n:** `i18next`, `i18next-icu`, `react-i18next` — strings in `src/locales/en.json`
-- **Dates:** `date-fns`, `react-day-picker` (show date picker)
+- **Dates & times:** `date-fns`, `react-day-picker` (show date in details dialog); optional show time as 24h `HH:mm`
 - **Share encoding:** `fflate` (deflate/inflate for compact URL payloads)
 - **PWA:** `vite-plugin-pwa` (manifest + service worker)
 - **Toasts:** Sonner via shadcn `sonner` component
@@ -60,7 +60,14 @@ export interface PersistedState {
   scenes: Scene[];
   showName: string;
   showDate: string; // ISO date YYYY-MM-DD
+  showVenue: string; // Optional; empty when unset
+  showTime: string; // Optional 24h HH:mm; empty when unset
 }
+
+export type ShowDetails = Pick<
+  PersistedState,
+  'showName' | 'showDate' | 'showVenue' | 'showTime'
+>;
 
 export interface ShowRecord extends PersistedState {
   id: ShowId;
@@ -74,7 +81,7 @@ export interface WorkspacePersistedState {
 }
 ```
 
-Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowName`, `setShowDate`, `createShow`, `switchShow`, `deleteShow`, and `importSharedShow`.
+Store actions cover roster, scene, and cast CRUD, plus `setAllPlay`, `setShowDetails`, `createShow`, `switchShow`, `deleteShow`, and `importSharedShow`.
 
 ### ID generation & deduping
 
@@ -95,9 +102,8 @@ Desktop: two-column layout with header and footer. Mobile: stacked columns; assi
 
 ### Header
 
-- **Show switcher** — dropdown of saved shows (upcoming vs past sections); create and delete shows
-- **Rename show** — dialog for `showName` (default: "Untitled Show")
-- **Show date** — calendar picker for `showDate`
+- **Show switcher** — dropdown of saved shows (upcoming vs past sections); create and delete shows; menu labels include date/time/venue when set
+- **Edit show details** — dialog for `showName`, `showDate`, optional `showTime` and `showVenue` (explicit Save/Cancel; scrollable on small viewports)
 - **Share show** — copy or native-share a URL encoding the current show (`?show=`); privacy confirmation on first use
 - **Theme toggle** — light / dark / system (separate `localStorage` key)
 - **Print preview** — on-screen WYSIWYG before printing
@@ -185,14 +191,14 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 
 ### Multi-show workspace
 
-- Up to 32 saved shows; each holds its own roster, lineup, name, and date.
+- Up to 32 saved shows; each holds its own roster, lineup, and show metadata.
 - Switching shows updates the active slice in the store; `localStorage` persists the full workspace.
 - Delete show is confirmed; cannot delete the last remaining show.
 - Show switcher lists upcoming shows (date ≥ today) and past shows separately, sorted by date then name.
 
 ### Show sharing
 
-- **Export:** encode show data (names, date, roster, lineup) into a `?show=` query param on the app URL (compressed v2 format; legacy uncompressed v1 still readable).
+- **Export:** encode show data (metadata, roster, lineup) into a `?show=` query param on the app URL (compressed v2 format with `n`, `d`, `vn`, `tm` keys; legacy uncompressed v1 still readable).
 - **Import:** opening a share link on load imports the show into the workspace (or switches to an existing show with the same content fingerprint).
 - **Dedup:** `shareKey` (16-char hex hash of canonical show content) prevents duplicate imports when the same link is opened again.
 - **Limits:** share param max length; workspace max 32 shows — failures surface via dialog or toast.
@@ -224,17 +230,15 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 
 - **Hide:** roster column, inputs, drag handles, remove buttons, header/footer chrome, dialogs, toasts, tooltips.
 - **Show:** lineup full width, ink-friendly black on white.
-- **Print header:** show title (uppercase) and formatted date, centered above the scene list.
+- **Print header:** show title (uppercase), formatted date/time line, optional venue line, centered above the scene list.
 - **Print preview:** screen-only mode that mirrors print layout before invoking the browser print dialog.
 - **Fit-to-page:** dynamic font scaling so long lineups fit one printed page when possible.
 - **Scene line format:** `SCENE NAME - HOST HOST` / `+ ALL PLAY` / `+ NAMES PLAY`; warning suffix for absent/removed performers.
 
-**Not yet implemented:** venue on print output.
-
 ## 7. Persistence & Security
 
 - **Storage key:** `improv-running-order`
-- **Version:** `PERSIST_VERSION` in `migrate-persisted-state.ts` (currently `1`); Zustand `migrate` hook ready for future schema changes
+- **Version:** `PERSIST_VERSION` in `migrate-persisted-state.ts` (currently `2` — adds `showVenue`, `showTime`); Zustand `migrate` hook normalizes on load
 - **Persisted shape:** `{ activeShowId, shows[] }` — not the flat single-show shape
 - **Hydration:** `hydrate-persisted-state.ts` normalizes and sanitizes on load; invalid data falls back to one empty show
 - **Input limits:** caps on persons, scenes, shows, name lengths, and IDs; sanitization strips control characters and drops invalid cross-references (defense against hand-edited `localStorage`)
@@ -254,7 +258,7 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 - Quick-add forms and rename dialogs: Enter to submit; dialogs trap focus via Radix.
 - Desktop cast: keyboard path on cast drop zones (`CastDropZone` as `role="group"`).
 - Mobile: host/player assignment via labeled selects; scene reorder via up/down buttons with announcements.
-- Print preview toggle announces enter/exit; calendar picker announces date changes.
+- Print preview toggle and show-details save announce changes; calendar lives in the details dialog popover.
 
 ### Lint & tests
 
@@ -288,10 +292,10 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 | Roster CRUD               | Add, rename, delete (with mode choice)                  |
 | Scene CRUD                | Add, rename, remove                                     |
 | Multi-show workspace      | Up to 32 shows; switch/create/delete                    |
-| Show metadata             | Name + ISO date per show                                |
+| Show metadata             | Name, ISO date, optional time (`HH:mm`) and venue       |
 | Warning slot visuals      | Same for absent and deleted-from-roster                 |
 | Player order              | Append-only                                             |
-| Print                     | Title, date, scenes + cast                              |
+| Print                     | Title, date/time, venue, scenes + cast                  |
 | Persistence               | `localStorage` workspace                                |
 | Theme                     | Light / dark / system                                   |
 | i18n                      | i18next + ICU; English only                             |
@@ -302,5 +306,4 @@ No PDF library. Tailwind `print:` modifiers + minimal global `@media print` rule
 | Export / import JSON      | Post-MVP                                                |
 | Mobile                    | Dropdowns/selects for slots                             |
 | Back-to-back cast warning | Post-MVP                                                |
-| Venue on print            | Post-MVP                                                |
 | Terminology               | UI: **Absent**; code: `isAbsent`                        |

@@ -4,6 +4,7 @@ import type {
   DeletePersonMode,
   PersonId,
   PersistedState,
+  ShowDetails,
   ShowId,
   Scene,
   SceneId,
@@ -28,6 +29,8 @@ import {
   sanitizePersonName,
   sanitizeSceneName,
   sanitizeShowName,
+  sanitizeShowTime,
+  sanitizeShowVenue,
 } from '@/lib/input-security';
 import { isIsoDateString } from '@/lib/show-date';
 import {
@@ -54,6 +57,8 @@ function createInitialState(): WorkspaceSlice {
     scenes: show.scenes,
     showName: show.showName,
     showDate: show.showDate,
+    showVenue: show.showVenue,
+    showTime: show.showTime,
   };
 }
 
@@ -120,8 +125,7 @@ export interface AppActions {
   ) => void;
   removePlayer: (sceneId: SceneId, personId: PersonId) => void;
   setAllPlay: (sceneId: SceneId, isAllPlay: boolean) => void;
-  setShowName: (name: string) => void;
-  setShowDate: (date: string) => void;
+  setShowDetails: (details: ShowDetails) => void;
   createShow: () => void;
   switchShow: (id: ShowId) => void;
   deleteShow: (id: ShowId) => void;
@@ -463,16 +467,17 @@ export const useAppStore = create<AppStore>()(
         });
       },
 
-      setShowName: (name) => {
+      setShowDetails: ({ showName, showDate, showVenue, showTime }) => {
+        if (!isIsoDateString(showDate)) return;
+
         set((state) =>
-          patchActiveShow(state, { showName: sanitizeShowName(name) }),
+          patchActiveShow(state, {
+            showName: sanitizeShowName(showName),
+            showDate,
+            showVenue: sanitizeShowVenue(showVenue),
+            showTime: sanitizeShowTime(showTime),
+          }),
         );
-      },
-
-      setShowDate: (date) => {
-        if (!isIsoDateString(date)) return;
-
-        set((state) => patchActiveShow(state, { showDate: date }));
       },
 
       createShow: () => {
@@ -490,6 +495,8 @@ export const useAppStore = create<AppStore>()(
             scenes: newShow.scenes,
             showName: newShow.showName,
             showDate: newShow.showDate,
+            showVenue: newShow.showVenue,
+            showTime: newShow.showTime,
           };
         });
       },
@@ -609,6 +616,8 @@ export const useAppStore = create<AppStore>()(
             scenes,
             showName,
             showDate,
+            showVenue,
+            showTime,
             updatedAt,
             shareKey,
           }) => ({
@@ -617,6 +626,8 @@ export const useAppStore = create<AppStore>()(
             scenes,
             showName,
             showDate,
+            showVenue,
+            showTime,
             updatedAt,
             ...(shareKey ? { shareKey } : {}),
           }),

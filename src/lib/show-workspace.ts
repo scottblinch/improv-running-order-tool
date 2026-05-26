@@ -1,6 +1,6 @@
 import i18n from '@/i18n';
 import {
-  formatPrintDate,
+  formatShowDateTime,
   formatShowDisplayName,
   toIsoDateString,
 } from '@/lib/show-date';
@@ -17,6 +17,8 @@ export function createEmptyShow(): ShowRecord {
     scenes: [],
     showName: i18n.t('app.defaultShowName'),
     showDate: toIsoDateString(),
+    showVenue: '',
+    showTime: '',
     updatedAt: new Date().toISOString(),
   };
 }
@@ -35,6 +37,8 @@ export function patchActiveShow(
     scenes: patch.scenes ?? state.scenes,
     showName: patch.showName ?? state.showName,
     showDate: patch.showDate ?? state.showDate,
+    showVenue: patch.showVenue ?? state.showVenue,
+    showTime: patch.showTime ?? state.showTime,
   };
   const updatedAt = new Date().toISOString();
 
@@ -50,8 +54,13 @@ export function patchActiveShow(
 export function formatShowMenuLabel(
   showName: string,
   showDate: string,
+  showVenue = '',
+  showTime = '',
 ): string {
-  return `${formatShowDisplayName(showName)} · ${formatPrintDate(showDate)}`;
+  const base = `${formatShowDisplayName(showName)} · ${formatShowDateTime(showDate, showTime)}`;
+  const venue = showVenue.trim();
+
+  return venue ? `${base} · ${venue}` : base;
 }
 
 export function compareShowsByDateThenName(

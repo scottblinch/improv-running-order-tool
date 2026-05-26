@@ -1,8 +1,8 @@
 import { parsePersistedWorkspace } from '@/store/hydrate-persisted-state';
 import type { WorkspacePersistedState } from '@/types/app';
 
-/** Bump when persisted shape changes. Add a step below for each version jump. */
-export const PERSIST_VERSION = 1;
+/** Bump when persisted shape changes. v2 adds showVenue and showTime. */
+export const PERSIST_VERSION = 2;
 
 export function migratePersistedState(
   persistedState: unknown,
