@@ -150,7 +150,7 @@
     "deleteLastDescription": "This is your last saved show. Deleting it clears the workspace until you create a new show.",
     "emptyTitle": "No shows yet",
     "emptyDescription": "Create a show to get started.",
-    "emptyBlurb": "Build your roster, plan scenes, assign hosts and players, then print or share a cast sheet. Everything stays in your browser—no account and no cloud backup.",
+    "emptyBlurb": "Build your roster, plan scenes, assign hosts and players, then print or share your running order. Everything stays in your browser—no account and no cloud backup.",
     "savedShows": "Saved shows",
     "upcomingShows": "Upcoming shows",
     "pastShows": "Past shows"

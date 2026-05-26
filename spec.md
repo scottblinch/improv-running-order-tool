@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-A purely client-side React single-page application (SPA) for building and managing improv **shows**. The app provides a drag-and-drop interface to assign available performers to scenes, reorder the lineup, handle real-time cast adjustments (e.g., performers marked absent), and print a cast sheet. Data is persisted locally in the browser. No backend is required.
+A purely client-side React single-page application (SPA) for building and managing improv **shows**. The app provides a drag-and-drop interface to assign available performers to scenes, reorder the lineup, handle real-time cast adjustments (e.g., performers marked absent), and print the running order. Data is persisted locally in the browser. No backend is required.
 
 ### Terminology
 

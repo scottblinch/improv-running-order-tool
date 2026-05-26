@@ -13,7 +13,7 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 - **Roster** — add, rename, mark absent, soft-delete with assignment choices; alphabetized list (present first, then absent)
 - **Lineup** — scenes with host, players, or **all play**; drag-and-drop on desktop, selects on mobile; on mobile, roster and lineup are **collapsible** with sticky section headers and one page scroll
 - **Share** — copy or native-share a link to the current show; open a link to import (deduped by content fingerprint). Chat apps show the generic app preview, not the show name
-- **Print** — show title, date/time, venue, and lineup on the cast sheet; on-screen print preview (hidden when no shows); fit-to-page scaling
+- **Print** — show title, date/time, venue, and lineup in a print-ready running order; on-screen print preview (hidden when no shows); fit-to-page scaling
 - **Theme** — light, dark, or system
 - **PWA** — installable; works offline after first load (show data stays in `localStorage`); update toast after deploys; HTML fetched from network first so deploys show on the next refresh
 - **Privacy** — share confirmation and footer privacy note (local storage, no cloud backup, share URLs, hosting)
