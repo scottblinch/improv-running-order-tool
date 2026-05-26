@@ -99,7 +99,7 @@ export default defineConfig({
         short_name: 'Improv Shows',
         description:
           'Build and manage improv show lineups and cast assignments.',
-        theme_color: '#863bff',
+        theme_color: '#f4f4f5',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'any',
