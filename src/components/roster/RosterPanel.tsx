@@ -1,9 +1,9 @@
 import { Users } from 'lucide-react';
 
+import { MobileCollapsiblePanel } from '@/components/layout/MobileCollapsiblePanel';
 import { RosterList } from '@/components/roster/RosterList';
 import { RosterQuickAdd } from '@/components/roster/RosterQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
-import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 import { ROSTER_CASTING_HELP_ID, ROSTER_HEADING_ID } from '@/lib/a11y-ids';
 import { selectActivePersons } from '@/store/selectors';
@@ -15,31 +15,23 @@ export function RosterPanel() {
   const activePersons = selectActivePersons(persons);
 
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-      <div className="flex flex-col gap-2">
-        <h2
-          id={ROSTER_HEADING_ID}
-          tabIndex={-1}
-          className="text-sm font-semibold tracking-tight text-muted-foreground"
-        >
-          <TitleWithIcon icon={Users} iconClassName="size-4">
-            {t('roster.heading')}
-          </TitleWithIcon>
-        </h2>
-        <p id={ROSTER_CASTING_HELP_ID} className="sr-only">
-          {t('roster.castingHelp')}
-        </p>
-        <RosterQuickAdd />
-        {activePersons.length === 0 ? (
-          <EmptyState
-            icon={<Users aria-hidden className="size-4" />}
-            title={t('roster.emptyTitle')}
-            description={t('roster.emptyDescription')}
-          />
-        ) : (
-          <RosterList persons={activePersons} />
-        )}
-      </div>
-    </div>
+    <MobileCollapsiblePanel
+      headingId={ROSTER_HEADING_ID}
+      title={t('roster.heading')}
+      icon={Users}
+      srOnlyHelpId={ROSTER_CASTING_HELP_ID}
+      srOnlyHelp={t('roster.castingHelp')}
+    >
+      <RosterQuickAdd />
+      {activePersons.length === 0 ? (
+        <EmptyState
+          icon={<Users aria-hidden className="size-4" />}
+          title={t('roster.emptyTitle')}
+          description={t('roster.emptyDescription')}
+        />
+      ) : (
+        <RosterList persons={activePersons} />
+      )}
+    </MobileCollapsiblePanel>
   );
 }

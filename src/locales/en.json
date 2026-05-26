@@ -59,6 +59,8 @@
     "closeToast": "Close notification",
     "scrollUp": "Scroll up",
     "scrollDown": "Scroll down",
+    "expandPanel": "Expand {label} panel",
+    "collapsePanel": "Collapse {label} panel",
     "notifications": "Notifications"
   },
   "theme": {

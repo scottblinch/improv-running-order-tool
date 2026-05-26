@@ -30,11 +30,11 @@ export function AppShell() {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:min-h-0">
         {hasShows ? (
           <AppDndProvider>
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row print:block print:h-auto print:min-h-0">
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row md:overflow-hidden print:block print:h-auto print:min-h-0">
               <aside
                 aria-labelledby={ROSTER_HEADING_ID}
                 className={cn(
-                  'flex min-h-0 shrink-0 flex-col overflow-hidden border-b max-md:max-h-[45vh] md:w-80 md:border-r md:border-b-0 print:hidden',
+                  'flex shrink-0 flex-col border-b md:min-h-0 md:w-80 md:shrink-0 md:overflow-hidden md:border-r md:border-b-0 print:hidden',
                   printPreview && 'hidden',
                 )}
               >
@@ -44,7 +44,7 @@ export function AppShell() {
               <main
                 aria-labelledby={LINEUP_HEADING_ID}
                 className={cn(
-                  'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:min-h-0 print:w-full print:max-w-none print:overflow-visible',
+                  'flex min-w-0 flex-col md:min-h-0 md:flex-1 md:overflow-hidden print:block print:h-auto print:min-h-0 print:w-full print:max-w-none print:overflow-visible',
                   printPreview && 'overflow-y-auto bg-white',
                 )}
               >

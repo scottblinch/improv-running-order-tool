@@ -1,12 +1,11 @@
 import { Clapperboard } from 'lucide-react';
 
 import { AppFooter } from '@/components/layout/AppFooter';
-import { PanelShell } from '@/components/layout/PanelShell';
+import { MobileCollapsiblePanel } from '@/components/layout/MobileCollapsiblePanel';
 import { RunningOrderPrintView } from '@/components/running-order/RunningOrderPrintView';
 import { SceneList } from '@/components/running-order/SceneList';
 import { SceneQuickAdd } from '@/components/running-order/SceneQuickAdd';
 import { EmptyState } from '@/components/shared/EmptyState';
-import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useConcealedUntilPrint } from '@/hooks/useConcealedUntilPrint';
 import { useTranslation } from '@/i18n';
 import { SCENE_REORDER_HELP_ID, LINEUP_HEADING_ID } from '@/lib/a11y-ids';
@@ -32,36 +31,32 @@ export function RunningOrderPanel() {
 
   return (
     <>
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden print:hidden">
-        <PanelShell>
-          <div className="flex min-h-full flex-col gap-2">
-            <h2
-              id={LINEUP_HEADING_ID}
-              tabIndex={-1}
-              className="text-sm font-semibold tracking-tight text-muted-foreground"
-            >
-              <TitleWithIcon icon={Clapperboard} iconClassName="size-4">
-                {t('lineup.heading')}
-              </TitleWithIcon>
-            </h2>
-            <p id={SCENE_REORDER_HELP_ID} className="sr-only">
-              {t('lineup.reorderHelp')}
-            </p>
-            <SceneQuickAdd />
-            {scenes.length === 0 ? (
-              <EmptyState
-                icon={<Clapperboard aria-hidden className="size-4" />}
-                title={t('lineup.emptyTitle')}
-                description={t('lineup.emptyDescription')}
-              />
-            ) : (
-              <SceneList scenes={scenes} />
-            )}
-            <div className="mt-auto shrink-0 pt-4">
-              <AppFooter />
-            </div>
+      <div className="flex flex-col md:min-h-0 md:flex-1 md:overflow-hidden print:hidden">
+        <MobileCollapsiblePanel
+          headingId={LINEUP_HEADING_ID}
+          title={t('lineup.heading')}
+          icon={Clapperboard}
+          srOnlyHelpId={SCENE_REORDER_HELP_ID}
+          srOnlyHelp={t('lineup.reorderHelp')}
+          fillHeight
+        >
+          <SceneQuickAdd />
+          {scenes.length === 0 ? (
+            <EmptyState
+              icon={<Clapperboard aria-hidden className="size-4" />}
+              title={t('lineup.emptyTitle')}
+              description={t('lineup.emptyDescription')}
+            />
+          ) : (
+            <SceneList scenes={scenes} />
+          )}
+          <div className="mt-auto hidden shrink-0 pt-4 md:block">
+            <AppFooter />
           </div>
-        </PanelShell>
+        </MobileCollapsiblePanel>
+        <div className="shrink-0 px-4 pb-4 md:hidden">
+          <AppFooter />
+        </div>
       </div>
 
       <div
