@@ -137,4 +137,25 @@ describe('hydrateWorkspaceState', () => {
     expect(hydrated.persons).toHaveLength(1);
     expect(hydrated.scenes[0]?.hostId).toBe(`${active.id}-person`);
   });
+
+  it('preserves an intentionally empty workspace', () => {
+    const workspace = parsePersistedWorkspace({
+      activeShowId: '',
+      shows: [],
+    });
+
+    expect(workspace.shows).toEqual([]);
+    expect(workspace.activeShowId).toBe('');
+  });
+
+  it('hydrates an empty workspace without creating a show', () => {
+    const hydrated = hydrateWorkspaceState({
+      activeShowId: '',
+      shows: [],
+    });
+
+    expect(hydrated.shows).toEqual([]);
+    expect(hydrated.persons).toEqual([]);
+    expect(hydrated.scenes).toEqual([]);
+  });
 });

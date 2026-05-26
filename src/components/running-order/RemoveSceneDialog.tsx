@@ -50,6 +50,7 @@ export function RemoveSceneDialog({
               onOpenChange(false);
             }}
           >
+            <Trash2 aria-hidden className="size-4" />
             {t('lineup.removeScene')}
           </AlertDialogAction>
         </AlertDialogFooter>

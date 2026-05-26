@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import { Copy } from 'lucide-react';
 
 import {
   AlertDialog,
@@ -13,21 +13,19 @@ import {
 import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
 import { useTranslation } from '@/i18n';
 
-type DeleteShowDialogProps = {
+type DuplicateShowDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   label: string;
-  description?: string;
   onConfirm: () => void;
 };
 
-export function DeleteShowDialog({
+export function DuplicateShowDialog({
   open,
   onOpenChange,
   label,
-  description,
   onConfirm,
-}: DeleteShowDialogProps) {
+}: DuplicateShowDialogProps) {
   const { t } = useTranslation();
 
   return (
@@ -35,25 +33,24 @@ export function DeleteShowDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            <TitleWithIcon icon={Trash2}>
-              {t('workspace.deleteTitle', { label })}
+            <TitleWithIcon icon={Copy}>
+              {t('workspace.duplicateTitle', { label })}
             </TitleWithIcon>
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {description ?? t('workspace.deleteDescription')}
+            {t('workspace.duplicateDescription')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction
-            variant="destructive"
             onClick={() => {
               onConfirm();
               onOpenChange(false);
             }}
           >
-            <Trash2 aria-hidden className="size-4" />
-            {t('common.delete')}
+            <Copy aria-hidden className="size-4" />
+            {t('workspace.duplicateShow')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

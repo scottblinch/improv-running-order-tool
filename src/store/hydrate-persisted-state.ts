@@ -6,7 +6,7 @@ import {
   INPUT_LIMITS,
 } from '@/lib/input-security';
 import { isShowTimeString } from '@/lib/show-date';
-import { createEmptyShow } from '@/lib/show-workspace';
+import { createEmptyShow, EMPTY_ACTIVE_SHOW_ID } from '@/lib/show-workspace';
 import { toIsoDateString } from '@/lib/show-date';
 import type {
   PersistedState,
@@ -171,6 +171,10 @@ export function parsePersistedWorkspace(raw: unknown): WorkspacePersistedState {
     .filter((show): show is ShowRecord => show !== null);
 
   if (shows.length === 0) {
+    if (Array.isArray(raw.shows) && raw.shows.length === 0) {
+      return { activeShowId: EMPTY_ACTIVE_SHOW_ID, shows: [] };
+    }
+
     return emptyWorkspace();
   }
 
@@ -196,11 +200,15 @@ export function hydrateWorkspaceState(
     .slice(0, INPUT_LIMITS.maxShows);
 
   if (shows.length === 0) {
-    const empty = createEmptyShow();
     return {
-      activeShowId: empty.id,
-      shows: [empty],
-      ...sanitizePersistedState(empty),
+      activeShowId: EMPTY_ACTIVE_SHOW_ID,
+      shows: [],
+      persons: [],
+      scenes: [],
+      showName: '',
+      showDate: toIsoDateString(),
+      showVenue: '',
+      showTime: '',
     };
   }
 

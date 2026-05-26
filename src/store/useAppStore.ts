@@ -34,7 +34,9 @@ import {
 } from '@/lib/input-security';
 import { isIsoDateString } from '@/lib/show-date';
 import {
+  cloneShowRecord,
   createEmptyShow,
+  createEmptyWorkspaceSlice,
   createShowId,
   patchActiveShow,
   pickMostRecentlyUpdatedShow,
@@ -127,6 +129,7 @@ export interface AppActions {
   setAllPlay: (sceneId: SceneId, isAllPlay: boolean) => void;
   setShowDetails: (details: ShowDetails) => void;
   createShow: () => void;
+  duplicateShow: (id: ShowId) => void;
   switchShow: (id: ShowId) => void;
   deleteShow: (id: ShowId) => void;
   importSharedShow: (
@@ -482,6 +485,17 @@ export const useAppStore = create<AppStore>()(
 
       createShow: () => {
         set((state) => {
+          if (state.shows.length === 0) {
+            const newShow = createEmptyShow();
+            const sanitized = sanitizePersistedState(newShow);
+
+            return {
+              activeShowId: newShow.id,
+              shows: [{ ...newShow, ...sanitized }],
+              ...sanitized,
+            };
+          }
+
           if (!canAddShow(state.shows.length)) return state;
 
           const flushed = patchActiveShow(state, {});
@@ -497,6 +511,35 @@ export const useAppStore = create<AppStore>()(
             showDate: newShow.showDate,
             showVenue: newShow.showVenue,
             showTime: newShow.showTime,
+          };
+        });
+      },
+
+      duplicateShow: (id) => {
+        if (!isValidEntityId(id)) return;
+
+        set((state) => {
+          if (!canAddShow(state.shows.length)) return state;
+
+          const flushed =
+            state.shows.length > 0 ? patchActiveShow(state, {}) : state;
+          const source = flushed.shows.find((show) => show.id === id);
+          if (!source) return state;
+
+          const clonedBase = cloneShowRecord(source);
+          const sanitized = sanitizePersistedState(clonedBase);
+          const cloned: typeof clonedBase = { ...clonedBase, ...sanitized };
+
+          return {
+            ...flushed,
+            shows: [...flushed.shows, cloned],
+            activeShowId: cloned.id,
+            persons: cloned.persons,
+            scenes: cloned.scenes,
+            showName: cloned.showName,
+            showDate: cloned.showDate,
+            showVenue: cloned.showVenue,
+            showTime: cloned.showTime,
           };
         });
       },
@@ -528,11 +571,14 @@ export const useAppStore = create<AppStore>()(
         if (!isValidEntityId(id)) return;
 
         set((state) => {
-          if (state.shows.length <= 1) return state;
-
-          const flushed = patchActiveShow(state, {});
+          const flushed =
+            state.shows.length > 0 ? patchActiveShow(state, {}) : state;
           const remaining = flushed.shows.filter((show) => show.id !== id);
           if (remaining.length === flushed.shows.length) return state;
+
+          if (remaining.length === 0) {
+            return createEmptyWorkspaceSlice();
+          }
 
           if (flushed.activeShowId !== id) {
             return { ...flushed, shows: remaining };

@@ -2,6 +2,7 @@ import { useState, useId } from 'react';
 import {
   Check,
   ChevronDown,
+  Copy,
   History,
   Plus,
   Sparkles,
@@ -9,6 +10,7 @@ import {
 } from 'lucide-react';
 
 import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
+import { DuplicateShowDialog } from '@/components/layout/DuplicateShowDialog';
 import { IconButtonTooltip } from '@/components/shared/IconButtonTooltip';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,7 +37,9 @@ type ShowMenuItemProps = {
   show: ShowRecord;
   isActive: boolean;
   canDelete: boolean;
+  canDuplicate: boolean;
   onSwitch: (id: ShowId) => void;
+  onDuplicate: (target: { id: ShowId; label: string }) => void;
   onDelete: (target: { id: ShowId; label: string }) => void;
 };
 
@@ -43,7 +47,9 @@ function ShowMenuItem({
   show,
   isActive,
   canDelete,
+  canDuplicate,
   onSwitch,
+  onDuplicate,
   onDelete,
 }: ShowMenuItemProps) {
   const { t } = useTranslation();
@@ -53,6 +59,7 @@ function ShowMenuItem({
     show.showVenue,
     show.showTime,
   );
+  const duplicateLabel = t('workspace.duplicateShowItemTitle', { label });
   const deleteLabel = t('workspace.deleteShowItemTitle', { label });
 
   return (
@@ -73,6 +80,21 @@ function ShowMenuItem({
         />
         <span className="min-w-0 flex-1 truncate">{label}</span>
       </DropdownMenuItem>
+      <IconButtonTooltip label={duplicateLabel}>
+        <DropdownMenuItem
+          className="shrink-0 px-2"
+          disabled={!canDuplicate}
+          title={duplicateLabel}
+          aria-label={duplicateLabel}
+          onSelect={(event) => {
+            event.preventDefault();
+            if (!canDuplicate) return;
+            onDuplicate({ id: show.id, label });
+          }}
+        >
+          <Copy aria-hidden className="size-3.5" />
+        </DropdownMenuItem>
+      </IconButtonTooltip>
       {canDelete ? (
         <IconButtonTooltip label={deleteLabel}>
           <DropdownMenuItem
@@ -102,10 +124,15 @@ export function ShowSwitcher() {
   const showVenue = useAppStore((state) => state.showVenue);
   const showTime = useAppStore((state) => state.showTime);
   const createShow = useAppStore((state) => state.createShow);
+  const duplicateShow = useAppStore((state) => state.duplicateShow);
   const switchShow = useAppStore((state) => state.switchShow);
   const deleteShow = useAppStore((state) => state.deleteShow);
 
   const [deleteTarget, setDeleteTarget] = useState<{
+    id: ShowId;
+    label: string;
+  } | null>(null);
+  const [duplicateTarget, setDuplicateTarget] = useState<{
     id: ShowId;
     label: string;
   } | null>(null);
@@ -120,7 +147,8 @@ export function ShowSwitcher() {
   );
   const { currentAndUpcoming, past } = partitionShowsByShowDate(shows);
   const canCreate = canAddShow(shows.length);
-  const canDelete = shows.length > 1;
+  const canDuplicate = canCreate;
+  const canDelete = shows.length >= 1;
   const hasPastSection = past.length > 0;
   const upcomingLabel = hasPastSection
     ? t('workspace.upcomingShows')
@@ -139,6 +167,28 @@ export function ShowSwitcher() {
         ),
       });
     }
+  };
+
+  const handleDuplicateShow = (target: { id: ShowId; label: string }) => {
+    setDuplicateTarget(target);
+  };
+
+  const confirmDuplicateShow = () => {
+    if (!duplicateTarget) return;
+
+    const { id, label: sourceLabel } = duplicateTarget;
+    duplicateShow(id);
+    const {
+      showName: nextName,
+      showDate: nextDate,
+      showVenue: nextVenue,
+      showTime: nextTime,
+    } = useAppStore.getState();
+    announceA11y('a11y.duplicatedShow', {
+      source: sourceLabel,
+      label: formatShowMenuLabel(nextName, nextDate, nextVenue, nextTime),
+    });
+    setDuplicateTarget(null);
   };
 
   const handleCreateShow = () => {
@@ -186,7 +236,9 @@ export function ShowSwitcher() {
                   show={show}
                   isActive={show.id === activeShowId}
                   canDelete={canDelete}
+                  canDuplicate={canDuplicate}
                   onSwitch={handleSwitchShow}
+                  onDuplicate={handleDuplicateShow}
                   onDelete={setDeleteTarget}
                 />
               ))}
@@ -205,7 +257,9 @@ export function ShowSwitcher() {
                   show={show}
                   isActive={show.id === activeShowId}
                   canDelete={canDelete}
+                  canDuplicate={canDuplicate}
                   onSwitch={handleSwitchShow}
+                  onDuplicate={handleDuplicateShow}
                   onDelete={setDeleteTarget}
                 />
               ))}
@@ -234,12 +288,24 @@ export function ShowSwitcher() {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      <DuplicateShowDialog
+        open={duplicateTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDuplicateTarget(null);
+        }}
+        label={duplicateTarget?.label ?? ''}
+        onConfirm={confirmDuplicateShow}
+      />
+
       <DeleteShowDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
           if (!open) setDeleteTarget(null);
         }}
         label={deleteTarget?.label ?? ''}
+        description={
+          shows.length === 1 ? t('workspace.deleteLastDescription') : undefined
+        }
         onConfirm={() => {
           if (!deleteTarget) return;
 

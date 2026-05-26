@@ -1,10 +1,11 @@
 import i18n from '@/i18n';
+import { INPUT_LIMITS, sanitizeShowName } from '@/lib/input-security';
 import {
   formatShowDateTime,
   formatShowDisplayName,
   toIsoDateString,
 } from '@/lib/show-date';
-import type { PersistedState, ShowId, ShowRecord } from '@/types/app';
+import type { PersistedState, PersonId, ShowId, ShowRecord } from '@/types/app';
 
 export function createShowId(): ShowId {
   return crypto.randomUUID();
@@ -21,6 +22,71 @@ export function createEmptyShow(): ShowRecord {
     showTime: '',
     updatedAt: new Date().toISOString(),
   };
+}
+
+/** Sentinel when the workspace has no saved shows. */
+export const EMPTY_ACTIVE_SHOW_ID = '' as ShowId;
+
+export function createEmptyWorkspaceSlice(): WorkspaceSlice {
+  return {
+    activeShowId: EMPTY_ACTIVE_SHOW_ID,
+    shows: [],
+    persons: [],
+    scenes: [],
+    showName: '',
+    showDate: toIsoDateString(),
+    showVenue: '',
+    showTime: '',
+  };
+}
+
+export function formatDuplicateShowName(showName: string): string {
+  const suffix = i18n.t('workspace.duplicateNameSuffix');
+  const base = formatShowDisplayName(showName);
+  const maxLength = INPUT_LIMITS.maxShowNameLength;
+
+  if (base.length + suffix.length <= maxLength) {
+    return sanitizeShowName(`${base}${suffix}`);
+  }
+
+  return sanitizeShowName(
+    `${base.slice(0, maxLength - suffix.length)}${suffix}`,
+  );
+}
+
+export function cloneShowRecord(source: ShowRecord): ShowRecord {
+  const personIdMap = new Map<PersonId, PersonId>();
+
+  const persons = source.persons.map((person) => {
+    const id = createShowId();
+    personIdMap.set(person.id, id);
+    return { ...person, id };
+  });
+
+  const scenes = source.scenes.map((scene) => ({
+    ...scene,
+    id: createShowId(),
+    hostId: scene.hostId ? (personIdMap.get(scene.hostId) ?? null) : null,
+    playerIds: scene.playerIds.flatMap((personId) => {
+      const nextId = personIdMap.get(personId);
+      return nextId ? [nextId] : [];
+    }),
+  }));
+
+  return {
+    id: createShowId(),
+    persons,
+    scenes,
+    showName: formatDuplicateShowName(source.showName),
+    showDate: source.showDate,
+    showVenue: source.showVenue,
+    showTime: source.showTime,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+export function hasSavedShows(state: Pick<WorkspaceSlice, 'shows'>): boolean {
+  return state.shows.length > 0;
 }
 
 export type WorkspaceSlice = PersistedState & {

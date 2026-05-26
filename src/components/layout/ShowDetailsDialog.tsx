@@ -5,9 +5,11 @@ import {
   MapPin,
   Settings2,
   Tag,
+  Trash2,
 } from 'lucide-react';
 import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
+import { DeleteShowDialog } from '@/components/layout/DeleteShowDialog';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -43,15 +45,24 @@ export type ShowDetailsDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   details: ShowDetails;
+  showLabel: string;
+  isLastShow: boolean;
   onConfirm: (details: ShowDetails) => void;
+  onDelete: () => void;
 };
 
-type ShowDetailsFormProps = Omit<ShowDetailsDialogProps, 'open'>;
+type ShowDetailsFormProps = Omit<
+  ShowDetailsDialogProps,
+  'open' | 'onDelete' | 'showLabel' | 'isLastShow'
+> & {
+  onRequestDelete: () => void;
+};
 
 function ShowDetailsForm({
   details,
   onConfirm,
   onOpenChange,
+  onRequestDelete,
 }: ShowDetailsFormProps) {
   const { t } = useTranslation();
   const announceA11y = useA11yAnnounce();
@@ -198,14 +209,25 @@ function ShowDetailsForm({
         </div>
       </div>
 
-      <AlertDialogFooter className="mx-0 mb-0 shrink-0 gap-2 px-4 py-3">
-        <AlertDialogCancel type="button">
-          {t('common.cancel')}
-        </AlertDialogCancel>
-        <Button type="submit">
-          <Check aria-hidden className="size-4" />
-          {t('common.save')}
+      <AlertDialogFooter className="mx-0 mb-0 shrink-0 flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <Button
+          type="button"
+          variant="destructive"
+          className="w-full sm:mr-auto sm:w-auto"
+          onClick={onRequestDelete}
+        >
+          <Trash2 aria-hidden className="size-4" />
+          {t('workspace.deleteShow')}
         </Button>
+        <div className="flex w-full flex-col-reverse gap-2 sm:w-auto sm:flex-row">
+          <AlertDialogCancel type="button" className="mt-0">
+            {t('common.cancel')}
+          </AlertDialogCancel>
+          <Button type="submit">
+            <Check aria-hidden className="size-4" />
+            {t('common.save')}
+          </Button>
+        </div>
       </AlertDialogFooter>
     </form>
   );
@@ -215,22 +237,54 @@ export function ShowDetailsDialog({
   open,
   onOpenChange,
   details,
+  showLabel,
+  isLastShow,
   onConfirm,
+  onDelete,
 }: ShowDetailsDialogProps) {
+  const { t } = useTranslation();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const formKey = `${details.showName}|${details.showDate}|${details.showVenue}|${details.showTime}`;
 
+  const handleDetailsOpenChange = (nextOpen: boolean) => {
+    onOpenChange(nextOpen);
+    if (!nextOpen) setDeleteOpen(false);
+  };
+
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="gap-0 overflow-hidden p-0 sm:max-w-md">
-        {open ? (
-          <ShowDetailsForm
-            key={formKey}
-            details={details}
-            onConfirm={onConfirm}
-            onOpenChange={onOpenChange}
-          />
-        ) : null}
-      </AlertDialogContent>
-    </AlertDialog>
+    <>
+      <AlertDialog
+        open={open && !deleteOpen}
+        onOpenChange={handleDetailsOpenChange}
+      >
+        <AlertDialogContent className="gap-0 overflow-hidden p-0 sm:max-w-md">
+          {open && !deleteOpen ? (
+            <ShowDetailsForm
+              key={formKey}
+              details={details}
+              onConfirm={onConfirm}
+              onOpenChange={handleDetailsOpenChange}
+              onRequestDelete={() => setDeleteOpen(true)}
+            />
+          ) : null}
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <DeleteShowDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        label={showLabel}
+        description={
+          isLastShow
+            ? t('workspace.deleteLastDescription')
+            : t('workspace.deleteDescription')
+        }
+        onConfirm={() => {
+          onDelete();
+          setDeleteOpen(false);
+          onOpenChange(false);
+        }}
+      />
+    </>
   );
 }

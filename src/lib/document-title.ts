@@ -22,7 +22,7 @@ export function getDocumentTitle(
 ): string {
   const appTitle = i18n.t('app.documentTitle');
 
-  if (isDefaultShowName(showName)) {
+  if (!showName.trim() || isDefaultShowName(showName)) {
     return appTitle;
   }
 

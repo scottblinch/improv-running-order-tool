@@ -1,4 +1,4 @@
-import { UserMinus } from 'lucide-react';
+import { Trash2, UserMinus } from 'lucide-react';
 
 import {
   AlertDialog,
@@ -84,11 +84,13 @@ export function DeletePersonDialog({
                 className="w-full sm:w-auto"
                 onClick={() => handleConfirm('clearScenes')}
               >
+                <Trash2 aria-hidden className="size-4" />
                 {t('roster.deleteClearScenes')}
               </AlertDialogAction>
             </>
           ) : (
             <AlertDialogAction variant="destructive" onClick={handleHardDelete}>
+              <Trash2 aria-hidden className="size-4" />
               {t('common.delete')}
             </AlertDialogAction>
           )}
