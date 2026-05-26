@@ -50,7 +50,7 @@ export function DuplicateShowDialog({
             }}
           >
             <Copy aria-hidden className="size-4" />
-            {t('workspace.duplicateShow')}
+            {t('common.duplicate')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

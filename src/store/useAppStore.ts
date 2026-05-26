@@ -32,6 +32,7 @@ import {
   sanitizeShowTime,
   sanitizeShowVenue,
 } from '@/lib/input-security';
+import { cloneScene } from '@/lib/scene-workspace';
 import { isIsoDateString } from '@/lib/show-date';
 import {
   cloneShowRecord,
@@ -114,6 +115,7 @@ export interface AppActions {
   togglePersonAbsence: (id: PersonId) => void;
   addScene: (name: string) => void;
   renameScene: (id: SceneId, name: string) => void;
+  duplicateScene: (id: SceneId) => void;
   removeScene: (id: SceneId) => void;
   reorderScenes: (activeId: SceneId, overId: SceneId) => void;
   moveScene: (sceneId: SceneId, direction: 'up' | 'down') => void;
@@ -262,6 +264,22 @@ export const useAppStore = create<AppStore>()(
               scene.id === id ? { ...scene, name: sanitized } : scene,
             ),
           });
+        });
+      },
+
+      duplicateScene: (id) => {
+        if (!isValidEntityId(id)) return;
+
+        set((state) => {
+          if (!canAddScene(state.scenes.length)) return state;
+
+          const index = state.scenes.findIndex((scene) => scene.id === id);
+          if (index === -1) return state;
+
+          const scenes = [...state.scenes];
+          scenes.splice(index + 1, 0, cloneScene(scenes[index]!));
+
+          return patchActiveShow(state, { scenes });
         });
       },
 

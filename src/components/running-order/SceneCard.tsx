@@ -3,6 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
   GripVertical,
+  Copy,
   Mic2,
   MoreHorizontal,
   Pencil,
@@ -32,6 +33,7 @@ import { SCENE_REORDER_HELP_ID } from '@/lib/a11y-ids';
 import { cn } from '@/lib/utils';
 import { useA11yAnnounce } from '@/hooks/useA11yAnnounce';
 import { useTranslation } from '@/i18n';
+import { canAddScene } from '@/lib/input-security';
 import { useAppStore } from '@/store/useAppStore';
 import type { Scene } from '@/types/app';
 
@@ -45,8 +47,10 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
   const { t } = useTranslation();
   const announceA11y = useA11yAnnounce();
   const renameScene = useAppStore((state) => state.renameScene);
+  const duplicateScene = useAppStore((state) => state.duplicateScene);
   const removeScene = useAppStore((state) => state.removeScene);
   const setAllPlay = useAppStore((state) => state.setAllPlay);
+  const canDuplicateScene = canAddScene(sceneCount);
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
@@ -65,6 +69,16 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
     }
 
     enableAllPlay();
+  };
+
+  const handleDuplicateScene = () => {
+    duplicateScene(scene.id);
+    const duplicateName = useAppStore.getState().scenes[index + 1]?.name;
+
+    announceA11y('a11y.duplicatedScene', {
+      source: scene.name,
+      name: duplicateName ?? scene.name,
+    });
   };
 
   const {
@@ -152,6 +166,16 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
               >
                 <Pencil aria-hidden className="size-4" />
                 {t('common.rename')}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={!canDuplicateScene}
+                title={t('lineup.duplicateSceneItemTitle', {
+                  name: scene.name,
+                })}
+                onSelect={handleDuplicateScene}
+              >
+                <Copy aria-hidden className="size-4" />
+                {t('common.duplicate')}
               </DropdownMenuItem>
               {!scene.isAllPlay ? (
                 <DropdownMenuItem
