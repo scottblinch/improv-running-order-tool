@@ -3,6 +3,16 @@ import { registerSW } from 'virtual:pwa-register';
 
 import i18n from '@/i18n';
 
+function listenForServiceWorkerUpdates(
+  registration: ServiceWorkerRegistration,
+) {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      void registration.update();
+    }
+  });
+}
+
 export function registerServiceWorker() {
   if (!import.meta.env.PROD) return;
 
@@ -19,6 +29,11 @@ export function registerServiceWorker() {
           },
         },
       });
+    },
+    onRegistered(registration) {
+      if (registration) {
+        listenForServiceWorkerUpdates(registration);
+      }
     },
   });
 }

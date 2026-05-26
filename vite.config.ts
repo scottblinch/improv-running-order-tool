@@ -104,8 +104,25 @@ export default defineConfig({
         icons: [...pwaManifestIcons],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        navigateFallback: 'index.html',
+        // Hashed JS/CSS can stay precached; fetch HTML from the network first so
+        // deploys are visible on the next refresh instead of requiring two.
+        globPatterns: ['**/*.{js,css,ico,png,svg,woff2}'],
+        navigateFallback: null,
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'html-pages',
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 24 * 60 * 60,
+              },
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: true,
