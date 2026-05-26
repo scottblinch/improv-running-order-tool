@@ -183,11 +183,9 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-host-label`} className="sr-only">
               {t('common.host')}
             </span>
-            <Mic2
-              aria-hidden
-              title={t('common.host')}
-              className={cn('size-3.5 shrink-0', castRoleLabelClasses('host'))}
-            />
+            <span title={t('common.host')} aria-hidden className="shrink-0">
+              <Mic2 className={cn('size-3.5', castRoleLabelClasses('host'))} />
+            </span>
             <HostCastControl scene={scene} />
           </div>
 
@@ -198,14 +196,11 @@ export function SceneCard({ scene, index, sceneCount }: SceneCardProps) {
             <span id={`${scene.id}-players-label`} className="sr-only">
               {t('common.players')}
             </span>
-            <Users
-              aria-hidden
-              title={t('common.players')}
-              className={cn(
-                'size-3.5 shrink-0',
-                castRoleLabelClasses('player'),
-              )}
-            />
+            <span title={t('common.players')} aria-hidden className="shrink-0">
+              <Users
+                className={cn('size-3.5', castRoleLabelClasses('player'))}
+              />
+            </span>
             <PlayersCastControl scene={scene} />
           </div>
         </div>
