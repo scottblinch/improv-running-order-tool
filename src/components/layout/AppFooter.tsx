@@ -10,7 +10,7 @@ const GITHUB_FEEDBACK =
 const LICENSE_URL =
   'https://github.com/scottblinch/improv-running-order-tool/blob/main/LICENSE';
 
-const linkClassName = 'underline-offset-4 hover:text-foreground';
+const linkClassName = 'hover:text-foreground';
 
 const inlineLinkButtonClassName = `${linkClassName} inline h-auto cursor-pointer border-0 bg-transparent p-0 font-inherit text-inherit underline hover:no-underline focus-visible:no-underline`;
 

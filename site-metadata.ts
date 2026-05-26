@@ -10,3 +10,5 @@ export const OG_IMAGE_HEIGHT = 512;
 export const OG_LOCALE = 'en_US';
 export const DEFAULT_SITE_URL =
   'https://scottblinch.github.io/improv-running-order-tool';
+/** Bump when favicon assets change to bust browser caches. */
+export const FAVICON_VERSION = '2';

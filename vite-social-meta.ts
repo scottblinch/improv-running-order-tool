@@ -2,6 +2,7 @@ import type { Plugin } from 'vite';
 
 import {
   DEFAULT_SITE_URL,
+  FAVICON_VERSION,
   OG_IMAGE_ALT,
   OG_IMAGE_HEIGHT,
   OG_IMAGE_WIDTH,
@@ -52,7 +53,8 @@ export function socialMetaPlugin(): Plugin {
         .replace('<!--vite-social-meta-->', tags)
         .replaceAll('<!--vite-site-description-->', SITE_DESCRIPTION)
         .replaceAll('<!--vite-site-title-->', SITE_TITLE)
-        .replaceAll('<!--vite-pwa-short-name-->', PWA_SHORT_NAME);
+        .replaceAll('<!--vite-pwa-short-name-->', PWA_SHORT_NAME)
+        .replaceAll('<!--vite-favicon-version-->', FAVICON_VERSION);
     },
   };
 }
