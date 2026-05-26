@@ -2,14 +2,12 @@ import { ChevronDown, type LucideIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
 import { TitleWithIcon } from '@/components/shared/TitleWithIcon';
-import { Button } from '@/components/ui/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { useIsDesktopDnd } from '@/hooks/useIsDesktopDnd';
-import { useTranslation } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 type MobileCollapsiblePanelProps = {
@@ -35,14 +33,10 @@ export function MobileCollapsiblePanel({
   fillHeight = false,
   children,
 }: MobileCollapsiblePanelProps) {
-  const { t } = useTranslation();
   const isDesktop = useIsDesktopDnd();
   const [mobileOpen, setMobileOpen] = useState(defaultOpen);
   const open = isDesktop || mobileOpen;
   const contentId = `${headingId}-content`;
-  const toggleLabel = open
-    ? t('a11y.collapsePanel', { label: title })
-    : t('a11y.expandPanel', { label: title });
 
   return (
     <Collapsible
@@ -54,39 +48,38 @@ export function MobileCollapsiblePanel({
       }}
       className="flex flex-col md:min-h-0 md:flex-1 md:overflow-hidden"
     >
-      <div className="flex shrink-0 items-center gap-2 px-4 py-4">
+      <div className="flex shrink-0 bg-background max-md:sticky max-md:top-0 max-md:z-10 md:px-4 md:py-4">
         <h2
           id={headingId}
           tabIndex={-1}
           className="min-w-0 flex-1 text-sm font-semibold tracking-tight text-muted-foreground"
         >
-          <TitleWithIcon icon={icon} iconClassName="size-4">
-            {title}
-          </TitleWithIcon>
+          <CollapsibleTrigger
+            className={cn(
+              'flex w-full items-center gap-2 text-left outline-none',
+              'max-md:px-4 max-md:py-4 max-md:active:bg-muted/80',
+              'focus-visible:ring-3 focus-visible:ring-ring/50',
+              'md:pointer-events-none md:cursor-default',
+            )}
+            tabIndex={isDesktop ? -1 : undefined}
+          >
+            <TitleWithIcon icon={icon} iconClassName="size-4">
+              {title}
+            </TitleWithIcon>
+            <ChevronDown
+              aria-hidden
+              className={cn(
+                'ml-auto size-4 shrink-0 transition-transform md:hidden',
+                open && 'rotate-180',
+              )}
+            />
+          </CollapsibleTrigger>
         </h2>
         {srOnlyHelpId && srOnlyHelp ? (
           <p id={srOnlyHelpId} className="sr-only">
             {srOnlyHelp}
           </p>
         ) : null}
-        <CollapsibleTrigger asChild className="md:hidden">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-controls={contentId}
-            aria-expanded={open}
-            aria-label={toggleLabel}
-          >
-            <ChevronDown
-              aria-hidden
-              className={cn(
-                'size-4 transition-transform',
-                open && 'rotate-180',
-              )}
-            />
-          </Button>
-        </CollapsibleTrigger>
       </div>
       <CollapsibleContent
         id={contentId}
