@@ -6,7 +6,7 @@ import {
   INPUT_LIMITS,
 } from '@/lib/input-security';
 import { isShowTimeString } from '@/lib/show-date';
-import { createEmptyShow, EMPTY_ACTIVE_SHOW_ID } from '@/lib/show-workspace';
+import { EMPTY_ACTIVE_SHOW_ID } from '@/lib/show-workspace';
 import { toIsoDateString } from '@/lib/show-date';
 import type {
   PersistedState,
@@ -153,8 +153,7 @@ function normalizeShowRecord(raw: unknown): ShowRecord | null {
 }
 
 function emptyWorkspace(): WorkspacePersistedState {
-  const empty = createEmptyShow();
-  return { activeShowId: empty.id, shows: [empty] };
+  return { activeShowId: EMPTY_ACTIVE_SHOW_ID, shows: [] };
 }
 
 export function parsePersistedWorkspace(raw: unknown): WorkspacePersistedState {

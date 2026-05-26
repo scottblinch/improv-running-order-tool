@@ -51,18 +51,7 @@ function createId(): string {
 }
 
 function createInitialState(): WorkspaceSlice {
-  const show = createEmptyShow();
-
-  return {
-    activeShowId: show.id,
-    shows: [show],
-    persons: show.persons,
-    scenes: show.scenes,
-    showName: show.showName,
-    showDate: show.showDate,
-    showVenue: show.showVenue,
-    showTime: show.showTime,
-  };
+  return createEmptyWorkspaceSlice();
 }
 
 function personExists(

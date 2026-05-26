@@ -48,12 +48,11 @@ function makeShow(
 }
 
 describe('parsePersistedWorkspace', () => {
-  it('returns a default workspace for invalid persisted data', () => {
+  it('returns an empty workspace for invalid persisted data', () => {
     const workspace = parsePersistedWorkspace(null);
 
-    expect(workspace.shows).toHaveLength(1);
-    expect(workspace.activeShowId).toBe(workspace.shows[0]?.id);
-    expect(workspace.shows[0]?.persons).toEqual([]);
+    expect(workspace.shows).toEqual([]);
+    expect(workspace.activeShowId).toBe('');
   });
 
   it('falls back to the first show when activeShowId is missing', () => {

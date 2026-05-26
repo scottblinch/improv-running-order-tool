@@ -1,4 +1,4 @@
-import { Settings2 } from 'lucide-react';
+import { Drama, Settings2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { PrintPreviewToggle } from '@/components/layout/PrintPreviewToggle';
@@ -65,8 +65,9 @@ export function AppHeader() {
         ) : null}
         {!printPreview && !hasShows ? (
           <div className="min-w-0 flex-1">
-            <h1 className="font-heading text-lg font-semibold tracking-tight">
-              {t('app.documentTitle')}
+            <h1 className="flex min-w-0 items-center gap-2 font-heading text-lg font-semibold tracking-tight">
+              <Drama aria-hidden className="size-5 shrink-0 opacity-70" />
+              <span className="truncate">{t('app.documentTitle')}</span>
             </h1>
           </div>
         ) : null}

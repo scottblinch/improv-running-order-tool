@@ -57,10 +57,10 @@ describe('migratePersistedState', () => {
     expect(migrated.shows[0]?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 
-  it('returns a default workspace for completely invalid persisted state', () => {
+  it('returns an empty workspace for completely invalid persisted state', () => {
     const migrated = migratePersistedState('totally invalid', PERSIST_VERSION);
 
-    expect(migrated.shows).toHaveLength(1);
-    expect(migrated.activeShowId).toBe(migrated.shows[0]?.id);
+    expect(migrated.shows).toEqual([]);
+    expect(migrated.activeShowId).toBe('');
   });
 });
