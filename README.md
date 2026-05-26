@@ -19,7 +19,7 @@ A client-side tool for building and managing improv **shows** — roster, lineup
 - **Privacy** — share confirmation and footer privacy note (local storage, share URLs, hosting)
 - **Accessibility** — skip links, landmarks, screen-reader live announcements, keyboard paths for cast/reorder/print, ESLint `jsx-a11y`
 - **i18n** — UI strings in `src/locales/en.json` (i18next + ICU; English only for now)
-- **Branding** — Lucide **Drama** icon in the header (empty state), welcome blurb, and footer; PWA/favicon assets generated from `public/favicon.svg`
+- **Branding** — Lucide **Drama** icon in the header (empty state), welcome blurb, and footer; PWA/favicon assets generated from `public/favicon.svg`; Open Graph / Twitter Card meta for link previews (512×512 icon thumbnail)
 
 ## Requirements
 
@@ -62,6 +62,7 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | `pnpm format`              | Prettier write                                              |
 | `pnpm format:check`        | Prettier check                                              |
 | `pnpm generate:pwa-assets` | Regenerate PWA icons from `public/favicon.svg`              |
+| `pnpm generate:og-image`   | Regenerate `public/og-image.png` from `public/favicon.svg`  |
 
 Pull requests run [`ci.yml`](.github/workflows/ci.yml) (`pnpm check`). Pushes to `main` run [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) separately (`pnpm check:pages`, then GitHub Pages deploy) with split job permissions.
 

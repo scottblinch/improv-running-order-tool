@@ -223,6 +223,7 @@ Scene cards resolve each `hostId` / `playerIds` entry against `persons`:
 - Show data remains in `localStorage` only (not uploaded).
 - When a new app version is deployed, a toast offers **Refresh** to activate the updated service worker.
 - App icon / favicon: Lucide **Drama** motif; regenerate PNG/ICO assets with `pnpm generate:pwa-assets` from `public/favicon.svg`.
+- **Link previews:** Open Graph and Twitter Card meta tags (injected at build/dev via `vite-social-meta.ts`); `public/og-image.png` (512×512 drama icon) generated from `public/favicon.svg` with `pnpm generate:og-image`. Twitter uses the `summary` card (small square thumbnail beside title/description).
 
 ### Confirmations
 

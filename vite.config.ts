@@ -9,6 +9,8 @@ import babel from '@rolldown/plugin-babel';
 import { browserslistToTargets } from 'lightningcss';
 import { VitePWA } from 'vite-plugin-pwa';
 
+import { socialMetaPlugin } from './vite-social-meta';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const productionContentSecurityPolicy = [
@@ -83,12 +85,14 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] }),
     productionCspPlugin(),
+    socialMetaPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
         'favicon.svg',
         'favicon.ico',
         'apple-touch-icon-180x180.png',
+        'og-image.png',
       ],
       manifest: {
         name: "Scott's Improv Running Order Tool",
