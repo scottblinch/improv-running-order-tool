@@ -5,7 +5,6 @@ import type { Person, PersistedState, PersonId, Scene } from '@/types/app';
 
 export const SHOW_SHARE_PARAM = 'show';
 export const SHOW_SHARE_VERSION = 2;
-const LEGACY_SHARE_VERSION = 1;
 
 /** Keep share links paste-friendly in chat apps and email. */
 export const MAX_SHARE_PARAM_LENGTH = 8_000;
@@ -13,7 +12,7 @@ export const MAX_SHARE_PARAM_LENGTH = 8_000;
 /** Reject decompression bombs before JSON.parse. */
 export const MAX_INFLATED_BYTES = 256 * 1024;
 
-/** v2 compact wire format — indices instead of UUIDs. */
+/** Compact wire format — indices instead of UUIDs. */
 type CompactPerson = [string] | [string, number];
 type CompactScene =
   | [string, number | null, number[]]
@@ -228,37 +227,6 @@ function expandCompactPayload(
   });
 }
 
-function expandLegacyPayload(
-  parsed: Record<string, unknown>,
-): PersistedState | null {
-  if (parsed.v !== LEGACY_SHARE_VERSION) return null;
-
-  const slice: PersistedState = {
-    showName: typeof parsed.showName === 'string' ? parsed.showName : '',
-    showDate: typeof parsed.showDate === 'string' ? parsed.showDate : '',
-    showVenue: '',
-    showTime: '',
-    persons: Array.isArray(parsed.persons) ? parsed.persons : [],
-    scenes: Array.isArray(parsed.scenes) ? parsed.scenes : [],
-  };
-
-  return prepareSharedShowForImport(slice);
-}
-
-function decodePayload(parsed: unknown): PersistedState | null {
-  if (!isRecord(parsed) || typeof parsed.v !== 'number') return null;
-
-  if (parsed.v === SHOW_SHARE_VERSION) {
-    return expandCompactPayload(parsed);
-  }
-
-  if (parsed.v === LEGACY_SHARE_VERSION) {
-    return expandLegacyPayload(parsed);
-  }
-
-  return null;
-}
-
 export function encodeShowShareParam(state: PersistedState): ShareUrlResult {
   const sanitized = sanitizePersistedState(state);
 
@@ -293,93 +261,22 @@ export function decodeShowShareParam(param: string): PersistedState | null {
   if (!bytes) return null;
 
   const inflation = safeInflate(bytes);
-  if (inflation.ok) {
-    const parsed = safeParseJsonBytes(inflation.data);
-    if (parsed) {
-      const fromCompressed = decodePayload(parsed);
-      if (fromCompressed) return fromCompressed;
-    }
-  } else if (inflation.reason === 'too_large') {
-    return null;
-  }
+  if (!inflation.ok) return null;
 
-  const parsed = safeParseJsonBytes(bytes);
-  if (!parsed) return null;
+  const parsed = safeParseJsonBytes(inflation.data);
+  if (!isRecord(parsed)) return null;
 
-  return decodePayload(parsed);
-}
-
-/** Regenerate entity IDs and sanitize before importing legacy v1 payloads. */
-export function prepareSharedShowForImport(
-  state: PersistedState,
-): PersistedState {
-  const sanitized = sanitizePersistedState(state);
-  const personIdMap = new Map<PersonId, PersonId>();
-
-  for (const person of sanitized.persons) {
-    personIdMap.set(person.id, crypto.randomUUID());
-  }
-
-  const persons = sanitized.persons.map((person) => ({
-    ...person,
-    id: personIdMap.get(person.id) ?? crypto.randomUUID(),
-  }));
-
-  const personIds = new Set(persons.map((person) => person.id));
-  const scenes = sanitized.scenes.map((scene) => ({
-    ...scene,
-    id: crypto.randomUUID(),
-    hostId:
-      scene.hostId && personIdMap.has(scene.hostId)
-        ? (personIdMap.get(scene.hostId) ?? null)
-        : null,
-    playerIds: scene.isAllPlay
-      ? []
-      : scene.playerIds
-          .map((id) => personIdMap.get(id))
-          .filter(
-            (id): id is PersonId => typeof id === 'string' && personIds.has(id),
-          ),
-  }));
-
-  return sanitizePersistedState({
-    showName: sanitized.showName,
-    showDate: sanitized.showDate,
-    showVenue: sanitized.showVenue,
-    showTime: sanitized.showTime,
-    persons,
-    scenes,
-  });
+  return expandCompactPayload(parsed);
 }
 
 export function readShareParamFromLocation(): string | null {
   if (typeof window === 'undefined') return null;
 
-  const fromQuery = new URLSearchParams(window.location.search).get(
-    SHOW_SHARE_PARAM,
-  );
-  if (fromQuery) return fromQuery;
-
-  // Legacy hash links from earlier builds.
-  const hash = window.location.hash.startsWith('#')
-    ? window.location.hash.slice(1)
-    : window.location.hash;
-
-  if (!hash) return null;
-
-  return new URLSearchParams(hash).get(SHOW_SHARE_PARAM);
+  return new URLSearchParams(window.location.search).get(SHOW_SHARE_PARAM);
 }
 
 export function clearShareParamFromLocation(): void {
   const url = new URL(window.location.href);
   url.searchParams.delete(SHOW_SHARE_PARAM);
-
-  if (url.hash) {
-    const hashParams = new URLSearchParams(url.hash.slice(1));
-    hashParams.delete(SHOW_SHARE_PARAM);
-    const rest = hashParams.toString();
-    url.hash = rest ? `#${rest}` : '';
-  }
-
   window.history.replaceState({}, '', url);
 }

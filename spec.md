@@ -83,7 +83,7 @@ export interface WorkspacePersistedState {
 
 **Shows:** duplicate show (confirm, “(copy)”); duplicate scene (after original, no confirm); delete last → empty workspace.
 
-**Share:** v2 compressed `?show=`; import on load; `shareKey` dedupe; privacy confirm (skippable); performer names in URL; generic OG previews.
+**Share:** compressed `?show=`; import on load; `shareKey` dedupe; privacy confirm (skippable); performer names in URL; generic OG previews.
 
 **PWA:** NetworkFirst HTML; SW update on visibility; data stays local. Icons from `public/favicon.svg` (`pnpm generate:pwa-assets`, `generate:og-image`). `site-metadata.ts` for meta/manifest.
 

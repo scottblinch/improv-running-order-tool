@@ -90,10 +90,38 @@ describe('decodeShowShareParam', () => {
     expect(decodeShowShareParam(param)).toBeNull();
   });
 
-  it('rejects oversized uncompressed legacy JSON payloads', () => {
-    const oversized = new Uint8Array(MAX_INFLATED_BYTES + 1);
-    oversized.fill(0x7b); // "{"
-    const param = base64UrlEncode(oversized);
+  it('rejects uncompressed payloads', () => {
+    const param = base64UrlEncode(
+      new TextEncoder().encode(
+        JSON.stringify({
+          v: 2,
+          n: 'Friday Night',
+          d: '2025-06-01',
+          vn: '',
+          tm: '',
+          p: [['Alex']],
+          s: [['Opening', 0, []]],
+        }),
+      ),
+    );
+
+    expect(decodeShowShareParam(param)).toBeNull();
+  });
+
+  it('rejects v1 share payloads', () => {
+    const param = base64UrlEncode(
+      deflateSync(
+        new TextEncoder().encode(
+          JSON.stringify({
+            v: 1,
+            showName: 'Old Show',
+            showDate: '2025-06-01',
+            persons: [],
+            scenes: [],
+          }),
+        ),
+      ),
+    );
 
     expect(decodeShowShareParam(param)).toBeNull();
   });
