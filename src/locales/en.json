@@ -85,7 +85,10 @@
     "hostSuffix": "{name} HOST",
     "allPlaySuffix": "+ ALL PLAY",
     "playersSuffix": "+ {names} PLAY",
-    "warningSuffix": "{name} ({warning})"
+    "warningSuffix": "{name} ({warning})",
+    "decreaseFontSize": "Decrease font size",
+    "increaseFontSize": "Increase font size",
+    "fontSizeValue": "{size}px"
   },
   "header": {
     "editShowDetails": "Edit show details",

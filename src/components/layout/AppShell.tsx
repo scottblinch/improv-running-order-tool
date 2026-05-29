@@ -20,7 +20,7 @@ export function AppShell() {
     <div
       className={cn(
         'flex h-dvh flex-col overflow-hidden bg-background print:block print:h-auto print:min-h-0 print:overflow-visible print:bg-white',
-        printPreview && 'bg-white',
+        printPreview && 'overflow-hidden',
       )}
     >
       <SkipLink />
@@ -45,7 +45,7 @@ export function AppShell() {
                 aria-labelledby={LINEUP_HEADING_ID}
                 className={cn(
                   'flex min-w-0 flex-col md:min-h-0 md:flex-1 md:overflow-hidden print:block print:h-auto print:min-h-0 print:w-full print:max-w-none print:overflow-visible',
-                  printPreview && 'overflow-y-auto bg-white',
+                  printPreview && 'overflow-hidden',
                 )}
               >
                 <RunningOrderPanel />

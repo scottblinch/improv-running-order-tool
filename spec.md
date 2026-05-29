@@ -71,7 +71,7 @@ export interface WorkspacePersistedState {
 
 **Mobile** — one page scroll; collapsible roster/lineup; sticky headers; selects + reorder buttons (no DnD).
 
-**Print** — hide chrome; show title, date/time, venue, scene lines (`SCENE - HOST` / `+ ALL PLAY` / `+ NAMES PLAY`). Preview + fit-to-page.
+**Print** — hide chrome; show title, date/time, venue, scene lines; letter-size preview with adjustable font size.
 
 ## 5. Rules
 

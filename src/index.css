@@ -159,6 +159,12 @@
   .skip-link {
     @apply rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground no-underline shadow-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
   }
+
+  .print-preview-paper {
+    width: 8.5in;
+    min-height: 11in;
+    padding: 1.2cm;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -175,7 +181,7 @@
 @media print {
   @page {
     margin: 1.2cm;
-    size: auto;
+    size: letter;
   }
 
   html,
@@ -188,17 +194,15 @@
   }
 
   #root {
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
+    display: none !important;
   }
 
-  [data-radix-popper-content-wrapper],
-  [role='dialog'] {
-    display: none !important;
+  #print-root {
+    display: block !important;
   }
 
   .print-fit-content {
     font-size: var(--print-page-font-size, inherit) !important;
+    color: #000 !important;
   }
 }

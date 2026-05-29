@@ -10,7 +10,7 @@ Client-side improv **show** builder — roster, lineup, cast assignments, print/
 - **Roster & lineup** — absent/soft-delete; host, players, or all play; DnD on desktop, selects on mobile; collapsible panels on mobile
 - **Show details** — name, date, optional time/venue; print + share
 - **Share** — `?show=` URL import/export; generic link previews in chat apps
-- **Print** — running order with fit-to-page preview
+- **Print** — running order with letter-size preview and adjustable font size
 - **PWA** — offline shell, update toast; theme light/dark/system
 - **Privacy** — local only, no cloud backup; share confirm + footer dialog
 

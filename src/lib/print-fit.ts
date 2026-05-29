@@ -2,7 +2,13 @@ import {
   formatRunningOrderCastSuffix,
   formatRunningOrderSceneName,
 } from '@/lib/format-running-order-print';
+import { formatShowPrintTitle } from '@/lib/show-date';
 import type { Person, Scene } from '@/types/app';
+
+/** US Letter page size and @page margins (see index.css). */
+export const PRINT_PAGE_WIDTH = '8.5in';
+export const PRINT_PAGE_HEIGHT = '11in';
+export const PRINT_PAGE_MARGIN = '1.2cm';
 
 /** Printable page height in CSS px (US Letter, 1.2cm @page margins). */
 export function getPrintableHeightPx(): number {
@@ -18,22 +24,59 @@ export function getPrintFitHeightPx(): number {
 
 const BASE_FONT_PX = 16;
 const MIN_SCALE = 0.6;
-const MAX_SCALE = 2.5;
+const LINE_HEIGHT_EM = 1.65;
 const CHARS_PER_LINE = 72;
+/** Conservative title wrap for large 1.125em uppercase headings. */
+const TITLE_CHARS_PER_LINE = 12;
+/** Headroom for wrapping, em margins, and browser print variance. */
+const ESTIMATE_SAFETY_FACTOR = 0.9;
 
-export type PrintFitTarget = 'panel' | 'page';
+export const FONT_SIZE_ADJUST_STEP = 4;
+export const MIN_FONT_PX = Math.round(BASE_FONT_PX * MIN_SCALE);
+export const MAX_ESTIMATE_FONT_PX = 100;
+
+function emToLines(em: number): number {
+  return em / LINE_HEIGHT_EM;
+}
+
+function estimateHeaderLines(
+  showName: string,
+  showVenue: string,
+  scenes: Scene[],
+): number {
+  const title = formatShowPrintTitle(showName);
+  const titleLines =
+    Math.max(1, Math.ceil(title.length / TITLE_CHARS_PER_LINE)) * 1.125;
+  let em = titleLines + 0.5 + 1 + 2.5;
+
+  if (showVenue.trim()) {
+    em += 0.35 + 0.95;
+  }
+
+  if (scenes.length === 0) {
+    em += 0.875;
+  }
+
+  return emToLines(em);
+}
 
 export function estimatePrintLineCount(
   persons: Person[],
   scenes: Scene[],
+  showName: string,
+  showVenue: string,
 ): number {
-  let lines = 3;
+  let lines = estimateHeaderLines(showName, showVenue, scenes);
 
-  for (const scene of scenes) {
+  for (const [index, scene] of scenes.entries()) {
     const sceneName = formatRunningOrderSceneName(scene.name);
     const castSuffix = formatRunningOrderCastSuffix(persons, scene);
     const line = castSuffix ? `${sceneName} - ${castSuffix}` : sceneName;
     lines += Math.max(1, Math.ceil(line.length / CHARS_PER_LINE));
+
+    if (index > 0) {
+      lines += emToLines(1.5);
+    }
   }
 
   return lines;
@@ -42,65 +85,41 @@ export function estimatePrintLineCount(
 export function estimatePrintFitScale(
   persons: Person[],
   scenes: Scene[],
+  showName: string,
+  showVenue: string,
 ): number {
-  const lineHeightEm = 1.65;
   const printable = getPrintFitHeightPx();
-  const lineCount = estimatePrintLineCount(persons, scenes);
-  const targetFontPx = printable / (lineCount * lineHeightEm);
+  const lineCount = estimatePrintLineCount(
+    persons,
+    scenes,
+    showName,
+    showVenue,
+  );
+  const targetFontPx = printable / (lineCount * LINE_HEIGHT_EM);
   const scale = targetFontPx / BASE_FONT_PX;
 
-  return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
+  return Math.max(MIN_SCALE, scale);
 }
 
-export function getPrintFitAvailableHeight(container: HTMLElement): number {
-  const containerHeight = container.clientHeight;
-  return containerHeight > 0 ? containerHeight : getPrintFitHeightPx();
+export function clampPrintFontSizePx(px: number): number {
+  return Math.max(MIN_FONT_PX, Math.round(px));
 }
 
-function finalizeScale(best: number): number {
-  return best * 0.98;
-}
-
-export function measurePrintFitScale(
-  availableHeight: number,
-  content: HTMLElement,
+export function getPrintFontSizePx(
   persons: Person[],
   scenes: Scene[],
+  showName: string,
+  showVenue: string,
 ): number {
-  if (availableHeight <= 0) {
-    return estimatePrintFitScale(persons, scenes);
-  }
+  const estimated =
+    BASE_FONT_PX * estimatePrintFitScale(persons, scenes, showName, showVenue);
 
-  let low = MIN_SCALE;
-  let high = MAX_SCALE;
-  let best = estimatePrintFitScale(persons, scenes);
-
-  for (let attempt = 0; attempt < 14; attempt += 1) {
-    const mid = (low + high) / 2;
-    content.style.fontSize = `${BASE_FONT_PX * mid}px`;
-    const needed = content.scrollHeight;
-
-    if (needed <= 0) break;
-
-    if (needed <= availableHeight) {
-      best = mid;
-      low = mid;
-    } else {
-      high = mid;
-    }
-  }
-
-  const finalScale = finalizeScale(best);
-  content.style.fontSize = `${BASE_FONT_PX * finalScale}px`;
-  return finalScale;
-}
-
-export function clearPrintFitScale(content: HTMLElement): void {
-  content.style.fontSize = '';
-}
-
-export function getPrintFontSizePx(persons: Person[], scenes: Scene[]): number {
-  return BASE_FONT_PX * estimatePrintFitScale(persons, scenes);
+  return clampPrintFontSizePx(
+    Math.min(
+      MAX_ESTIMATE_FONT_PX,
+      Math.round(estimated * ESTIMATE_SAFETY_FACTOR),
+    ),
+  );
 }
 
 export { BASE_FONT_PX };
